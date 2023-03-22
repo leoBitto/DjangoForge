@@ -1,3 +1,4 @@
+#!/bin/bash
 echo "now NGINX.."
 ipADDR=$(curl -s ifconfig.co)
 sed -i "s/IP/$ipADDR/" ../nginx/conf.nginx

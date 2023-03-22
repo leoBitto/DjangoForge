@@ -1,3 +1,4 @@
+#!/bin/bash
 echo "I'm going to move some files around:"
 
 sed -i "s/USER/$user_name/" ../gunicorn/gunicorn.service

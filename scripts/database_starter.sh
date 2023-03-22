@@ -1,3 +1,4 @@
+#!/bin/bash
 echo "now that we have taken care of the server part we can create the database"
 echo "from here, i will leave you to the postgres database shell"
 echo "refer to the readme and follow the instructions"
