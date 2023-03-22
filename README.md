@@ -3,9 +3,13 @@ a repository to have a ready-to-deploy django app
 fllow these steps to prepare the server:
 
 # HOW TO START
-1. enter server 
-2. clone from git 
-3. execute the scripts
+1. enter server
+2. create user
+    1. adduser $user_name
+    2. usermod -aG sudo $user_name
+    3. su $user_name
+3. clone from git 
+4. execute the server_starter.sh script
 
 
 #### create the postgreSQL DB and User DONT FORGET THE SEMICOLON!

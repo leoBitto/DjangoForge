@@ -1,7 +1,8 @@
 echo "Let's install django!"
-source ./env_dj/bin/activate
+source ../env_dj/bin/activate
 pip install -r requirements.txt
-cd $(basename $PWD)/src
+cd ..
+cd src
 python manage.py makemigrations
 python manage.py migrate
 echo "I have populated the database, now lets create the superuser"
