@@ -4,6 +4,9 @@ fllow these steps to prepare the server:
 
 ## create the postgreSQL DB and User DONT FORGET THE SEMICOLON!
 
+myproject is the name of folder containing the src, it can be anything but its better to stick to the same name;
+myprojectuser is the name of the user that has been created
+
 1.  CREATE DATABASE myproject;  # myproject is the name of the db
 2.  CREATE USER myprojectuser WITH PASSWORD 'password'; # myprojectuser is the name of a user inside the sql environment
 3.  ALTER ROLE myprojectuser SET client_encoding TO 'utf8';
@@ -13,9 +16,13 @@ fllow these steps to prepare the server:
 7. \q # close the prompt
 
 #### REMEMBER TO SET IN .env
+### DO NOT USE SPACES
 1. DATABASE_NAME=myproject
 2. DATABASE_USER=myprojectuser
 3. DATABASE_PASS=password
+
+4. also create a new secret key
+5. set DEBUG=FALSE
 
 ## the django project
 the django project is inside the /src folder, in here reside all the code necessary to make the django project work. inside the folder /base there are the basic setting and the .env file.
@@ -32,4 +39,4 @@ in urls.py:
 ######
 1. enter server
 2. pull from git inside folder with the project name
-3. follow the script 
+3. execute the script 
