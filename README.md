@@ -4,8 +4,8 @@ fllow these steps to prepare the server:
 
 # HOW TO START
 1. enter server 
-2. pull from git inside folder with the project name
-3. execute the script 
+2. clone from git 
+3. execute the scripts
 
 
 #### create the postgreSQL DB and User DONT FORGET THE SEMICOLON!

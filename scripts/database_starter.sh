@@ -7,3 +7,5 @@ echo "Welcome back! I hope the installation went well!"
 echo "Don't forget to store the information you just used inside the .env file"
 echo "you'll find the .env file inside the /base folder."
 ./django_starter.sh
+
+

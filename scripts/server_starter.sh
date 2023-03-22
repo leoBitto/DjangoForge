@@ -14,7 +14,7 @@ echo "The user has been create and have sudo privileges"
 echo "I'm switching to it now.."
 su $user_name
 echo "switched!, now proceed calling the database_started script"
-
+./database_started.sh
 
 
 
