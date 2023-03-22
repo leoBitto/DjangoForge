@@ -1,0 +1,1 @@
+echo $(basename $PWD)/src

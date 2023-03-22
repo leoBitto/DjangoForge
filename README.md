@@ -3,7 +3,7 @@ a repository to have a ready-to-deploy django app
 fllow these steps to prepare the server:
 
 # HOW TO START
-1. enter server
+1. enter server 
 2. pull from git inside folder with the project name
 3. execute the script 
 

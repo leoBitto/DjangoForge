@@ -26,8 +26,8 @@ echo "Don't forget to store the information you just used inside the .env file"
 echo "you'll find the .env file inside the /base folder."
 echo "Let's install django!"
 source ./env_dj/bin/activate
-cd src
 pip install -r requirements.txt
+cd $(basename $PWD)/src
 python manage.py makemigrations
 python manage.py migrate
 echo "I have populated the database, now lets create the superuser"
