@@ -1,5 +1,5 @@
 echo "Let's install django!"
-sudo source ../env_dj/bin/activate
+sudo . ../env_dj/bin/activate
 sudo pip install -r requirements.txt
 cd ..
 cd src
