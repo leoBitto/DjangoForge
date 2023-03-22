@@ -6,7 +6,7 @@ most importantly we are installing postgres and nginx"""
 apt update
 apt install python3-venv python3-dev libpq-dev postgresql postgresql-contrib nginx curl
 
-./database_started.sh
+./database_starter.sh
 
 
 
