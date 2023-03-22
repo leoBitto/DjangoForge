@@ -3,7 +3,7 @@ echo "Let's install django!"
 activate () {
     cd ..
     . $PWD/env_dj/bin/activate
-    sudo pip install -r ../requirements.txt
+    sudo pip install -r ./requirements.txt
     cd src
     python manage.py makemigrations
     python manage.py migrate
