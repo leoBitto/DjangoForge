@@ -2,7 +2,13 @@
 a repository to have a ready-to-deploy django app
 fllow these steps to prepare the server:
 
-## create the postgreSQL DB and User DONT FORGET THE SEMICOLON!
+# HOW TO START
+1. enter server
+2. pull from git inside folder with the project name
+3. execute the script 
+
+
+#### create the postgreSQL DB and User DONT FORGET THE SEMICOLON!
 
 myproject is the name of folder containing the src, it can be anything but its better to stick to the same name;
 myprojectuser is the name of the user that has been created
@@ -15,8 +21,8 @@ myprojectuser is the name of the user that has been created
 6.  GRANT ALL PRIVILEGES ON DATABASE myproject TO myprojectuser;
 7. \q # close the prompt
 
-#### REMEMBER TO SET IN .env
-### DO NOT USE SPACES
+#### IN .env (DO NOT USE SPACES)
+
 1. DATABASE_NAME=myproject
 2. DATABASE_USER=myprojectuser
 3. DATABASE_PASS=password
@@ -36,7 +42,3 @@ in urls.py:
 1. include the app urls inside the file
 
 
-######
-1. enter server
-2. pull from git inside folder with the project name
-3. execute the script 
