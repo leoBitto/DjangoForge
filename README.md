@@ -9,7 +9,12 @@ fllow these steps to prepare the server:
     2. usermod -aG sudo $user_name
     3. su $user_name
 3. clone from git 
-4. execute the server_starter.sh script
+4. cd inside the new folder
+5. create virtualenv called env_dj 
+    virtualenv env_dj
+6. cd to the scripts folder 
+7. execute the server_starter.sh script with sudo privileges eg.
+    sudo ./server_starter.sh
 
 
 #### create the postgreSQL DB and User DONT FORGET THE SEMICOLON!
@@ -18,7 +23,7 @@ myproject is the name of folder containing the src, it can be anything but its b
 myprojectuser is the name of the user that has been created
 
 1.  CREATE DATABASE myproject;  # myproject is the name of the db
-2.  CREATE USER myprojectuser WITH PASSWORD 'password'; # myprojectuser is the name of a user inside the sql environment
+2.  CREATE USER myprojectuser WITH PASSWORD 'password'; # myprojectuser is the name of a user inside the sql environment, use the 
 3.  ALTER ROLE myprojectuser SET client_encoding TO 'utf8';
 4.  ALTER ROLE myprojectuser SET default_transaction_isolation TO 'read committed';
 5.  ALTER ROLE myprojectuser SET timezone TO 'UTC';

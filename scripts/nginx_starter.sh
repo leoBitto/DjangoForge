@@ -4,7 +4,7 @@ ipADDR=$(curl -s ifconfig.co)
 sed -i "s/IP/$ipADDR/" ../nginx/conf.nginx
 sed -i "s/USER/$user_name/" ../nginx/conf.nginx
 sed -i "s/PROJECTDIR/$(basename $PWD)/" ../nginx/conf.nginx
-sudo mv ../nginx/conf.nginx /etc/nginx/sites-available/
+sudo cp ../nginx/conf.nginx /etc/nginx/sites-available/
 sudo ln -s /etc/nginx/sites-available/conf.nginx /etc/nginx/sites-enabled/
 echo "i'm checking if everything is all right for NGINX"
 sudo nginx -t
