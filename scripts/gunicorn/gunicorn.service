@@ -6,7 +6,8 @@ After=network.target
 [Service]
 User=USER
 Group=www-data
-WorkingDirectory=/home/USER/PROJECTDIR
+WorkingDirectory=/home/USER/PROJECTDIR/src
+EnvironmentFile=/home/USER/PROJECTDIR/src/base/.env
 ExecStart=/home/USER/PROJECTDIR/env_dj/bin/gunicorn \
           --access-logfile - \
           --workers 3 \
