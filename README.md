@@ -21,16 +21,16 @@ fllow these steps to prepare the server:
 # DATABASE
 #### create the postgreSQL DB and User DONT FORGET THE SEMICOLON!
 
-'myproject' is the name of folder containing the src, it can be anything but its better to stick to the same name;
+'myproject' is the name of the DB
 'myprojectuser' is the name of the user that has been created
-7.  `sudo -u postgres psql`
-8.  `CREATE DATABASE myproject;`  # myproject is the name of the db
-9.  `CREATE USER myprojectuser WITH PASSWORD 'password';` # myprojectuser is the name of a user inside the sql environment, use the 
-10.  `ALTER ROLE myprojectuser SET client_encoding TO 'utf8';`
-11.  `ALTER ROLE myprojectuser SET default_transaction_isolation TO 'read committed';`
-12.  `ALTER ROLE myprojectuser SET timezone TO 'UTC';`
-13.  `GRANT ALL PRIVILEGES ON DATABASE myproject TO myprojectuser;`
-14. `\q` # close the prompt
+1.  `sudo -u postgres psql`
+2.  `CREATE DATABASE myproject;`  
+3.  `CREATE USER myprojectuser WITH PASSWORD 'password';`
+4.  `ALTER ROLE myprojectuser SET client_encoding TO 'utf8';`
+5.  `ALTER ROLE myprojectuser SET default_transaction_isolation TO 'read committed';`
+6.  `ALTER ROLE myprojectuser SET timezone TO 'UTC';`
+7.  `GRANT ALL PRIVILEGES ON DATABASE myproject TO myprojectuser;`
+8. `\q` # close the prompt
 
 #### IN .env (DO NOT USE SPACES)
 ```
@@ -45,18 +45,18 @@ the django project is inside the /src folder, in here reside all the code necess
 inside the /src folder, along with the /base folder there will be all the django app
 
 from the main folder
-15. activate environment
+1. activate environment
     `sudo source env_dj/bin/activate`
-16. install resources in pip from requirements
+2. install resources in pip from requirements
     `sudo pip install -r ./requirements.txt`
-17. change directory to the /src directory
+3. change directory to the /src directory
     `cd /src`
-18. manage.py
+4. manage.py
     1. `sudo python manage.py makemigrations`   # create migrations
     2. `sudo python manage.py migrate`          # effectively migrate
     3. `sudo python manage.py createsuperuser`  # create the superuser
     4. `sudo python manage.py collectstatic`    # gather everythin inside a static folder
-19. exit environment
+5. exit environment
     `deactivate`
 
 
