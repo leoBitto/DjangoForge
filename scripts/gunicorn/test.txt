@@ -1,0 +1,4 @@
+User=leo
+Group=www-data
+WorkingDirectory=/home/leo/cliche_django
+ExecStart=/home/leo/cliche_django/env_dj/bin/gunicorn \
