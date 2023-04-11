@@ -46,22 +46,23 @@ inside the /src folder, along with the /base folder there will be all the django
 
 from the main folder
 1. activate environment
-    `sudo source env_dj/bin/activate`
+    `source env_dj/bin/activate`
 2. install resources in pip from requirements
-    `sudo pip install -r ./requirements.txt`
+    `pip install -r requirements.txt`
 3. change directory to the /src directory
     `cd /src`
 4. manage.py
-    1. `sudo python manage.py makemigrations`   # create migrations
-    2. `sudo python manage.py migrate`          # effectively migrate
-    3. `sudo python manage.py createsuperuser`  # create the superuser
-    4. `sudo python manage.py collectstatic`    # gather everythin inside a static folder
+    1. `python manage.py makemigrations`   # create migrations
+    2. `python manage.py migrate`          # effectively migrate
+    3. `python manage.py createsuperuser`  # create the superuser
+    4. `python manage.py collectstatic`    # gather everythin inside a static folder
 5. exit environment
     `deactivate`
 
 
 ### the setting file 
 the setting file must be updated with all the django apps we intend to use and added in the urls.py file the new set of urls the application use. also we need to update the allowed hosts to include the ip address of the server and the domain name. so in setting:
+0. clone all the apps inside the project
 1. update the INSTALLED_APPS list with the apps we use
 2. update the ALLOWED_HOSTS to include the ip address of the server and the domain name
 ### the urls file
