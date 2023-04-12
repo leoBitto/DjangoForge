@@ -4,13 +4,13 @@ fllow these steps to prepare the server:
 
 # HOW TO START
 1. enter server
-2. create user
+2. update the server
+    1. `apt update`              #update repo
+    2. `apt install virtualenv python3-venv python3-dev libpq-dev postgresql postgresql-contrib nginx curl` # install all the packages
+3. create user
     1. `adduser <choose a user name>`           #create the user
     2. `usermod -aG sudo <the user name chosen>`  #modify the provileges of the user
     3. `su <the user name chosen>`                # switch to the user
-3. update the server
-    1. `sudo apt update`              #update repo
-    2. `sudo apt install virtualenv python3-venv python3-dev libpq-dev postgresql postgresql-contrib nginx curl` # install all the packages
 4. clone from git 
     `git clone <url to repo>`
 5. cd inside the new folder
