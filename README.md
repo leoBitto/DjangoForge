@@ -45,7 +45,7 @@ machine, then create the new repo where the project will be launched.
     3. `su <the user name chosen>`                # switch to the user
 4. change the directory to the home of the new user
 5. clone from git 
-    `git clone <url to repo> <name of the directory you want to put the cloned repo>`
+    `git clone --recursive <url to repo> <name of the directory you want to put the cloned repo>`
 6. cd inside the new folder
 7. create virtualenv called env_dj 
     `virtualenv env_dj`
@@ -96,6 +96,10 @@ from the main folder
 
 
  Also we need to update the allowed hosts to include the ip address of the server and the domain name.
+
+### SETTING PERMISSION 
+/home/ and all the contained folders MUST be owned by the nginx user www-data
+
 
 # CALLING THE SCRIPT
 now you can call the script inside the script folder

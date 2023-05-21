@@ -12,6 +12,7 @@ ExecStart=/home/USER/PROJECTDIR/env_dj/bin/gunicorn \
           --access-logfile - \
           --workers 3 \
           --bind unix:/run/gunicorn.sock \
+          --timeout 90 \
           base.wsgi:application
 
 [Install]
