@@ -11,12 +11,28 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-import environ
+from decouple import config
 import os
+import logging
 
-# Initialise environment variables
-env = environ.Env()
-environ.Env.read_env()
+
+# Determina l'ambiente (sviluppo o produzione)
+ENVIRONMENT = config('ENVIRONMENT', default='development')
+
+if ENVIRONMENT == 'production':
+    # Usa il file .env.prod in produzione
+    config_file = '.env.prod'
+else:
+    # Usa il file .env per lo sviluppo (valore predefinito)
+    config_file = '.env'
+
+# Leggi le variabili d'ambiente dal file selezionato
+SECRET_KEY = config('SECRET_KEY', default='', config_file=config_file)
+DEBUG = config('DEBUG', default=False, cast=bool, config_file=config_file)
+DATABASE_NAME = config('DATABASE_NAME', default='', config_file=config_file)
+DATABASE_USER = config('DATABASE_USER', default='', config_file=config_file)
+DATABASE_PASS = config('DATABASE_PASS', default='', config_file=config_file)
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,12 +41,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-#SECRET_KEY = 'django-insecure-a%k)fk3hy!ng=*h=(tol%o7owi-q)ty@+%hc!@8(pkppl--%6a'
-SECRET_KEY = env('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = [
     '127.0.0.1', 
@@ -96,9 +107,9 @@ WSGI_APPLICATION = 'base.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env('DATABASE_NAME'),
-        'USER': env('DATABASE_USER'),
-        'PASSWORD': env('DATABASE_PASS'),
+        'NAME': DATABASE_NAME,
+        'USER': DATABASE_USER,
+        'PASSWORD': DATABASE_PASS,
         'HOST':'localhost',
         'PORT':'',
         }
@@ -150,3 +161,47 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Configurazione del logger
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',  # Puoi impostare il livello desiderato (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+            'class': 'logging.FileHandler',
+            'filename': 'myapp.log',  # Imposta il nome del file di registro
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'myapp': {  # Imposta il nome del tuo logger personalizzato
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
+
+
+# Ora che il tuo logger è configurato, puoi utilizzarlo all'interno del tuo codice Django per registrare messaggi di registro. Ad esempio:
+
+# python
+# Copy code
+# import logging
+
+# # Ottenere un'istanza del logger personalizzato (sostituisci 'myapp' con il nome del tuo logger personalizzato)
+# logger = logging.getLogger('myapp')
+
+# # Esempi di registrazione
+# logger.debug('Questo è un messaggio di debug')
+# logger.info('Questo è un messaggio di informazione')
+# logger.warning('Questo è un messaggio di avvertimento')
+# logger.error('Questo è un messaggio di errore')
+# logger.critical('Questo è un messaggio critico')
