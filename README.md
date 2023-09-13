@@ -20,6 +20,9 @@ machine, then create the new repo where the project will be launched.
 4. finally mount the project: clone all the apps you need inside the project 
    (the src directory) as submodules
     `git submodule add <URL to submodule>`
+    4.1. clone the website submodule inside the project
+   `git submodule add https://github.com/leoBitto/website.git src/website`
+
 
 5. the setting file must be updated with all the django apps we intend to use
    and added the new set of urls the application use in the urls.py file. 
