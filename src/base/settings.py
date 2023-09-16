@@ -16,23 +16,9 @@ import os
 import logging
 
 
-# Determina l'ambiente (sviluppo o produzione)
-ENVIRONMENT = config('ENVIRONMENT', default='development')
-
-if ENVIRONMENT == 'production':
-    # Usa il file .env.prod in produzione
-    config_file = '.env.prod'
-else:
-    # Usa il file .env per lo sviluppo (valore predefinito)
-    config_file = '.env'
-
 # Leggi le variabili d'ambiente dal file selezionato
-SECRET_KEY = config('SECRET_KEY', default='', config_file=config_file)
-DEBUG = config('DEBUG', default=False, cast=bool, config_file=config_file)
-DATABASE_NAME = config('DATABASE_NAME', default='', config_file=config_file)
-DATABASE_USER = config('DATABASE_USER', default='', config_file=config_file)
-DATABASE_PASS = config('DATABASE_PASS', default='', config_file=config_file)
-
+SECRET_KEY = config('SECRET_KEY', default='')
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -61,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # add here the app names
-
+    'website',
 ]
 
 MIDDLEWARE = [
@@ -98,22 +84,24 @@ WSGI_APPLICATION = 'base.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': DATABASE_NAME,
-        'USER': DATABASE_USER,
-        'PASSWORD': DATABASE_PASS,
-        'HOST':'localhost',
-        'PORT':'',
-        }
-}
+if DEBUG:
+   DATABASES = {
+       'default': {
+           'ENGINE': 'django.db.backends.sqlite3',
+           'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+       }
+   }
+else:
+   DATABASES = {
+       'default': {
+           'ENGINE': 'django.db.backends.postgresql',
+           'NAME': config('DATABASE_NAME'),
+           'USER': config('DATABASE_USER'),
+           'PASSWORD': config('DATABASE_PASS'),
+           'HOST': os.getenv('DATABASE_HOST', 'localhost'),
+           'PORT': os.getenv('DATABASE_PORT', '5432'),
+       }
+   }
 
 
 # Password validation
@@ -189,19 +177,3 @@ LOGGING = {
 }
 
 
-
-# Ora che il tuo logger è configurato, puoi utilizzarlo all'interno del tuo codice Django per registrare messaggi di registro. Ad esempio:
-
-# python
-# Copy code
-# import logging
-
-# # Ottenere un'istanza del logger personalizzato (sostituisci 'myapp' con il nome del tuo logger personalizzato)
-# logger = logging.getLogger('myapp')
-
-# # Esempi di registrazione
-# logger.debug('Questo è un messaggio di debug')
-# logger.info('Questo è un messaggio di informazione')
-# logger.warning('Questo è un messaggio di avvertimento')
-# logger.error('Questo è un messaggio di errore')
-# logger.critical('Questo è un messaggio critico')

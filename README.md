@@ -4,24 +4,22 @@ follow these steps to prepare the project and :
 
 # HOW TO START
 ## MOUNTING THE PROJECT
-before doing all the previous steps we need to mount the project in the development
+before doing all the production steps we need to mount the project in the development
 machine, then create the new repo where the project will be launched.
 
-1. clone the cliche_django project from github changing the name of the folder that
-   will contain the project
-    `git clone https://github.com/leoBitto/cliche_django.git <name of the new project>`
+1. clone the cliche_django project from github changing the name of the folder that will contain the project the recursive flag allow to download the submodules
+    `git clone --recursive https://github.com/leoBitto/cliche_django.git <name of the new project>`
 
 2. create a new empty repo in github that will contain the entire project
 
 3. change the remote version of the repo we just created in the the dev machine
    ( the cloned cliche ) to the repo we created on github
-    `git remote set-url <URL of the new repo on github>`
+    `git remote set-url origin <URL of the new repo on github>`
 
 4. finally mount the project: clone all the apps you need inside the project 
    (the src directory) as submodules
     `git submodule add <URL to submodule>`
-    4.1. clone the website submodule inside the project
-   `git submodule add https://github.com/leoBitto/website.git src/website`
+    
 
 
 5. the setting file must be updated with all the django apps we intend to use
@@ -111,6 +109,17 @@ now you can call the script inside the script folder
 NB you may need to call the scripts inside the apps to make everything work
 
 
+cliche_django/    # Cartella principale del progetto
+├── env_dj/        # Ambiente virtuale
+│   ├── ...
+├── scripts/       # Script
+│   ├── ...
+└── src/           # Sorgenti principali dell'applicazione
+    ├── base/      # Applicazione principale del progetto
+    │   ├── ...
+    ├── website/   # Sottomodulo Git 'website'
+    │   ├── ...
+    └── manage.py  # File di gestione del progetto Django
 
 
 

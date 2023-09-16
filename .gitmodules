@@ -1,3 +1,4 @@
 [submodule "website"]
-	path = website
+	path = src/website
 	url = https://github.com/leoBitto/website.git
+
