@@ -122,5 +122,12 @@ cliche_django/    # Cartella principale del progetto
     └── manage.py  # File di gestione del progetto Django
 
 
-
+# using website module
+the website module allow you to load images, gather them in galleries, add
+contacts and opening hours. to use the module you need to:
+1. modify landing page
+2. modify navbar and footer with the links of all the pages you want to be accessible
+3. modify the view called base, it will call the page landing.html
+    add the info in the context you use in the landing. it will be the first page
+    seen by the user.
 
