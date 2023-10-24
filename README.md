@@ -154,4 +154,4 @@ contacts and opening hours. to use the module you need to:
 3. modify the view called base, it will call the page landing.html
     add the info in the context you use in the landing. it will be the first page
     seen by the user.
-
+4. modify the favicon in the template base.html
