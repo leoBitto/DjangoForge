@@ -1,6 +1,30 @@
 # cliche_django
 a repository to have a ready-to-deploy django project.
-follow these steps to prepare the project and :
+follow these steps to prepare the project :
+
+### `manifest.json`
+The `manifest.json` file is essential for turning your project into a Progressive Web App (PWA). It contains information such as the app name, icons, and other configurations. You can find it in the `static` folder.
+
+**Customization Tips:**
+
+- `"name"`: Update this with the name of your app.
+- `"short_name"`: Provide a shorter version of your app name for limited space.
+- `"start_url"`: Set the starting URL of your app.
+- `"icons"`: Replace the default icons with your own. Ensure they have the correct sizes and file paths.
+
+For more details, refer to the [Web App Manifest documentation](https://developer.mozilla.org/en-US/docs/Web/Manifest).
+
+### `service-worker.js`
+The `service-worker.js` file handles Service Worker functionalities, such as resource caching. Customize it based on your project's needs. You can find it in the `static` folder.
+
+**Customization Tips:**
+
+- `CACHE_NAME`: This is the name of the cache. You can keep it as is or customize it.
+- `urlsToCache`: Add URLs of resources you want to cache for offline access.
+- `self.addEventListener('fetch', function(event) {...}`: This section determines how the Service Worker responds to network requests. Customize it if needed.
+
+For more details, refer to the [Service Worker API documentation](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API).
+
 
 # HOW TO START
 ## MOUNTING THE PROJECT

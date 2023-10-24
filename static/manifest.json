@@ -1,0 +1,17 @@
+{
+    "name": "Nome dell'app",
+    "short_name": "Nome breve",
+    "description": "Descrizione dell'app",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#000000",
+    "icons": [
+      {
+        "src": "/static/icons/bee.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
+  
