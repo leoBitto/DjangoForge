@@ -42,8 +42,9 @@ machine, then create the new repo where the project will be launched.
 
 4. finally mount the project: clone all the apps you need inside the project 
    (the src directory) as submodules
-    `git submodule add <URL to submodule>`
-    
+    `git submodule add <URL to submodule> src/<name of app>`
+
+    then git add, git commit, and push
 
 
 5. the setting file must be updated with all the django apps we intend to use
