@@ -99,8 +99,8 @@ else:
            'NAME': config('DATABASE_NAME'),
            'USER': config('DATABASE_USER'),
            'PASSWORD': config('DATABASE_PASS'),
-           'HOST': os.getenv('DATABASE_HOST', 'localhost'),
-           'PORT': os.getenv('DATABASE_PORT', '5432'),
+           'HOST': 'localhost',
+           'PORT': '',
        }
    }
 
