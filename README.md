@@ -3,7 +3,7 @@ a repository to have a ready-to-deploy django project.
 follow these steps to prepare the project :
 
 ### `manifest.json`
-The `manifest.json` file is essential for turning your project into a Progressive Web App (PWA). It contains information such as the app name, icons, and other configurations. You can find it in the `static` folder.
+The `manifest.json` file is essential for turning your project into a Progressive Web App (PWA). It contains information such as the app name, icons, and other configurations. You can find it in the `static` folder of the website app. change name, short name, app description and icon name.
 
 **Customization Tips:**
 
@@ -15,7 +15,7 @@ The `manifest.json` file is essential for turning your project into a Progressiv
 For more details, refer to the [Web App Manifest documentation](https://developer.mozilla.org/en-US/docs/Web/Manifest).
 
 ### `service-worker.js`
-The `service-worker.js` file handles Service Worker functionalities, such as resource caching. Customize it based on your project's needs. You can find it in the `static` folder.
+The `service-worker.js` file handles Service Worker functionalities, such as resource caching. Customize it based on your project's needs. You can find it in the `static` folder inside the website app. you need to customize the caching of the icon.
 
 **Customization Tips:**
 
@@ -28,7 +28,7 @@ For more details, refer to the [Service Worker API documentation](https://develo
 
 # HOW TO START
 ## MOUNTING THE PROJECT
-before doing all the production steps we need to mount the project in the development
+before doing all the production steps we need to mount the project in the **development**
 machine, then create the new repo where the project will be launched.
 
 1. clone the cliche_django project from github changing the name of the folder that will contain the project the recursive flag allow to download the submodules
@@ -62,7 +62,7 @@ machine, then create the new repo where the project will be launched.
 1. enter server
 2. update the server
     1. `apt update`              #update repo
-    2. `apt upgrade`              #upgrade repo a reboot may be necessary
+    2. `apt upgrade`             #upgrade repo a reboot may be necessary
 
     2. `apt install virtualenv python3-venv python3-dev libpq-dev postgresql postgresql-contrib nginx curl` # install all the packages
 3. create user
@@ -134,17 +134,17 @@ now you can call the script inside the script folder
 NB you may need to call the scripts inside the apps to make everything work
 
 
-cliche_django/    # Cartella principale del progetto
-├── env_dj/        # Ambiente virtuale
-│   ├── ...
-├── scripts/       # Script
-│   ├── ...
-└── src/           # Sorgenti principali dell'applicazione
-    ├── base/      # Applicazione principale del progetto
-    │   ├── ...
-    ├── website/   # Sottomodulo Git 'website'
-    │   ├── ...
-    └── manage.py  # File di gestione del progetto Django
+cliche_django/    # Cartella principale del progetto 
+├── env_dj/        # Ambiente virtuale 
+│   ├── ... 
+├── scripts/       # Script 
+│   ├── ... 
+└── src/           # Sorgenti principali dell'applicazione 
+    ├── base/      # Applicazione principale del progetto 
+    │   ├── ... 
+    ├── website/   # Sottomodulo Git 'website' 
+    │   ├── ... 
+    └── manage.py  # File di gestione del progetto Django 
 
 
 # using website module
@@ -156,3 +156,7 @@ contacts and opening hours. to use the module you need to:
     add the info in the context you use in the landing. it will be the first page
     seen by the user.
 4. modify the favicon in the template base.html
+
+N.B. every project should have it's own branch in the website repo. once the cloning 
+    and the personalization is done a new branch in website repo should be created and 
+    setted as the remote.
