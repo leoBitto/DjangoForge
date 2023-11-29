@@ -1,4 +1,4 @@
-# cliche_django
+# DjangoForge
 a repository to have a ready-to-deploy django project.
 follow these steps to prepare the project :
 
