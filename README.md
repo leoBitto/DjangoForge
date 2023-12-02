@@ -2,37 +2,12 @@
 a repository to have a ready-to-deploy django project.
 follow these steps to prepare the project :
 
-### `manifest.json`
-The `manifest.json` file is essential for turning your project into a Progressive Web App (PWA). It contains information such as the app name, icons, and other configurations. You can find it in the `static` folder of the website app. change name, short name, app description and icon name.
-
-**Customization Tips:**
-
-- `"name"`: Update this with the name of your app.
-- `"short_name"`: Provide a shorter version of your app name for limited space.
-- `"start_url"`: Set the starting URL of your app.
-- `"icons"`: Replace the default icons with your own. Ensure they have the correct sizes and file paths.
-
-For more details, refer to the [Web App Manifest documentation](https://developer.mozilla.org/en-US/docs/Web/Manifest).
-
-### `service-worker.js`
-The `service-worker.js` file handles Service Worker functionalities, such as resource caching. Customize it based on your project's needs. You can find it in the `static` folder inside the website app. you need to customize the caching of the icon.
-
-**Customization Tips:**
-
-- `CACHE_NAME`: This is the name of the cache. You can keep it as is or customize it.
-- `urlsToCache`: Add URLs of resources you want to cache for offline access.
-- `self.addEventListener('fetch', function(event) {...}`: This section determines how the Service Worker responds to network requests. Customize it if needed.
-
-For more details, refer to the [Service Worker API documentation](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API).
-
-
 # HOW TO START
 ## MOUNTING THE PROJECT
-before doing all the production steps we need to mount the project in the **development**
-machine, then create the new repo where the project will be launched.
+before doing all the production steps we need to mount the project in the **development** machine, then create the new repo where the project will be launched.
 
 1. clone the cliche_django project from github changing the name of the folder that will contain the project the recursive flag allow to download the submodules
-    `git clone --recursive https://github.com/leoBitto/cliche_django.git <name of the new project>`
+    `git clone --recursive https://github.com/leoBitto/DjangoForge.git <name of the new project>`
 
 2. create a new empty repo in github that will contain the entire project
 
@@ -46,13 +21,11 @@ machine, then create the new repo where the project will be launched.
 
     then git add, git commit, and push
 
-
 5. the setting file must be updated with all the django apps we intend to use
    and added the new set of urls the application use in the urls.py file. 
    In settings.py:
 
     1. update the INSTALLED_APPS list with the apps we use
-    2. update the ALLOWED_HOSTS to include the ip address of the server and the domain name
 
    In urls.py:
     1. include the app urls inside the file
@@ -63,11 +36,10 @@ machine, then create the new repo where the project will be launched.
 2. update the server
     1. `apt update`              #update repo
     2. `apt upgrade`             #upgrade repo a reboot may be necessary
-
-    2. `apt install virtualenv python3-venv python3-dev libpq-dev postgresql postgresql-contrib nginx curl` # install all the packages
+    3. `apt install virtualenv python3-venv python3-dev libpq-dev postgresql postgresql-contrib nginx curl` # install all the packages
 3. create user
     1. `adduser <choose a user name>`           #create the user
-    2. `usermod -aG sudo <the user name chosen>`  #modify the provileges of the user
+    2. `usermod -aG sudo <the user name chosen>`  #modify the privileges of the user
     3. `su <the user name chosen>`                # switch to the user
 4. change the directory to the home of the new user
 5. clone from git 
@@ -91,14 +63,18 @@ machine, then create the new repo where the project will be launched.
 7.  `GRANT ALL PRIVILEGES ON DATABASE myproject TO myprojectuser;`
 8. `\q` # close the prompt
 
-#### IN .env (DO NOT USE SPACES)
+#### IN .env (DO NOT USE SPACES), put .env inside /src
 ```
-- DATABASE_NAME=myproject
-- DATABASE_USER=myprojectuser
-- DATABASE_PASS='password'  # password must be between quotes
-- SECRET_KEY=also create a new secret key
-- DEBUG=FALSE
+SECRET_KEY=thisisaverysecretkeyforthisdjangoforge
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+# aggiungi un indirizzo ip e un nome di dominio con la virgola e senza spazi
+DATABASE_NAME=
+DATABASE_USER=
+DATABASE_PASS=
 ```
+ Also we need to update the allowed hosts to include the ip address of the server and the domain name.
+
 
 # DJANGO
 the django project is inside the /src folder, in here reside all the code necessary to make the django project work. inside the folder /base there are the basic setting and the .env file.
@@ -121,8 +97,6 @@ from the main folder
     `deactivate`
 
 
- Also we need to update the allowed hosts to include the ip address of the server and the domain name.
-
 ### SETTING PERMISSION 
 /home/ and all the contained folders MUST be owned by the nginx user www-data
 
@@ -138,6 +112,10 @@ cliche_django/    # Cartella principale del progetto
 ├── env_dj/        # Ambiente virtuale 
 │   ├── ... 
 ├── scripts/       # Script 
+│   ├── ... 
+├── log/           # log 
+│   ├── ... 
+├── static/        # static, its fille when collectstatic is used 
 │   ├── ... 
 └── src/           # Sorgenti principali dell'applicazione 
     ├── base/      # Applicazione principale del progetto 
@@ -157,6 +135,26 @@ contacts and opening hours. to use the module you need to:
     seen by the user.
 4. modify the favicon in the template base.html
 
-N.B. every project should have it's own branch in the website repo. once the cloning 
-    and the personalization is done a new branch in website repo should be created and 
-    setted as the remote.
+
+### `manifest.json`
+The `manifest.json` file is essential for turning your project into a Progressive Web App (PWA). It contains information such as the app name, icons, and other configurations. You can find it in the `static` folder of the website app. change name, short name, app description and icon name.
+
+**Customization Tips:**
+
+- `"name"`: Update this with the name of your app.
+- `"short_name"`: Provide a shorter version of your app name for limited space.
+- `"start_url"`: Set the starting URL of your app.
+- `"icons"`: Replace the default icons with your own. Ensure they have the correct sizes and file paths.
+
+For more details, refer to the [Web App Manifest documentation](https://developer.mozilla.org/en-US/docs/Web/Manifest).
+
+### `service-worker.js`
+The `service-worker.js` file handles Service Worker functionalities, such as resource caching. Customize it based on your project's needs. You can find it in the `static` folder inside the website app. you need to customize the caching of the icon.
+
+**Customization Tips:**
+
+- `CACHE_NAME`: This is the name of the cache. You can keep it as is or customize it.
+- `urlsToCache`: Add URLs of resources you want to cache for offline access.
+- `self.addEventListener('fetch', function(event) {...}`: This section determines how the Service Worker responds to network requests. Customize it if needed.
+
+For more details, refer to the [Service Worker API documentation](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API).
