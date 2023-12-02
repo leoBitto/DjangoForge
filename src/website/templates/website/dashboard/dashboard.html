@@ -1,0 +1,57 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block content %}
+  <h1 class="ms-3"> Dashboard </h1>
+  <div class="container-fluid mt-5">
+    <div class="row">
+      <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+        <div class="position-sticky">
+          <ul class="nav flex-column">
+            <!-- INIZIO DELL'APPLICAZIONE WEBSITE-->
+            <li class="nav-item">
+              <a class="nav-link active" data-bs-toggle="collapse" href="#menuAccordion" role="button" aria-expanded="true" aria-controls="menuAccordion">
+                Website
+              </a>
+              <div class="collapse show" id="menuAccordion">
+                <ul class="nav flex-column ms-3">
+                  <li class="nav-item">
+                      <a class="nav-link" hx-target="#main-content" hx-swap="innerHTML" hx-trigger="click" hx-get="{% url 'website:image_page' %}" >Immagini</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" hx-target="#main-content" hx-swap="innerHTML" hx-trigger="click" hx-get="{% url 'website:contact_page' %}">Contatti</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" hx-target="#main-content" hx-swap="innerHTML" hx-trigger="click" hx-get="{% url 'website:opening_hours_page' %}">Orari di Apertura</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" hx-target="#main-content" hx-swap="innerHTML" hx-trigger="click" hx-get="{% url 'website:gallery_page' %}">Galleria</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <!-- FINE DELL'APPLICAZIONE WEBSITE-->
+
+            <!-- Aggiungi qui i modelli delle altre applicazioni
+                ATTENZIONE A COPIARE E INCOLLARE devi cambiare 
+                href e id del menuaccordion
+                -->
+            {% block dashboard_app %}
+            
+            {% endblock dashboard_app %}
+          </ul>
+        </div>
+      </nav>
+
+      <main id="main-content" class="
+              col-md-9 
+              ms-sm-auto 
+              col-lg-10 
+              px-md-4">
+        
+      </main>
+    </div>
+  </div>
+{% endblock content %}
+
+

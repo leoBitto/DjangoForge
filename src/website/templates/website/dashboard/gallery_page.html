@@ -1,0 +1,74 @@
+<div class="d-flex flex-column justify-content-center align-items-center">
+    <!-- Button per aprire il form -->
+    <button class="btn btn-primary mt-3" type="button" data-bs-toggle="collapse" data-bs-target="#addGalleryForm" aria-expanded="false" aria-controls="addImageForm">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+        <path d="M8 1a.5.5 0 0 1 .5.5V7h5.5a.5.5 0 0 1 0 1H8V14.5a.5.5 0 0 1-1 0V8H1.5a.5.5 0 0 1 0-1H7V1.5A.5.5 0 0 1 7.5 1zm0 1.8a.7.7 0 0 0-.7.7V7H2.8a.7.7 0 0 0-.7.7v.6a.7.7 0 0 0 .7.7h4.5v4.5a.7.7 0 0 0 .7.7h.6a.7.7 0 0 0 .7-.7V9h4.5a.7.7 0 0 0 .7-.7v-.6a.7.7 0 0 0-.7-.7H8V2.5a.7.7 0 0 0-.7-.7z"/>
+        </svg>
+    </button>
+
+
+    <!-- Form per l'aggiunta di un'immagine (nascosto per default) -->
+    <div class="collapse mt-3" id="addGalleryForm">
+        <form action="{% url 'website:add_gallery' %}" hx-target="#main-content" method="post" >
+            {% csrf_token add_gallery_csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Aggiungi</button>
+        </form>
+    </div>
+    
+    <!-- Lista delle immagini -->
+    <div id="gallery-list" class="col-12 p-5 ">
+        {% if galleries %}
+            <h2> Lista delle gallerie </h2>
+            <ul class="list-unstyled">
+                {% for gallery in galleries %}
+                    <li class="mb-4 p-3">
+                        <div class="d-flex align-items-center justify-content-around card">
+                            <div class="">
+                                <h5> Nome: {{ gallery.name }}</h5>
+                                <form action="{% url 'website:delete_gallery' gallery.id %}" method="post" style="display: inline;">
+                                    {% csrf_token delete_gallery_csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Elimina</button>
+                                </form>
+                                <p> Eliminando la galleria si eliminano tutte le foto legate ad essa. </p>
+                            </div>
+                            
+                            {% if gallery.get_images %}
+                            <div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carousel{{gallery.name}}" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <div class="carousel slide carousel-fade" data-bs-interval="false"  id="carousel{{gallery.name}}">
+                                    <div class="carousel-inner">
+                                        {% for img in gallery.get_images %}
+                                            <div class="carousel-item{% if forloop.first %} active{% endif %}">
+                                                {{ img.show_image }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carousel{{gallery.name}}" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                            {% else %}
+                                <p> Non ci sono foto in questa galleria.
+                            {% endif %}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Non sono presenti gallerie al momento.</p>
+        {% endif %}
+    </div>
+</div> 
+<style>
+/* Personalizza il colore delle frecce del carousel */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+     filter: invert(1); /* Cambia il colore delle frecce a nero */
+}
+</style>

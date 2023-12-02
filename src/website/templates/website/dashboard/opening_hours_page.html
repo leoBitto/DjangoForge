@@ -1,0 +1,36 @@
+<div class="container mt-5">
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <div class="row">
+        {% if not opening_hours %}
+            <!-- Se non esiste un modello di Opening Hour -->
+            <div class="col-md-6">
+                <h2>Aggiungi Orario Apertura</h2>
+                <form hx-post="{% url 'website:add_opening_hour' %}" hx-target="#main-content" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Aggiungi</button>
+                </form>
+            </div>
+        {% else %}
+            <!-- Se esiste già un modello di Opening Hour -->
+            <div class="col-md-6">
+                <h2>Orario Apertura</h2>
+                <p>Settimana: {{ opening_hours.0.weekdays }}</p>
+                <p>Weekend: {{ opening_hours.0.weekend }}</p>
+                <p>Giorno di Chiusura: {{ opening_hours.0.closing_day }}</p>
+                <!-- Form per eliminare il modello -->
+                <form action="{% url 'website:delete_opening_hour' opening_hours.0.id %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Elimina</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+</div>
+

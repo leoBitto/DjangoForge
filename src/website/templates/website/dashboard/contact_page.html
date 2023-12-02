@@ -1,0 +1,34 @@
+<div class="container mt-5">
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <div class="row">
+        <!-- Form per l'aggiunta di un contatto -->
+        {% if not contacts %}
+            <div class="col-md-6">
+                <h2>Aggiungi Contatto</h2>
+                <form hx-post="{% url 'website:add_contact' %}" hx-target="#main-content" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Aggiungi</button>
+                </form>
+            </div>
+        {% else %}
+
+        <!-- Lista dei contatti -->
+        <div class="col-md-6">
+            <h2>Contatti</h2>
+            <p class="mb-1">Telefono: {{ contacts.0.phone }}</p>
+            <p class="mb-1">Email: {{ contacts.0.mail }}</p>
+            <form action="{% url 'website:delete_contact' contacts.0.id %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Elimina</button>
+            </form> 
+        </div>
+        {% endif %}
+    </div>
+</div>
