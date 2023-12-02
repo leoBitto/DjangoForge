@@ -1,6 +1,8 @@
 # DjangoForge
-![DjangoForge logo](./assets/img/DjangoForge.png)
-A ready-to-deploy django project.
+
+
+
+#### A ready-to-deploy django project.
 follow these steps to prepare the project :
 
 # HOW TO START
