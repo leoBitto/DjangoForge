@@ -117,7 +117,7 @@ ALLOWED_HOSTS=localhost,127.0.0.1
 DATABASE_NAME=
 DATABASE_USER=
 DATABASE_PASS=
-
+```
 
 # DJANGO
 
@@ -169,7 +169,7 @@ Now you can call the script inside the script folder:
 
 ```bash
 sudo ./set_pro_server.sh
-
+```
 
 NB you may need to call the scripts inside the apps to make everything work
 
