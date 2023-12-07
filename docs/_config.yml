@@ -5,3 +5,4 @@ plugins:
 title: DjangoForge - docs
 description: A ready to deploy Django project
 logo: "./assets/img/DjangoForge.png"
+favicon: "./assets/img/48djangoForge.ico"
