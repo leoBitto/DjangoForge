@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # add here the app names
     'website',
+    'fontawesomefree',
     
 ]
 

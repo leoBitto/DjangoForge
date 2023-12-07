@@ -7,3 +7,4 @@ Pillow==10.1.0
 psycopg2-binary==2.9.9
 python-decouple==3.8
 sqlparse==0.4.4
+fontawesomefree==6.4.2
