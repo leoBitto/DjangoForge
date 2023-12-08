@@ -36,6 +36,31 @@ Before performing production steps, we need to mount the project on the **develo
    In `urls.py`:
     1. Include the app URLs inside the file.
 
+
+### `manifest.json`
+The `manifest.json` file is essential for turning your project into a Progressive Web App (PWA). It contains information such as the app name, icons, and other configurations. You can find it in the `static` folder of the website app. change name, short name, app description and icon name.
+
+**Customization Tips:**
+
+- `"name"`: Update this with the name of your app.
+- `"short_name"`: Provide a shorter version of your app name for limited space.
+- `"start_url"`: Set the starting URL of your app.
+- `"icons"`: Replace the default icons with your own. Ensure they have the correct sizes and file paths.
+
+For more details, refer to the [Web App Manifest documentation](https://developer.mozilla.org/en-US/docs/Web/Manifest).
+
+### `service-worker.js`
+The `service-worker.js` file handles Service Worker functionalities, such as resource caching. Customize it based on your project's needs. You can find it in the `static` folder inside the website app. you need to customize the caching of the icon.
+
+**Customization Tips:**
+
+- `CACHE_NAME`: This is the name of the cache. You can keep it as is or customize it.
+- `urlsToCache`: Add URLs of resources you want to cache for offline access.
+- `self.addEventListener('fetch', function(event) {...}`: This section determines how the Service Worker responds to network requests. Customize it if needed.
+
+For more details, refer to the [Service Worker API documentation](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API).
+
+
 ## SET TO PRODUCTION
 
 1. Enter the server.
@@ -68,7 +93,7 @@ Before performing production steps, we need to mount the project on the **develo
     virtualenv env_dj
     ```
 
-## DATABASE
+### DATABASE
 
 #### Create the PostgreSQL DB and User (DON'T FORGET THE SEMICOLON!)
 
@@ -201,26 +226,28 @@ contacts and opening hours. to use the module you need to:
     seen by the user.
 4. modify the favicon, and title in the template base.html
 
+## the dashboard
+the website application have a dashboard part that allow you to make the CRUD operations
+on graphical objects such as images and galleries... 
+the dashboard can be the place where all such operations for the other apps should be done.
+it can be expanded by creating a dashboard directory inside the templates directory of the new app
 
-### `manifest.json`
-The `manifest.json` file is essential for turning your project into a Progressive Web App (PWA). It contains information such as the app name, icons, and other configurations. You can find it in the `static` folder of the website app. change name, short name, app description and icon name.
+```
+app folder
+│   ├── ... 
+├── templates/        
+│   ├── dashboard
+└── ...  
+``` 
 
-**Customization Tips:**
+this allow you to keep the dashboard components inside of the new app separated from the rest.
+inside this directory there should be a file called dashboard.html that expand using '{% include %}'
+the dashboard.html inside website app.
 
-- `"name"`: Update this with the name of your app.
-- `"short_name"`: Provide a shorter version of your app name for limited space.
-- `"start_url"`: Set the starting URL of your app.
-- `"icons"`: Replace the default icons with your own. Ensure they have the correct sizes and file paths.
+this file should be expanded using '{% expand %}' with templates that show the objects needed
 
-For more details, refer to the [Web App Manifest documentation](https://developer.mozilla.org/en-US/docs/Web/Manifest).
 
-### `service-worker.js`
-The `service-worker.js` file handles Service Worker functionalities, such as resource caching. Customize it based on your project's needs. You can find it in the `static` folder inside the website app. you need to customize the caching of the icon.
 
-**Customization Tips:**
 
-- `CACHE_NAME`: This is the name of the cache. You can keep it as is or customize it.
-- `urlsToCache`: Add URLs of resources you want to cache for offline access.
-- `self.addEventListener('fetch', function(event) {...}`: This section determines how the Service Worker responds to network requests. Customize it if needed.
 
-For more details, refer to the [Service Worker API documentation](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API).
+
