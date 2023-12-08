@@ -60,6 +60,7 @@ def delete_image(request, image_id):
 
     # Elimina l'immagine
     image.delete()
+    messages.success(request, 'Immagine eliminata con successo.')
     return redirect('website:image_page')
 
 
@@ -134,6 +135,7 @@ def add_contact(request):
 def delete_contact(request, contact_id):
     contact = get_object_or_404(Contact, pk=contact_id)
     contact.delete()
+    messages.success(request, 'Contatto eliminato con successo.')
     return redirect('website:contact_page')
 
 

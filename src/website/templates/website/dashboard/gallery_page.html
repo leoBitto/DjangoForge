@@ -1,6 +1,6 @@
 {% extends "website/dashboard/dashboard.html" %}
 {% load static %}
-{% block manager %}
+{% block dashboard_app %}
 <div class="d-flex flex-column justify-content-center align-items-center">
     <!-- Button per aprire il form -->
     <button class="btn btn-primary mt-3" type="button" data-bs-toggle="collapse" data-bs-target="#addGalleryForm" aria-expanded="false" aria-controls="addImageForm">
@@ -73,4 +73,4 @@
      filter: invert(1); /* Cambia il colore delle frecce a nero */
 }
 </style>
-{% endblock manager %}
+{% endblock dashboard_app %}

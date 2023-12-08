@@ -13,7 +13,7 @@
               <a class="nav-link active" data-bs-toggle="collapse" href="#menuAccordion" role="button" aria-expanded="true" aria-controls="menuAccordion">
                 Website
               </a>
-              <div class="collapse show" id="menuAccordion">
+              <div class="collapse" id="menuAccordion">
                 <ul class="nav flex-column ms-3">
                   <li class="nav-item">
                       <a class="nav-link" href="{% url 'website:image_page' %}" >Immagini</a>
@@ -36,9 +36,7 @@
                 ATTENZIONE A COPIARE E INCOLLARE devi cambiare 
                 href e id del menuaccordion
                 -->
-            {% block dashboard_app %}
             
-            {% endblock dashboard_app %}
           </ul>
         </div>
       </nav>
@@ -48,8 +46,9 @@
               ms-sm-auto 
               col-lg-10 
               px-md-4">
-          {% block manager %}
-          {% endblock manager %}
+              {% block dashboard_app %}
+            
+              {% endblock dashboard_app %}
       </main>
     </div>
   </div>
