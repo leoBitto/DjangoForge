@@ -16,16 +16,16 @@
               <div class="collapse show" id="menuAccordion">
                 <ul class="nav flex-column ms-3">
                   <li class="nav-item">
-                      <a class="nav-link" hx-target="#main-content" hx-swap="innerHTML" hx-trigger="click" hx-get="{% url 'website:image_page' %}" >Immagini</a>
+                      <a class="nav-link" href="{% url 'website:image_page' %}" >Immagini</a>
                   </li>
                   <li class="nav-item">
-                      <a class="nav-link" hx-target="#main-content" hx-swap="innerHTML" hx-trigger="click" hx-get="{% url 'website:contact_page' %}">Contatti</a>
+                      <a class="nav-link" href="{% url 'website:contact_page' %}">Contatti</a>
                   </li>
                   <li class="nav-item">
-                      <a class="nav-link" hx-target="#main-content" hx-swap="innerHTML" hx-trigger="click" hx-get="{% url 'website:opening_hours_page' %}">Orari di Apertura</a>
+                      <a class="nav-link" href="{% url 'website:opening_hours_page' %}">Orari di Apertura</a>
                   </li>
                   <li class="nav-item">
-                      <a class="nav-link" hx-target="#main-content" hx-swap="innerHTML" hx-trigger="click" hx-get="{% url 'website:gallery_page' %}">Galleria</a>
+                      <a class="nav-link" href="{% url 'website:gallery_page' %}">Galleria</a>
                   </li>
                 </ul>
               </div>
@@ -48,7 +48,8 @@
               ms-sm-auto 
               col-lg-10 
               px-md-4">
-        
+          {% block manager %}
+          {% endblock manager %}
       </main>
     </div>
   </div>

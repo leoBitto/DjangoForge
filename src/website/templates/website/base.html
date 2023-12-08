@@ -34,9 +34,23 @@
         </script>
 
     </head>
-    <body>
+    <body> 
     {% include 'website/navbar.html' %}
         
+    <!-- modal for messages -->
+    {% if messages %}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            {% for message in messages %}
+                {{ message }}
+                {% if not forloop.last %}<br>{% endif %}
+            {% endfor %}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
+
+
     {% block content %}
 
     {% endblock content %}
@@ -45,6 +59,6 @@
     {% include 'website/footer.html' %}
 
         
-        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
     </body>
 </html>

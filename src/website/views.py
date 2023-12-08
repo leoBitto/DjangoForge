@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import render_to_string
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from .models import Image, Contact, Opening_hour, Gallery
 from .forms import ImageForm, ContactForm, OpeningHourForm, GalleryForm
@@ -37,15 +39,15 @@ def image_page(request):
     
 @login_required
 def add_image(request):
-    print(request)
     if request.method == 'POST':
         form = ImageForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             messages.success(request, 'Immagine aggiunta con successo.')
-            return redirect('website:dashboard')
+            return redirect('website:image_page')
         else:
             messages.error(request, 'Si è verificato un errore. Si prega di correggere il modulo.')
+            return render(request, 'website/dashboard/image_page.html', {'form': form})
     else:
         form = ImageForm()
 
@@ -58,8 +60,8 @@ def delete_image(request, image_id):
 
     # Elimina l'immagine
     image.delete()
-    messages.success(request, 'Immagine eliminata con successo.')
-    return redirect('website:dashboard')
+    return redirect('website:image_page')
+
 
 @login_required
 def gallery_page(request):
@@ -81,9 +83,10 @@ def add_gallery(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Galleria aggiunta con successo.')
-            return redirect('website:dashboard')
+            return redirect('website:gallery_page')
         else:
             messages.error(request, 'Si è verificato un errore. Si prega di correggere il modulo.')
+            return render(request, 'website/dashboard/gallery_page.html', {'form': form})
     else:
         form = ImageForm()
 
@@ -97,7 +100,7 @@ def delete_gallery(request, gallery_id):
     # Elimina l'immagine
     gallery.delete()
     messages.success(request, 'Galleria eliminata con successo.')
-    return redirect('website:dashboard')
+    return redirect('website:gallery_page')
 
 
 @login_required
@@ -121,6 +124,7 @@ def add_contact(request):
             return redirect('website:contact_page')
         else:
             messages.error(request, 'Si è verificato un errore. Si prega di correggere il modulo.')
+            return render(request, 'website/dashboard/contact_page.html', {'form': form})
     else:
         form = ContactForm()
 
@@ -130,8 +134,7 @@ def add_contact(request):
 def delete_contact(request, contact_id):
     contact = get_object_or_404(Contact, pk=contact_id)
     contact.delete()
-    messages.success(request, 'Contatto eliminato con successo.')
-    return redirect('website:dashboard')
+    return redirect('website:contact_page')
 
 
 @login_required
@@ -155,6 +158,7 @@ def add_opening_hour(request):
             return redirect('website:opening_hours_page')
         else:
             messages.error(request, 'Si è verificato un errore. Si prega di correggere il modulo.')
+            return render(request, 'website/dashboard/opening_hours_page.html', {'form': form})
     else:
         form = OpeningHourForm()
 
@@ -165,7 +169,7 @@ def delete_opening_hour(request, opening_hour_id):
     hours = get_object_or_404(Opening_hour, pk=opening_hour_id)
     hours.delete()
     messages.success(request, 'Orario eliminato con successo.')
-    return redirect('website:dashboard')
+    return redirect('website:opening_hours_page')
 
 
 
