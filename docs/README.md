@@ -241,10 +241,10 @@ app folder
 ``` 
 
 this allow you to keep the dashboard components inside of the new app separated from the rest.
-inside this directory there should be a file called dashboard.html that expand using '{% include %}'
+inside this directory there should be a file called dashboard.html that expand using include
 the dashboard.html inside website app.
 
-this file should be expanded using '{% expand %}' with templates that show the objects needed
+this file should be expanded using expand with templates that show the objects needed
 
 
 
