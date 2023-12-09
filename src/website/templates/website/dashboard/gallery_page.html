@@ -9,7 +9,7 @@
 
 
     <!-- Form per l'aggiunta di un'immagine (nascosto per default) -->
-    <div class="collapse mt-3" id="addGalleryForm">
+    <div class="collapse mt-3 w-100" id="addGalleryForm">
         <form action="{% url 'website:add_gallery' %}" method="post" >
             {% csrf_token add_gallery_csrf_token %}
             {{ form.as_p }}

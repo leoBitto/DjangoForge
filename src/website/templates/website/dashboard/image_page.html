@@ -9,7 +9,7 @@
     </button>
 
     <!-- Nel tuo template 'website/dashboard/image_page.html' -->
-    <div class="collapse mt-3" id="addImageForm">
+    <div class="collapse mt-3 w-100" id="addImageForm">
         <form action="{% url 'website:add_image' %}" method="post" enctype="multipart/form-data">
             {% csrf_token add_image_csrf_token %}
             {{ form.as_p }}

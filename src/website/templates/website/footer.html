@@ -19,9 +19,12 @@
                       <li class="ms-1"><a class="d-flex align-items-center text-decoration-none " href="{% url 'admin:index' %}">Admin</a></li>
                       {% if user.is_authenticated %}
                           <li class="ms-1">
-                              <a class="d-flex align-items-center text-decoration-none " href="{% url 'logout' %}">
-                                  Logout
-                              </a>
+                              <form method="post" action="{% url 'logout' %}" id="logout-form">
+                                {% csrf_token %}
+                                <a class="d-flex align-items-center text-decoration-none" href="#">
+                                    Logout
+                                </a>
+                              </form>
                               <a class="d-flex align-items-center text-decoration-none " href="{% url 'website:dashboard' %}">
                                   Dashboard
                               </a>
@@ -68,4 +71,12 @@
       </div>
   </footer>
   
+<script>
+    $(document).ready(function() {
+        $('#logout-form a').click(function(e) {
+            e.preventDefault();
+            $('#logout-form').submit();
+        });
+    });
+</script>
   
