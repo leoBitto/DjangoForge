@@ -27,8 +27,8 @@ jobs:
     - name: Update and Upgrade Server
       run: |
         # Aggiorna e aggiorna il sistema operativo
-        sudo apt update
-        sudo apt upgrade
+        sudo apt update -y
+        sudo apt upgrade -y
         sudo apt install -y virtualenv python3-venv python3-dev libpq-dev postgresql postgresql-contrib nginx curl
 
     - name: Create User
