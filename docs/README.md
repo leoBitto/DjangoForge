@@ -1,40 +1,33 @@
 # DjangoForge
 
-#### A ready-to-deploy Django project.
+## Overview
+
+DjangoForge is a ready-to-deploy Django project. This guide outlines the process of automated deployment using GitHub Actions for a template repository.
 
 Follow these steps to prepare the project:
 
-## HOW TO START
+### 1. Create Repository from Template
 
-### MOUNTING THE PROJECT
+1. Click on the "Use this template" button on the GitHub repository page.
+2. Create a new repository based on the template.
 
-Before performing production steps, we need to mount the project on the **development** machine and create a new repo where the project will be launched.
+### 2. Clone the New Repository Locally
 
-1. Clone the `cliche_django` project from GitHub, changing the name of the folder that will contain the project. The recursive flag allows downloading the submodules.
-    ```bash
-    git clone --recursive https://github.com/leoBitto/DjangoForge.git <name of the new project>
-    ```
+```bash
+git clone --recursive https://github.com/your-username/your-new-repo.git
+cd your-new-repo
+```
 
-2. Create a new empty repo on GitHub that will contain the entire project.
+### DEVELOP THE PROJECT
 
-3. Change the remote version of the repo we just created on the dev machine (the cloned `cliche`) to the repo we created on GitHub.
-    ```bash
-    git remote set-url origin <URL of the new repo on GitHub>
-    ```
-
-4. Finally, mount the project: clone all the apps you need inside the project (the `src` directory) as submodules.
+1. Mount or develop new app for the project: clone all the apps you need inside the project (the `src` directory) as submodules.
     ```bash
     git submodule add <URL to submodule> src/<name of app>
     ```
 
     Then `git add`, `git commit`, and push.
 
-5. Update the setting file with all the Django apps we intend to use and add the new set of URLs the application uses in the `urls.py` file. In `settings.py`:
-
-    1. Update the `INSTALLED_APPS` list with the apps we use.
-
-   In `urls.py`:
-    1. Include the app URLs inside the file.
+2. Update the setting file with all the Django apps we intend to use and add the new set of URLs the application uses in the `urls.py` file. In `settings.py` update the `INSTALLED_APPS` list with the apps we use.
 
 
 ### `manifest.json`
@@ -61,142 +54,9 @@ The `service-worker.js` file handles Service Worker functionalities, such as res
 For more details, refer to the [Service Worker API documentation](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API).
 
 
-## SET TO PRODUCTION
-
-1. Enter the server.
-
-2. Update the server.
-    ```bash
-    apt update    # Update repo
-    apt upgrade   # Upgrade repo; a reboot may be necessary
-    apt install virtualenv python3-venv python3-dev libpq-dev postgresql postgresql-contrib nginx curl  # Install all the packages
-    ```
-
-3. Create a user.
-    ```bash
-    adduser <choose a user name>               # Create the user
-    usermod -aG sudo <the user name chosen>    # Modify the privileges of the user
-    su <the user name chosen>                   # Switch to the user
-    ```
-
-4. Change the directory to the home of the new user.
-
-5. Clone from git.
-    ```bash
-    git clone --recursive <URL to repo> <name of the directory you want to put the cloned repo>
-    ```
-
-6. CD inside the new folder.
-
-7. Create a virtual environment called `env_dj`.
-    ```bash
-    virtualenv env_dj
-    ```
-
-### DATABASE
-
-#### Create the PostgreSQL DB and User (DON'T FORGET THE SEMICOLON!)
-
-'myproject' is the name of the DB.
-'myprojectuser' is the name of the user that has been created.
-
-1.  ```bash
-    sudo -u postgres psql
-    ```
-
-2.  ```bash
-    CREATE DATABASE myproject;
-    ```
-
-3.  ```bash
-    CREATE USER myprojectuser WITH PASSWORD 'password';  # Password must be between quotes
-    ```
-
-4.  ```bash
-    ALTER ROLE myprojectuser SET client_encoding TO 'utf8';
-    ```
-
-5.  ```bash
-    ALTER ROLE myprojectuser SET default_transaction_isolation TO 'read committed';
-    ```
-
-6.  ```bash
-    ALTER ROLE myprojectuser SET timezone TO 'UTC';
-    ```
-
-7.  ```bash
-    GRANT ALL PRIVILEGES ON DATABASE myproject TO myprojectuser;
-    ```
-
-8.  ```bash
-    \q   # Close the prompt
-    ```
-
-#### IN .env (DO NOT USE SPACES), put `.env` inside `/src`
-
-```env
-SECRET_KEY=thisisaverysecretkeyforthisdjangoforge
-DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
-# aggiungi un indirizzo ip e un nome di dominio con la virgola e senza spazi
-DATABASE_NAME=
-DATABASE_USER=
-DATABASE_PASS=
-```
-
 # DJANGO
 
 The Django project is inside the `/src` folder. Here resides all the code necessary to make the Django project work. Inside the `/base` folder, there are the basic settings and the `.env` file. Inside the `/src` folder, along with the `/base` folder, there will be all the Django apps.
-
-From the main folder:
-
-1. Activate the environment.
-    ```bash
-    source env_dj/bin/activate
-    ```
-
-2. Install resources in pip from requirements.
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-3. Change directory to the `/src` directory.
-    ```bash
-    cd /src
-    ```
-
-4. `manage.py`:
-    1. ```bash
-       python manage.py makemigrations   # Create migrations
-       ```
-    2. ```bash
-       python manage.py migrate          # Effectively migrate
-       ```
-    3. ```bash
-       python manage.py createsuperuser  # Create the superuser
-       ```
-    4. ```bash
-       python manage.py collectstatic    # Gather everything inside a static folder
-       ```
-
-5. Exit the environment.
-    ```bash
-    deactivate
-    ```
-
-### SETTING PERMISSION
-
-`/home/` and all the contained folders MUST be owned by the nginx user `www-data`.
-
-# CALLING THE SCRIPT
-
-Now you can call the script inside the script folder:
-
-```bash
-sudo ./set_pro_server.sh
-```
-
-NB you may need to call the scripts inside the apps to make everything work
 
 ```
 cliche_django/    # Cartella principale del progetto 
@@ -246,6 +106,105 @@ the dashboard.html inside website app.
 
 this file should be expanded using expand with templates that show the objects needed
 
+## SET TO PRODUCTION
+
+# Automated Server Setup with Deployment Script
+
+## Overview
+
+This guide explains how to use the provided deployment script to set up a server for the DjangoForge project. The script automates various steps involved in server setup, application deployment, and database configuration. Digital Ocean provides a feature called Droplets. Droplets are scalable compute platforms with add-on storage, where your applications can be deployed. In the script, there might be references to Digital Ocean-specific details like IP addresses, server configurations, etc. The script could potentially use the Digital Ocean API or command-line tools to interact with your Droplet.
+
+Public SSH Key:
+
+When you create a new Droplet on Digital Ocean, make sure to add the public SSH key to your Digital Ocean account. This allows you to authenticate securely when GitHub Actions tries to connect to your Droplet.
+
+Add the private SSH key to your GitHub repository as a "Secret." Go to "Settings" -> "Secrets" -> "New repository secret" and add the private SSH key with a meaningful name, DO_SSH_KEY.
+
+1. Add GitHub Secrets:
+Make sure you have the necessary secrets set up in your GitHub repository. These secrets include:
+    
+    1. **USER_NAME:**
+       - **Description:** The username for the new user created on the server.
+       - **Usage:** Used to create a new user during the server configuration script.
+    
+    2. **DJANGO_SECRET_KEY:**
+       - **Description:** The Django secret key.
+       - **Usage:** This key is essential for Django's security and should be kept confidential. It is used to generate cryptographic signatures and must remain private.
+    
+    3. **DJANGO_ALLOWED_HOSTS:**
+       - **Description:** A comma-separated list of allowed hosts for Django.
+       - **Usage:** Django uses this list to determine which HTTP requests are allowed. Hosts included in this list are considered secure.
+    
+    4. **DJANGO_DB_NAME:**
+       - **Description:** The name of your PostgreSQL database.
+       - **Usage:** Specifies the name of the database to which your Django project will connect to store data.
+    
+    5. **DJANGO_DB_USER:**
+       - **Description:** The username for the PostgreSQL database user.
+       - **Usage:** Indicates the username that Django will use to connect to the PostgreSQL database.
+    
+    6. **DJANGO_DB_PASS:**
+       - **Description:** The password for the PostgreSQL database user.
+       - **Usage:** The password associated with the database user specified in **DJANGO_DB_USER**.
+    
+    7. **DO_SERVER_IP:**
+       - **Description:** The IP address of your Digital Ocean server.
+       - **Usage:** Used to connect to the server via SSH during the deployment process.
+    
+    8. **DO_SSH_USERNAME:**
+       - **Description:** The username used for SSH connection to the Digital Ocean server.
+       - **Usage:** The username used to authenticate the SSH connection to your server.
+    
+    9. **DO_SSH_KEY:**
+       - **Description:** The private SSH key used for connection to the Digital Ocean server.
+       - **Usage:** This private key is required to authenticate and establish an SSH connection to the Digital Ocean server. Ensure not to share this key and keep it confidential.
+
+2. Create the GitHub Actions Workflow:
+Create a new file (e.g., .github/workflows/deploy.yml) and paste the provided script into that file. Adjust the file paths and configurations as needed. This GitHub Actions workflow automates the deployment process of a Django application to a Digital Ocean server. The following steps are executed:
+    
+    1. Checkout Repository:
+    Perform a checkout of the repository to retrieve project files.
+    2. Configure SSH and Deploy:
+    Set up SSH information to connect to the Digital Ocean server.
+    Connect to the server via SSH and execute the deployment script.
+    3. Update and Upgrade Server:
+    Update the server's operating system and installed packages.
+    4. Create New User:
+    Create a new user on the server with necessary privileges.
+    5. Activate Virtual Environment and Install Python Dependencies:
+    Create and activate a Python virtual environment.
+    Install project dependencies for Django.
+    6. Create .env File:
+    Generate the .env file containing secret variables required by Django.
+    7. Create PostgreSQL Database and User:
+    Create the PostgreSQL database and associated user.
+    8. Run Django Management Commands:
+    Execute Django commands for migrations, superuser creation, and static file collection.
+    9. Configure Gunicorn:
+    Perform necessary configurations for Gunicorn, a WSGI application server for Django.
+    Start and enable the Gunicorn service.
+    10. Configure Nginx:
+    Apply configurations for Nginx, a web server.
+    Conduct a configuration test and restart Nginx.
+    11. Fix Firewall:
+    Open and close specific firewall ports.
+    12. Final Checks:
+    Perform final checks by viewing the status of deployed services.
+
+This script streamlines the deployment process, automating several manual steps, and can be triggered automatically on every push to the main branch of the GitHub repository.
+
+3. Push to Main Branch:
+Commit and push this new workflow file to your main branch. This will trigger the GitHub Actions workflow.
+
+4. Monitor Workflow Execution:
+Go to the "Actions" tab on your GitHub repository to monitor the progress of the workflow. If everything is configured correctly, the workflow will execute the steps defined in the script.
+
+5. Check Server and Application:
+After the workflow has completed successfully, check your Digital Ocean server to ensure that the Django application is deployed and running. You can use the final checks section in the script as a starting point for verification.
+
+Note:
+The workflow is configured to run on every push to the main branch. You can adjust the trigger conditions in the on section if needed.
+Ensure that your server and GitHub repository configurations are compatible with this script (e.g., PostgreSQL setup, file paths, etc.).
 
 
 
