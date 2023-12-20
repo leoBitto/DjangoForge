@@ -17,7 +17,7 @@ import logging
 
 
 # Leggi le variabili d'ambiente dal file selezionato
-SECRET_KEY = config('SECRET_KEY', default='')
+SECRET_KEY = config('SECRET_KEY', default='t')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # add here the app names
+    'bookings',
     'website',
     'fontawesomefree',
     
@@ -62,7 +63,7 @@ ROOT_URLCONF = 'base.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
