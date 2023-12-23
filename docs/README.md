@@ -120,92 +120,111 @@ When you create a new Droplet on Digital Ocean, make sure to add the public SSH 
 
 Add the private SSH key to your GitHub repository as a "Secret." Go to "Settings" -> "Secrets" -> "New repository secret" and add the private SSH key with a meaningful name, DO_SSH_KEY.
 
-1. Add GitHub Secrets:
-Make sure you have the necessary secrets set up in your GitHub repository. These secrets include:
-    
-    1. **USER_NAME:**
-       - **Description:** The username for the new user created on the server.
-       - **Usage:** Used to create a new user during the server configuration script.
-    
-    2. **DJANGO_SECRET_KEY:**
-       - **Description:** The Django secret key.
-       - **Usage:** This key is essential for Django's security and should be kept confidential. It is used to generate cryptographic signatures and must remain private.
-    
-    3. **DJANGO_ALLOWED_HOSTS:**
-       - **Description:** A comma-separated list of allowed hosts for Django.
-       - **Usage:** Django uses this list to determine which HTTP requests are allowed. Hosts included in this list are considered secure.
-    
-    4. **DJANGO_DB_NAME:**
-       - **Description:** The name of your PostgreSQL database.
-       - **Usage:** Specifies the name of the database to which your Django project will connect to store data.
-    
-    5. **DJANGO_DB_USER:**
-       - **Description:** The username for the PostgreSQL database user.
-       - **Usage:** Indicates the username that Django will use to connect to the PostgreSQL database.
-    
-    6. **DJANGO_DB_PASS:**
-       - **Description:** The password for the PostgreSQL database user.
-       - **Usage:** The password associated with the database user specified in **DJANGO_DB_USER**.
-    
-    7. **DO_SERVER_IP:**
-       - **Description:** The IP address of your Digital Ocean server.
-       - **Usage:** Used to connect to the server via SSH during the deployment process.
-    
-    8. **DO_SSH_USERNAME:**
-       - **Description:** The username used for SSH connection to the Digital Ocean server.
-       - **Usage:** The username used to authenticate the SSH connection to your server.
-    
-    9. **DO_SSH_KEY:**
-       - **Description:** The private SSH key used for connection to the Digital Ocean server.
-       - **Usage:** This private key is required to authenticate and establish an SSH connection to the Digital Ocean server. Ensure not to share this key and keep it confidential.
+# Secrets Required for Deployment
 
-2. Create the GitHub Actions Workflow:
-Create a new file (e.g., .github/workflows/deploy.yml) and paste the provided script into that file. Adjust the file paths and configurations as needed. This GitHub Actions workflow automates the deployment process of a Django application to a Digital Ocean server. The following steps are executed:
-    
-    1. Checkout Repository:
-    Perform a checkout of the repository to retrieve project files.
-    2. Configure SSH and Deploy:
-    Set up SSH information to connect to the Digital Ocean server.
-    Connect to the server via SSH and execute the deployment script.
-    3. Update and Upgrade Server:
-    Update the server's operating system and installed packages.
-    4. Create New User:
-    Create a new user on the server with necessary privileges.
-    5. Activate Virtual Environment and Install Python Dependencies:
-    Create and activate a Python virtual environment.
-    Install project dependencies for Django.
-    6. Create .env File:
-    Generate the .env file containing secret variables required by Django.
-    7. Create PostgreSQL Database and User:
-    Create the PostgreSQL database and associated user.
-    8. Run Django Management Commands:
-    Execute Django commands for migrations, superuser creation, and static file collection.
-    9. Configure Gunicorn:
-    Perform necessary configurations for Gunicorn, a WSGI application server for Django.
-    Start and enable the Gunicorn service.
-    10. Configure Nginx:
-    Apply configurations for Nginx, a web server.
-    Conduct a configuration test and restart Nginx.
-    11. Fix Firewall:
-    Open and close specific firewall ports.
-    12. Final Checks:
-    Perform final checks by viewing the status of deployed services.
+To successfully deploy the application using this GitHub Actions workflow, you need to set up the following secrets in your GitHub repository.
+
+1. **DO_SERVER_IP:**
+   - Description: IP address of the target server.
+   - Where to find/create: Obtain from your hosting provider or system administrator.
+
+2. **DO_SSH_USERNAME:**
+   - Description: SSH username used to connect to the server.
+   - Where to find/create: Your server's SSH username.
+
+3. **DO_SSH_KEY:**
+   - Description: SSH private key for authentication.
+   - Where to find/create: Generate an SSH key pair and add the private key as a secret.
+
+4. **USER_NAME:**
+   - Description: Username for the new user on the server.
+   - Where to find/create: Specify a desired username for the new user.
+
+5. **DJANGO_DB_NAME:**
+   - Description: Name of the PostgreSQL database.
+   - Where to find/create: Choose a name for your Django application database.
+
+6. **DJANGO_DB_USER:**
+   - Description: Username for the PostgreSQL database user.
+   - Where to find/create: Specify a username for the database user.
+
+7. **DJANGO_DB_PASS:**
+   - Description: Password for the PostgreSQL database user.
+   - Where to find/create: Specify a secure password for the database user.
+
+8. **DJANGO_SECRET_KEY:**
+   - Description: Django secret key for security.
+   - Where to find/create: Generate a new secret key for your Django application.
+
+9. **DJANGO_ALLOWED_HOSTS:**
+   - Description: Comma-separated list of allowed hosts for the Django application.
+   - Where to find/create: Specify the allowed hosts for your application. the host needed are the 
+      human readable url eg: www.domain.com and domain.com
+
+10. **USER_PSSWRD:**
+    - Description: Password for the newly created user on the server.
+    - Where to find/create: Specify a secure password for the new user.
+
+11. **GITHUB_USER:**
+    - Description: GitHub username of the repository owner.
+    - Where to find/create: Your GitHub username.
+
+Note: Ensure these secrets are set up in your GitHub repository settings under the "Settings" tab, and then navigate to "Secrets".
+
+
+
+# Deployment Workflow
 
 This script streamlines the deployment process, automating several manual steps, and can be triggered automatically on every push to the main branch of the GitHub repository.
-
-3. Push to Main Branch:
-Commit and push this new workflow file to your main branch. This will trigger the GitHub Actions workflow.
-
-4. Monitor Workflow Execution:
 Go to the "Actions" tab on your GitHub repository to monitor the progress of the workflow. If everything is configured correctly, the workflow will execute the steps defined in the script.
-
-5. Check Server and Application:
 After the workflow has completed successfully, check your Digital Ocean server to ensure that the Django application is deployed and running. You can use the final checks section in the script as a starting point for verification.
 
-Note:
-The workflow is configured to run on every push to the main branch. You can adjust the trigger conditions in the on section if needed.
-Ensure that your server and GitHub repository configurations are compatible with this script (e.g., PostgreSQL setup, file paths, etc.).
 
+## Checkout Repository:
+
+This step uses the GitHub `actions/checkout` action to clone the repository into the GitHub Actions runner. The `submodules: recursive` flag indicates to clone submodules if present.
+
+## Define REPO_NAME:
+
+Utilizes the `$GITHUB_REPOSITORY` variable to extract the repository name and saves it in the `REPO_NAME` variable within GitHub Actions Environment Variables (`$GITHUB_ENV`).
+
+## Configure Server:
+
+Uses the `appleboy/ssh-action` action to connect to the server configured in secret variables (`DO_SERVER_IP`, `DO_SSH_USERNAME`, `DO_SSH_KEY`).
+- Creates a new user on the server (`USER_NAME`).
+- Creates a PostgreSQL database and user, also setting permissions.
+
+## Clone Repository:
+
+Clones the GitHub repository (primarily to obtain the source code) inside the server using the GitHub username and repository name.
+
+## Activate Virtual Environment and install dependencies:
+
+Creates a Python virtual environment (`env_dj`), activates the virtual environment, and installs project dependencies specified in the `requirements.txt` file.
+
+## Create .env file:
+
+Creates the `.env` file within the project path with the necessary Django secret key, debug settings, allowed hosts, and database credentials.
+
+## Run Django Commands:
+
+Executes Django commands such as `makemigrations`, `migrate`, `createsuperuser` (without user input prompt), and `collectstatic`.
+
+## Configure Gunicorn:
+
+Configures Gunicorn with the username and repository name. Copies the Gunicorn configuration files (`gunicorn.socket` and `gunicorn.service`) into the systemd directory and starts the Gunicorn service.
+
+## Configure Nginx:
+
+Configures Nginx with the server's IP address, username, and repository name. Copies the Nginx configuration file (`conf.nginx`) into the correct directory and checks the Nginx configuration before restarting the service.
+
+## Fix Firewall:
+
+Fixes firewall rules by removing the rule for port 8000 and allowing full access to Nginx.
+
+## Final Checks:
+
+Restarts Gunicorn and Nginx and displays the status of the services to check if they are active and functioning.
 
 
 
