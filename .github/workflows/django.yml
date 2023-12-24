@@ -23,30 +23,39 @@ jobs:
       shell: bash
 
 
-    - name: Configure SSH and enter server
+    - name: Update server and create new User
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.DO_SERVER_IP }}
         username: ${{ secrets.DO_SSH_USERNAME }}
         key: ${{ secrets.DO_SSH_KEY }}
         script: |
-          USER_NAME=${{ secrets.USER_NAME }}
-          REPO_NAME=${{ env.REPO_NAME }}
-          GITHUB_USER=${{ github.actor }}
           
           # Update Server
-          # sudo apt update -y
-          # sudo apt upgrade -y
-          # sudo apt install -y virtualenv python3-venv python3-dev libpq-dev postgresql postgresql-contrib nginx curl
+          apt update -y
+          apt upgrade -y
+          apt install -y virtualenv python3-venv python3-dev libpq-dev postgresql postgresql-contrib nginx curl
           
           # Create New User
-          sudo adduser --gecos "" $USER_NAME
-          sudo echo "$USER_NAME:${{ secrets.USER_PSSWRD }}" | sudo chpasswd
-          sudo usermod -aG sudo $USER_NAME
-          cd /home/${USER_NAME}
+          adduser --gecos "" $USER_NAME
+          echo "$USER_NAME:${{ secrets.USER_PSSWRD }}" | sudo chpasswd
+          usermod -aG sudo $USER_NAME
+
+
+    - name: Server setup from new user
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.DO_SERVER_IP }}
+        username: ${{ secrets.USER_NAME }}
+        key: ${{ secrets.DO_SSH_KEY }}
+        script: |
+          USER_NAME=${{ secrets.USER_NAME }}
+          REPO_NAME=${{ env.REPO_NAME }}
+          GITHUB_USER=${{ github.actor }}        
+          
           pwd
 
-          # Create Database and User
+          # Create Database and User of DB
           DB_NAME=${{ secrets.DJANGO_DB_NAME }}
           DB_USER=${{ secrets.DJANGO_DB_USER }}
           DB_PASS=${{ secrets.DJANGO_DB_PASS }}
@@ -60,6 +69,7 @@ jobs:
           sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;"
 
           # Clone Repository
+          cd /home/${USER_NAME}
           git clone --recursive  https://github.com/$GITHUB_USER/$REPO_NAME.git $REPO_NAME
           cd /home/$USER_NAME/$REPO_NAME
           pwd
