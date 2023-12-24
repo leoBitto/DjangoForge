@@ -106,21 +106,50 @@ the dashboard.html inside website app.
 
 this file should be expanded using expand with templates that show the objects needed
 
-## SET TO PRODUCTION
+# SET TO PRODUCTION
 
-# Automated Server Setup with Deployment Script
+#### Automated Server Setup with Deployment Script
 
 ## Overview
 
-This guide explains how to use the provided deployment script to set up a server for the DjangoForge project. The script automates various steps involved in server setup, application deployment, and database configuration. Digital Ocean provides a feature called Droplets. Droplets are scalable compute platforms with add-on storage, where your applications can be deployed. In the script, there might be references to Digital Ocean-specific details like IP addresses, server configurations, etc. The script could potentially use the Digital Ocean API or command-line tools to interact with your Droplet.
+This guide explains how to use the provided deployment script to set up a server for the DjangoForge project. The script automates various steps involved in server setup, application deployment, and database configuration.
+Digital Ocean provides a feature called Droplets. Droplets are scalable compute platforms with add-on storage, where your applications can be deployed. In the script, there might be references to Digital Ocean-specific details like IP addresses, server configurations, etc. Before using the script we need to grant access to Digital Ocean to Github. To do so we need to access the remote server, so after creating the droplet we access it with root
+NB the access from your computer to the server may be using a ssh key, that has nothing to do with the key we are creating with the following procedure:
 
-Public SSH Key:
+## Public SSH Key:
 
-When you create a new Droplet on Digital Ocean, make sure to add the public SSH key to your Digital Ocean account. This allows you to authenticate securely when GitHub Actions tries to connect to your Droplet.
+When you create a new Droplet on Digital Ocean, make sure to add the public SSH key to your Github account. This allows you to authenticate securely when GitHub Actions tries to connect to your Droplet. To do so, you need to enter the server as root, create a ssh key pairs:
 
-Add the private SSH key to your GitHub repository as a "Secret." Go to "Settings" -> "Secrets" -> "New repository secret" and add the private SSH key with a meaningful name, DO_SSH_KEY.
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
+```
+When you’re prompted to “Enter a file in which to save the key,” press Enter. This accepts the default file location.
+Just give Enter for the passphrase. Once the SSH key is generated we need to add the key with SSH-agent and start the SSH-agent in the background
 
-# Secrets Required for Deployment
+```bash
+eval "$(ssh-agent -s)"
+```
+Add your SSH private key to the ssh-agent. If you created your key with a different name, or if you are adding an existing key that has a different name, replace id_ed25519 in the command with the name of your private key file.
+
+```bash
+ssh-add ~/.ssh/id_ed25519
+```
+Before logout from the server we need to copy the SSH key to add in GitHub.
+
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+NB use nano to copy the key in the file autorized_keys
+
+Then select and copy the contents of the id_ed25519 file displayed in the terminal to your clipboard. Add the private SSH key to your GitHub repository as a "Secret." Go to "Settings" -> "Secrets" -> "New repository secret" and add the private SSH key with a meaningful name, DO_SSH_KEY.
+
+The last and final step is to add the SSH key to the GitHub account. navigate to the settings -> SSH and GCP keys -> New SSH key add your copied SSH key in key section with title
+Once you add the keys our server and GitHub sync is ready to test. You need to perform the deployment based on script written in yml file.
+
+NB the ***public*** key is on digital ocean and github but the ***private*** key remain on the droplet server
+
+
+## Secrets Required for Deployment
 
 To successfully deploy the application using this GitHub Actions workflow, you need to set up the following secrets in your GitHub repository.
 
@@ -130,7 +159,7 @@ To successfully deploy the application using this GitHub Actions workflow, you n
 
 2. **DO_SSH_USERNAME:**
    - Description: SSH username used to connect to the server.
-   - Where to find/create: Your server's SSH username.
+   - Where to find/create: Your server's SSH username. we need to use root
 
 3. **DO_SSH_KEY:**
    - Description: SSH private key for authentication.
@@ -165,64 +194,61 @@ To successfully deploy the application using this GitHub Actions workflow, you n
     - Description: Password for the newly created user on the server.
     - Where to find/create: Specify a secure password for the new user.
 
-11. **GITHUB_USER:**
-    - Description: GitHub username of the repository owner.
-    - Where to find/create: Your GitHub username.
 
 Note: Ensure these secrets are set up in your GitHub repository settings under the "Settings" tab, and then navigate to "Secrets".
 
 
 
-# Deployment Workflow
+### Deployment Workflow
 
 This script streamlines the deployment process, automating several manual steps, and can be triggered automatically on every push to the main branch of the GitHub repository.
 Go to the "Actions" tab on your GitHub repository to monitor the progress of the workflow. If everything is configured correctly, the workflow will execute the steps defined in the script.
 After the workflow has completed successfully, check your Digital Ocean server to ensure that the Django application is deployed and running. You can use the final checks section in the script as a starting point for verification.
 
 
-## Checkout Repository:
+#### Checkout Repository:
 
 This step uses the GitHub `actions/checkout` action to clone the repository into the GitHub Actions runner. The `submodules: recursive` flag indicates to clone submodules if present.
 
-## Define REPO_NAME:
+#### Define REPO_NAME:
 
 Utilizes the `$GITHUB_REPOSITORY` variable to extract the repository name and saves it in the `REPO_NAME` variable within GitHub Actions Environment Variables (`$GITHUB_ENV`).
 
-## Configure Server:
+#### Configure Server:
 
 Uses the `appleboy/ssh-action` action to connect to the server configured in secret variables (`DO_SERVER_IP`, `DO_SSH_USERNAME`, `DO_SSH_KEY`).
 - Creates a new user on the server (`USER_NAME`).
 - Creates a PostgreSQL database and user, also setting permissions.
 
-## Clone Repository:
+#### Clone Repository:
 
 Clones the GitHub repository (primarily to obtain the source code) inside the server using the GitHub username and repository name.
 
-## Activate Virtual Environment and install dependencies:
+#### Activate Virtual Environment and install dependencies:
 
 Creates a Python virtual environment (`env_dj`), activates the virtual environment, and installs project dependencies specified in the `requirements.txt` file.
 
-## Create .env file:
+#### Create .env file:
 
 Creates the `.env` file within the project path with the necessary Django secret key, debug settings, allowed hosts, and database credentials.
 
-## Run Django Commands:
+#### Run Django Commands:
 
 Executes Django commands such as `makemigrations`, `migrate`, `createsuperuser` (without user input prompt), and `collectstatic`.
 
-## Configure Gunicorn:
+#### Configure Gunicorn:
 
 Configures Gunicorn with the username and repository name. Copies the Gunicorn configuration files (`gunicorn.socket` and `gunicorn.service`) into the systemd directory and starts the Gunicorn service.
 
-## Configure Nginx:
+#### Configure Nginx:
 
 Configures Nginx with the server's IP address, username, and repository name. Copies the Nginx configuration file (`conf.nginx`) into the correct directory and checks the Nginx configuration before restarting the service.
 
-## Fix Firewall:
+#### Fix Firewall:
 
 Fixes firewall rules by removing the rule for port 8000 and allowing full access to Nginx.
 
-## Final Checks:
+#### Final Checks:
 
 Restarts Gunicorn and Nginx and displays the status of the services to check if they are active and functioning.
 
