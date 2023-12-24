@@ -143,10 +143,9 @@ NB use nano to copy the key in the file autorized_keys
 
 Then select and copy the contents of the id_ed25519 file displayed in the terminal to your clipboard. Add the private SSH key to your GitHub repository as a "Secret." Go to "Settings" -> "Secrets" -> "New repository secret" and add the private SSH key with a meaningful name, DO_SSH_KEY.
 
-The last and final step is to add the SSH key to the GitHub account. navigate to the settings -> SSH and GCP keys -> New SSH key add your copied SSH key in key section with title
+The last and final step is to add the SSH ***public*** key to the GitHub account. navigate to the settings -> SSH and GCP keys -> New SSH key add your copied SSH key in key add the same key to the authorized_key file inside the .ssh folder in the server
 Once you add the keys our server and GitHub sync is ready to test. You need to perform the deployment based on script written in yml file.
 
-NB the ***public*** key is on digital ocean and github but the ***private*** key remain on the droplet server
 
 
 ## Secrets Required for Deployment

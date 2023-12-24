@@ -37,18 +37,10 @@ jobs:
           apt install -y virtualenv python3-venv python3-dev libpq-dev postgresql postgresql-contrib nginx curl
           
           # Create New User
-          adduser --gecos "" $USER_NAME
-          echo "$USER_NAME:${{ secrets.USER_PSSWRD }}" | sudo chpasswd
-          usermod -aG sudo $USER_NAME
+          adduser --gecos "" ${{ secrets.USER_NAME }}
+          echo "${{ secrets.USER_NAME }}:${{ secrets.USER_PSSWRD }}" | sudo chpasswd
+          usermod -aG sudo ${{ secrets.USER_NAME }}
 
-
-    - name: Server setup from new user
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.DO_SERVER_IP }}
-        username: ${{ secrets.USER_NAME }}
-        key: ${{ secrets.DO_SSH_KEY }}
-        script: |
           USER_NAME=${{ secrets.USER_NAME }}
           REPO_NAME=${{ env.REPO_NAME }}
           GITHUB_USER=${{ github.actor }}        
@@ -70,12 +62,12 @@ jobs:
 
           # Clone Repository
           cd /home/${USER_NAME}
-          git clone --recursive  https://github.com/$GITHUB_USER/$REPO_NAME.git $REPO_NAME
+          sudo -u ${{ secrets.USER_NAME }} git clone --recursive  https://github.com/$GITHUB_USER/$REPO_NAME.git $REPO_NAME
           cd /home/$USER_NAME/$REPO_NAME
           pwd
 
           # Activate Virtual Environment and install dependencies
-          sudo virtualenv env_dj
+          sudo -u ${{ secrets.USER_NAME }} virtualenv env_dj
           source env_dj/bin/activate
           python -m pip install --upgrade pip
           pip install -r requirements.txt
@@ -83,19 +75,19 @@ jobs:
           # Create .env file
           cd /home/$USER_NAME/$REPO_NAME/src/base
           pwd
-          echo "SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> .env
-          echo "DEBUG=False" >> .env
-          echo "ALLOWED_HOSTS=127.0.0.1,localhost,${{ secrets.DO_SERVER_IP }},${{ secrets.DJANGO_ALLOWED_HOSTS }}" >> .env
-          echo "DATABASE_NAME=${{ secrets.DJANGO_DB_NAME }}" >> .env
-          echo "DATABASE_USER=${{ secrets.DJANGO_DB_USER }}" >> .env
-          echo "DATABASE_PASS=${{ secrets.DJANGO_DB_PASS }}" >> .env
+          sudo -u ${{ secrets.USER_NAME }} echo "SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> .env
+          sudo -u ${{ secrets.USER_NAME }} echo "DEBUG=False" >> .env
+          sudo -u ${{ secrets.USER_NAME }} echo "ALLOWED_HOSTS=127.0.0.1,localhost,${{ secrets.DO_SERVER_IP }},${{ secrets.DJANGO_ALLOWED_HOSTS }}" >> .env
+          sudo -u ${{ secrets.USER_NAME }} echo "DATABASE_NAME=${{ secrets.DJANGO_DB_NAME }}" >> .env
+          sudo -u ${{ secrets.USER_NAME }} echo "DATABASE_USER=${{ secrets.DJANGO_DB_USER }}" >> .env
+          sudo -u ${{ secrets.USER_NAME }} echo "DATABASE_PASS=${{ secrets.DJANGO_DB_PASS }}" >> .env
 
           # Run Django Commands
           cd /home/$USER_NAME/$REPO_NAME/src
           pwd
           python manage.py makemigrations
           python manage.py migrate
-          python manage.py createsuperuser --noinput --username=$USER_NAME --email=admin@example.com -
+          python manage.py createsuperuser --noinput --username=$USER_NAME --email=admin@example.com 
           python manage.py collectstatic --noinput
 
           # Configura Gunicorn con il nome utente e il nome del repository
