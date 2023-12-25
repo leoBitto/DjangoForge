@@ -146,7 +146,8 @@ Then select and copy the contents of the id_ed25519 file displayed in the termin
 The last and final step is to add the SSH ***public*** key to the GitHub account. navigate to the settings -> SSH and GCP keys -> New SSH key add your copied SSH key in key add the same key to the authorized_key file inside the .ssh folder in the server
 Once you add the keys our server and GitHub sync is ready to test. You need to perform the deployment based on script written in yml file.
 
-
+recap: the ***public*** key must be linked in github in the settings and in the autorized file in the server
+the ***private*** key must be a secret in github
 
 ## Secrets Required for Deployment
 
