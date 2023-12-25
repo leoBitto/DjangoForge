@@ -88,7 +88,13 @@ jobs:
           pwd
           python manage.py makemigrations
           python manage.py migrate
-          python manage.py createsuperuser --noinput --username=$USER_NAME --email=admin@example.com 
+          
+          # set env variables to automatically create a superuser
+          export DJANGO_SUPERUSER_EMAIL=admin@example.com
+          export DJANGO_SUPERUSER_USERNAME=$USER_NAME
+          export DJANGO_SUPERUSER_PASSWORD=${{ secrets.USER_PSSWRD }}
+          
+          python manage.py createsuperuser --noinput  
           python manage.py collectstatic --noinput
 
           # Configura Gunicorn con il nome utente e il nome del repository
@@ -128,5 +134,8 @@ jobs:
           sudo systemctl status gunicorn.socket
           sudo systemctl status gunicorn
           sudo systemctl status nginx
+
+          # change owner to home and everything
+          sudo chown -R www-data:www-data /home
 
 

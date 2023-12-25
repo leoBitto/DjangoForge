@@ -146,7 +146,8 @@ Then select and copy the contents of the id_ed25519 file displayed in the termin
 The last and final step is to add the SSH ***public*** key to the GitHub account. navigate to the settings -> SSH and GCP keys -> New SSH key add your copied SSH key in key add the same key to the authorized_key file inside the .ssh folder in the server
 Once you add the keys our server and GitHub sync is ready to test. You need to perform the deployment based on script written in yml file.
 
-recap: the ***public*** key must be linked in github in the settings and in the autorized file in the server
+recap: 
+the ***public*** key must be linked in github in the *profile settings* and in the *autorized_keys file* in the server
 the ***private*** key must be a secret in github
 
 ## Secrets Required for Deployment
@@ -169,30 +170,32 @@ To successfully deploy the application using this GitHub Actions workflow, you n
    - Description: Username for the new user on the server.
    - Where to find/create: Specify a desired username for the new user.
 
-5. **DJANGO_DB_NAME:**
+5. **USER_PSSWRD:**
+    - Description: Password for the newly created user on the server.
+    - Where to find/create: Specify a secure password for the new user.
+
+6. **DJANGO_DB_NAME:**
    - Description: Name of the PostgreSQL database.
    - Where to find/create: Choose a name for your Django application database.
 
-6. **DJANGO_DB_USER:**
+7. **DJANGO_DB_USER:**
    - Description: Username for the PostgreSQL database user.
    - Where to find/create: Specify a username for the database user.
 
-7. **DJANGO_DB_PASS:**
+8. **DJANGO_DB_PASS:**
    - Description: Password for the PostgreSQL database user.
    - Where to find/create: Specify a secure password for the database user.
 
-8. **DJANGO_SECRET_KEY:**
+9. **DJANGO_SECRET_KEY:**
    - Description: Django secret key for security.
    - Where to find/create: Generate a new secret key for your Django application.
 
-9. **DJANGO_ALLOWED_HOSTS:**
+10. **DJANGO_ALLOWED_HOSTS:**
    - Description: Comma-separated list of allowed hosts for the Django application.
    - Where to find/create: Specify the allowed hosts for your application. the host needed are the 
-      human readable url eg: www.domain.com and domain.com
+      human readable url eg: www.domain.com and domain.com. if there are no such url add a , as the secret content
 
-10. **USER_PSSWRD:**
-    - Description: Password for the newly created user on the server.
-    - Where to find/create: Specify a secure password for the new user.
+
 
 
 Note: Ensure these secrets are set up in your GitHub repository settings under the "Settings" tab, and then navigate to "Secrets".
