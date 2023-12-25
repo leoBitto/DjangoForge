@@ -40,7 +40,7 @@ jobs:
 
           # Update Repository
           cd /home/$USER_NAME/$REPO_NAME
-          sudo -u $USER_NAME git pull --recursive 
+          sudo -u www-data git pull --recursive 
 
           # Activate Virtual Environment and install dependencies
           sudo -u $USER_NAME virtualenv env_dj
