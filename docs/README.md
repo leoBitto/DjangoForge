@@ -196,8 +196,6 @@ To successfully deploy the application using this GitHub Actions workflow, you n
       human readable url eg: www.domain.com and domain.com. if there are no such url add a , as the secret content
 
 
-
-
 Note: Ensure these secrets are set up in your GitHub repository settings under the "Settings" tab, and then navigate to "Secrets".
 
 
