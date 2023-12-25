@@ -97,6 +97,9 @@ jobs:
           python manage.py createsuperuser --noinput  
           python manage.py collectstatic --noinput
 
+          # change owner to home and everything
+          sudo chown -R www-data:www-data /home
+
           # Configura Gunicorn con il nome utente e il nome del repository
           cd /home/$USER_NAME/$REPO_NAME
           pwd
@@ -135,7 +138,6 @@ jobs:
           sudo systemctl status gunicorn
           sudo systemctl status nginx
 
-          # change owner to home and everything
-          sudo chown -R www-data:www-data /home
+
 
 
