@@ -135,7 +135,10 @@ jobs:
           sudo systemctl status gunicorn
           sudo systemctl status nginx
 
+          
+          sudo -u ${{ secrets.USER_NAME }} git pull
           # change owner to home and everything
           sudo chown -R www-data:www-data /home
+          
 
 

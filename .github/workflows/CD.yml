@@ -25,7 +25,7 @@ jobs:
       shell: bash
 
 
-    - name: Update server and create new User
+    - name: Update server and repo
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.DO_SERVER_IP }}
@@ -42,8 +42,8 @@ jobs:
 
           # Update Repository
           cd /home/$USER_NAME/$REPO_NAME
-          sudo -u www-data git pull 
-
+          sudo -u www-data git pull --recurse-submodules
+          
           # Activate Virtual Environment and install dependencies
           sudo -u $USER_NAME virtualenv env_dj
           source env_dj/bin/activate
