@@ -126,14 +126,14 @@ jobs:
           sudo ufw allow 'Nginx Full'
           
           # Riavvia Gunicorn e Nginx
-          sudo systemctl restart gunicorn.socket
-          sudo systemctl restart gunicorn
-          sudo systemctl restart nginx
+          sudo -u www-data systemctl restart gunicorn.socket
+          sudo -u www-data systemctl restart gunicorn
+          sudo -u www-data systemctl restart nginx
           
           # Esegui gli ultimi controlli
-          sudo systemctl status gunicorn.socket
-          sudo systemctl status gunicorn
-          sudo systemctl status nginx
+          sudo -u www-data systemctl status gunicorn.socket
+          sudo -u www-data systemctl status gunicorn
+          sudo -u www-data systemctl status nginx
 
           
           sudo -u ${{ secrets.USER_NAME }} git pull
