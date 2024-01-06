@@ -42,7 +42,7 @@ jobs:
 
           # Update Repository
           cd /home/$USER_NAME/$REPO_NAME
-          sudo -u www-data git pull git submodule update --recursive --remote
+          sudo -u www-data git pull --recurse-submodules
           
           # Activate Virtual Environment and install dependencies
           sudo -u $USER_NAME virtualenv env_dj
