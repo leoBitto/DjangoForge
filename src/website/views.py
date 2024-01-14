@@ -6,6 +6,9 @@ from .models import Image, Contact, Opening_hour, Gallery
 from .forms import ImageForm, ContactForm, OpeningHourForm, GalleryForm
 from django.contrib import messages
 
+
+
+
 # this is the part of the website accessible only to admin
 @login_required
 def dashboard(request):
