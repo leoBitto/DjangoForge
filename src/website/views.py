@@ -5,6 +5,12 @@ from django.contrib.auth.decorators import login_required
 from .models import Image, Contact, Opening_hour, Gallery
 from .forms import ImageForm, ContactForm, OpeningHourForm, GalleryForm
 from django.contrib import messages
+from .tasks import my_task
+
+def task_test(request):
+    my_task()
+    return HttpResponse("check console")
+
 
 # this is the part of the website accessible only to admin
 @login_required
