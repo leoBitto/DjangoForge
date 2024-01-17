@@ -2,6 +2,14 @@
 {% load static %}
 {% block content %}
 
-
+<div class="container">
+    <form id="send-push__form" class="d-flex flex-column p-3 m-auto">
+        <h3 class="header">Send a push notification</h3>
+        <p class="error"></p>
+        <input type="text" name="head" placeholder="Header: Your favorite airline 😍">
+        <textarea name="body" id="" cols="30" rows="10" placeholder="Body: Your flight has been cancelled 😱😱😱"></textarea>
+        <button>Send Me</button>
+    </form>
+</div>
 
 {% endblock %}

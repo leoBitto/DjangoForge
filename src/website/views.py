@@ -1,11 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
-from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from .models import Image, Contact, Opening_hour, Gallery
 from .forms import ImageForm, ContactForm, OpeningHourForm, GalleryForm
 from django.contrib import messages
 
+from django.http.response import JsonResponse, HttpResponse
+from django.views.decorators.http import require_GET, require_POST
+from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
+from webpush import send_user_notification
+import json
+from django.conf import settings
 
 
 
@@ -66,7 +72,6 @@ def delete_image(request, image_id):
     messages.success(request, 'Immagine eliminata con successo.')
     return redirect('website:image_page')
 
-
 @login_required
 def gallery_page(request):
     galleries = Gallery.objects.all()
@@ -106,7 +111,6 @@ def delete_gallery(request, gallery_id):
     messages.success(request, 'Galleria eliminata con successo.')
     return redirect('website:gallery_page')
 
-
 @login_required
 def contact_page(request):
     contacts = Contact.objects.all()
@@ -140,7 +144,6 @@ def delete_contact(request, contact_id):
     contact.delete()
     messages.success(request, 'Contatto eliminato con successo.')
     return redirect('website:contact_page')
-
 
 @login_required
 def opening_hours_page(request):
@@ -177,10 +180,36 @@ def delete_opening_hour(request, opening_hour_id):
     return redirect('website:opening_hours_page')
 
 
-
 # this is part of the website accessible to everyone
 def base(request):
-    
-    context = {}
+    webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
+    vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
+    user = request.user
+
+    context = {user: user, 'vapid_key': vapid_key}
 
     return render(request, 'website/landing.html', context)
+
+
+
+@require_POST
+@csrf_exempt
+def send_push(request):
+    try:
+        body = request.body
+        data = json.loads(body)
+
+        if 'head' not in data or 'body' not in data or 'id' not in data:
+            return JsonResponse(status=400, data={"message": "Invalid data format"})
+
+        user_id = data['id']
+        user = get_object_or_404(User, pk=user_id)
+        payload = {'head': data['head'], 'body': data['body']}
+        send_user_notification(user=user, payload=payload, ttl=1000)
+
+        return JsonResponse(status=200, data={"message": "Web push successful"})
+    except TypeError:
+        return JsonResponse(status=500, data={"message": "An error occurred"})
+
+
+

@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'fontawesomefree',
     'webpush',
 
-    
+
 ]
 
 
@@ -129,6 +129,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+WEBPUSH_SETTINGS = {
+   "VAPID_PUBLIC_KEY": "BPprPfc2UPM00cMV-yJUZYXYkM10GSa71wl5eBuO1PMiLoW-CSuunyl3PAY18R4iRVNQca3lbxmk3iS5152_AT8",
+   "VAPID_PRIVATE_KEY": "woahts8bTmvQE1JPBounWo_7VxI-Zl73fFuNOPohuHg",
+   "VAPID_ADMIN_EMAIL": "leonardobitto@gmail.com"
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/

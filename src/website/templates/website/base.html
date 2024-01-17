@@ -8,6 +8,11 @@
         <title>Leonardo Bitto</title>
         <meta name="description" content="">
 
+        <meta name="vapid-key" content="{{ vapid_key }}">
+        {% if user.id %}
+            <meta name="user_id" content="{{ user.id }}">
+        {% endif %}
+
         <link rel="icon" href="{% static 'favicon/48DjangoForge.ico' %}" type="image/png">
 
         <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
@@ -59,5 +64,7 @@
 
         
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
+    <script src="{% static 'pwa/js/registerSw.js' %}"></script>
+    <script src="{% static 'pwa/js/site.js' %}"></script>
     </body>
 </html>
