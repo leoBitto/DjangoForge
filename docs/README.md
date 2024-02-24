@@ -106,6 +106,82 @@ the dashboard.html inside website app.
 
 this file should be expanded using expand with templates that show the objects needed
 
+
+## Dockerfile Implementation Guide: A Step-by-Step Explanation
+
+**important commands**
+to start:
+`sudo docker-compose -f docker-compose.prod.yml up -d --build`
+`sudo docker-compose -f docker-compose.prod.yml exec web python manage.py migrate --noinput`
+`sudo docker-compose -f docker-compose.prod.yml exec web python manage.py collectstatic --no-input --clear`
+to stop:
+`sudo docker-compose down -v`
+
+
+This guide provides a detailed explanation of the Dockerfile discussed previously, serving as documentation for its implementation. It is written in simple English and includes relevant documentation links.
+
+**1. Introduction:**
+
+This Dockerfile defines a multi-stage build process for a production Django application. It creates an optimized and deployment-ready Docker image.
+
+**2. Builder Stage:**
+
+* **Base Image:** `python:3.11.4-slim-buster` provides a minimal Python environment.
+* **Working Directory:** `/usr/src/app` is set as the working directory.
+* **Environment Variables:**
+    * `PYTHONDONTWRITEBYTECODE=1`: Disables bytecode generation for better performance.
+    * `PYTHONUNBUFFERED=1`: Enables unbuffered output for real-time logging.
+* **System Dependencies:** `gcc` is installed for potential compiled dependencies.
+* **Pip Installation:** `pip` is updated and used to install Python dependencies.
+* **Copying Source Code:** The entire project is copied to the builder's working directory.
+* **Wheel Creation:** `pip wheel` is used to create wheel files from dependencies in the build stage, improving efficiency in the final stage.
+
+**3. Final Stage:**
+
+* **Base Image:** The `python:3.11.4-slim-buster` image is used again.
+* **App User:** A dedicated user `app` is created to run the application.
+* **Application Directory:** Directories are created for the `app` user, static files, media files, and the working directory is set.
+* **System Dependencies:** `netcat` is installed for potential network utilities.
+* **Copying Artifacts from Builder:**
+    * Pre-built wheel files are copied from the build stage using `COPY --from=builder`.
+    * `requirements.txt` is copied for reference.
+* **Installing Dependencies:** `pip install` is used to install dependencies using the pre-built wheel files and `requirements.txt`.
+* **Copying Project:** The entire project source code is copied to the application directory.
+* **Permissions:** Ownership of all files and directories is changed to `app:app`.
+* **Run User:** The user is set to `app` to run the application.
+* **Command:** `gunicorn` is run with the following options:
+    * `--workers=3`: Specifies the number of worker processes (3 in this case).
+    * `--timeout=90`: Sets the worker timeout to 90 seconds.
+    * `base.wsgi:application`: Indicates the WSGI module to use for starting the application.
+
+**4. Notes:**
+
+* This Dockerfile uses a multi-stage approach to improve efficiency and reduce the size of the final image.
+* The `app` user is used for security purposes and to separate application privileges.
+* The `gunicorn` command is configured with specific options for worker management and timeout.
+
+**5. Usage:**
+
+To use this Dockerfile:
+
+1. Build the image: `docker build -t my-django-app .`
+2. Run the container: `docker run -p 8000:8000 my-django-app` (replace `8000` with the desired port number)
+
+**6. Further Resources:**
+
+* Docker documentation: https://docs.docker.com/
+* Django documentation: https://docs.djangoproject.com/
+* gunicorn documentation: https://gunicorn.org/
+
+**7. Conclusion:**
+
+This Dockerfile provides a robust and efficient way to build and deploy a Django application. By following the steps outlined in this guide, you can create a production-ready image that is optimized for performance and security.
+
+**Feel free to ask if you have any questions or require further assistance!**
+
+
+
+
 # SET TO PRODUCTION
 
 #### Automated Server Setup with Deployment Script
