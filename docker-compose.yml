@@ -5,7 +5,7 @@ services:
     build:
       context: ./src
       dockerfile: Dockerfile
-    command: gunicorn base.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn base.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 90
     volumes:
       - static_volume:/home/app/web/static
       - media_volume:/home/app/web/media
@@ -20,7 +20,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - ./config/.env.prod.db
+      - ./config/.env.db
 
   nginx:
     build: ./nginx
@@ -28,7 +28,7 @@ services:
       - static_volume:/home/app/web/static
       - media_volume:/home/app/web/media
     ports:
-      - 1337:80
+      - 8000:80
     depends_on:
       - web
 
