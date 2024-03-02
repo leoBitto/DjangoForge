@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('dashboard/logging/', include('logging_app.urls', namespace='logging')),
     path('', include('website.urls', namespace='website')),
 ]
 if settings.DEBUG:
