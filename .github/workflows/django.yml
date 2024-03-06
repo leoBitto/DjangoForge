@@ -1,9 +1,7 @@
-name: Deploy to Digital Ocean
+name: First Deploy to Digital Ocean
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -12,110 +10,135 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
-
-
-    - name: Configure SSH and Deploy
-      uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.DO_SERVER_IP }}
-        username: ${{ secrets.DO_SSH_USERNAME }}
-        key: ${{ secrets.DO_SSH_KEY }}
+        submodules: recursive
 
-
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
 
     - name: Define REPO_NAME
       run: |
         # Ottieni il nome del repository dalla variabile GITHUB_REPOSITORY e definisci REPO_NAME
         REPO_NAME=$(basename $GITHUB_REPOSITORY)
         echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
+        echo $GITHUB_ENV
+      shell: bash
 
-    - name: Update and Upgrade Server
-      run: |
-        # Aggiorna e aggiorna il sistema operativo
-        sudo apt update -y
-        sudo apt upgrade -y
-        sudo apt install -y virtualenv python3-venv python3-dev libpq-dev postgresql postgresql-contrib nginx curl
 
-    - name: Create User
-      run: |
-        # Crea un nuovo utente con il nome specificato nei secrets
-        USER_NAME=${{ secrets.USER_NAME }}
-        sudo adduser $USER_NAME
-        sudo usermod -aG sudo $USER_NAME
+    - name: Update server and create new User
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.DO_SERVER_IP }}
+        username: ${{ secrets.DO_SSH_USERNAME }}
+        key: ${{ secrets.DO_SSH_KEY }}
+        script: |
+          
+          # Update Server
+          apt update -y
+          apt upgrade -y
+          apt install -y virtualenv python3-venv python3-dev libpq-dev postgresql postgresql-contrib nginx curl
+          
+          # Create New User
+          adduser --gecos "" ${{ secrets.USER_NAME }}
+          echo "${{ secrets.USER_NAME }}:${{ secrets.USER_PSSWRD }}" | sudo chpasswd
+          usermod -aG sudo ${{ secrets.USER_NAME }}
 
-    - name: Activate Virtual Environment
-      run: |
-        # Attiva l'ambiente virtuale e installa dipendenze Python
-        virtualenv env
-        source env/bin/activate
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        
-    - name: Create .env file
-      run: |
-        # Crea il file .env con le variabili segrete per Django
-        echo "SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> .env
-        echo "DEBUG=True" >> .env
-        echo "ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}" >> .env
-        echo "DATABASE_NAME=${{ secrets.DJANGO_DB_NAME }}" >> .env
-        echo "DATABASE_USER=${{ secrets.DJANGO_DB_USER }}" >> .env
-        echo "DATABASE_PASS=${{ secrets.DJANGO_DB_PASS }}" >> .env
-    
-    - name: Create Database and User
-      run: |
-        # Crea il database e l'utente PostgreSQL
-        sudo -u postgres psql -c "CREATE DATABASE ${{ secrets.DJANGO_DB_NAME }};"
-        sudo -u postgres psql -c "CREATE USER ${{ secrets.DJANGO_DB_USER }} WITH PASSWORD '${{ secrets.DJANGO_DB_PASS }}';"
-        sudo -u postgres psql -c "ALTER ROLE ${{ secrets.DJANGO_DB_USER }} SET client_encoding TO 'utf8';"
-        sudo -u postgres psql -c "ALTER ROLE ${{ secrets.DJANGO_DB_USER }} SET default_transaction_isolation TO 'read committed';"
-        sudo -u postgres psql -c "ALTER ROLE ${{ secrets.DJANGO_DB_USER }} SET timezone TO 'UTC';"
-        sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE ${{ secrets.DJANGO_DB_NAME }} TO ${{ secrets.DJANGO_DB_USER }};"
+          USER_NAME=${{ secrets.USER_NAME }}
+          REPO_NAME=${{ env.REPO_NAME }}
+          GITHUB_USER=${{ github.actor }}        
+          
+          pwd
 
-    - name: Run Django Commands
-      run: |
-        # Esegui i comandi di gestione Django
-        python manage.py makemigrations
-        python manage.py migrate
-        python manage.py createsuperuser
-        python manage.py collectstatic --noinput
-    
-    - name: Configure Gunicorn
-      run: |
-        # Configura Gunicorn con il nome utente e il nome del repository
-        sed -i "s/USER/${{ secrets.USER_NAME }}/" ./scripts/gunicorn/gunicorn.service
-        sed -i "s/PROJECTDIR/$REPO_NAME/" ./scripts/gunicorn/gunicorn.service
-        sudo cp ./scripts/gunicorn/gunicorn.socket /etc/systemd/system/
-        sudo cp ./scripts/gunicorn/gunicorn.service /etc/systemd/system/
-        sudo systemctl start gunicorn.socket
-        sudo systemctl enable gunicorn.socket
-        sudo systemctl daemon-reload
-        sudo systemctl restart gunicorn
-    
-    - name: Configure Nginx
-      run: |
-        # Configura Nginx con l'indirizzo IP, il nome utente e il nome del repository
-        ip_addr=$(curl -s ifconfig.co)
-        sed -i "s/IP/$ip_addr/" ./scripts/nginx/conf.nginx
-        sed -i "s/USER/${{ secrets.USER_NAME }}/" ./scripts/nginx/conf.nginx
-        sed -i "s/PROJECTDIR/$REPO_NAME/" ./scripts/nginx/conf.nginx
-        sudo cp ./scripts/nginx/conf.nginx /etc/nginx/sites-available/
-        sudo ln -s /etc/nginx/sites-available/conf.nginx /etc/nginx/sites-enabled/
-        sudo nginx -t
-        sudo systemctl restart nginx
-    
-    - name: Fix Firewall
-      run: |
-        # Correggi le regole del firewall
-        sudo ufw delete allow 8000
-        sudo ufw allow 'Nginx Full'
-    
-    - name: Final Checks
-      run: |
-        # Esegui gli ultimi controlli
-        sudo systemctl status gunicorn.socket
-        sudo systemctl status gunicorn
-        sudo systemctl status nginx
+          # Create Database and User of DB
+          DB_NAME=${{ secrets.DJANGO_DB_NAME }}
+          DB_USER=${{ secrets.DJANGO_DB_USER }}
+          DB_PASS=${{ secrets.DJANGO_DB_PASS }}
+
+          sudo service postgresql start
+          sudo -u postgres psql -c "CREATE DATABASE $DB_NAME;"
+          sudo -u postgres psql -c "CREATE USER $DB_USER WITH PASSWORD '$DB_PASS';"
+          sudo -u postgres psql -c "ALTER ROLE $DB_USER SET client_encoding TO 'utf8';"
+          sudo -u postgres psql -c "ALTER ROLE $DB_USER SET default_transaction_isolation TO 'read committed';"
+          sudo -u postgres psql -c "ALTER ROLE $DB_USER SET timezone TO 'UTC';"
+          sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;"
+          sudo -u postgres psql -c "ALTER DATABASE $DB_NAME OWNER TO $DB_USER;"
+
+          # Clone Repository
+          cd /home/${USER_NAME}
+          sudo -u ${{ secrets.USER_NAME }} git clone --recursive  https://github.com/$GITHUB_USER/$REPO_NAME.git $REPO_NAME
+          cd /home/$USER_NAME/$REPO_NAME
+          pwd
+
+          # Activate Virtual Environment and install dependencies
+          sudo -u ${{ secrets.USER_NAME }} virtualenv env_dj
+          source env_dj/bin/activate
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+          # Create .env file
+          cd /home/$USER_NAME/$REPO_NAME/src/base
+          pwd
+          sudo -u ${{ secrets.USER_NAME }} echo "SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> .env
+          sudo -u ${{ secrets.USER_NAME }} echo "DEBUG=False" >> .env
+          sudo -u ${{ secrets.USER_NAME }} echo "ALLOWED_HOSTS=127.0.0.1,localhost,${{ secrets.DO_SERVER_IP }},${{ secrets.DJANGO_ALLOWED_HOSTS }}" >> .env
+          sudo -u ${{ secrets.USER_NAME }} echo "DATABASE_NAME=${{ secrets.DJANGO_DB_NAME }}" >> .env
+          sudo -u ${{ secrets.USER_NAME }} echo "DATABASE_USER=${{ secrets.DJANGO_DB_USER }}" >> .env
+          sudo -u ${{ secrets.USER_NAME }} echo "DATABASE_PASS=${{ secrets.DJANGO_DB_PASS }}" >> .env
+
+          # Run Django Commands
+          cd /home/$USER_NAME/$REPO_NAME/src
+          pwd
+          python manage.py makemigrations
+          python manage.py migrate
+          
+          # set env variables to automatically create a superuser
+          export DJANGO_SUPERUSER_EMAIL=admin@example.com
+          export DJANGO_SUPERUSER_USERNAME=$USER_NAME
+          export DJANGO_SUPERUSER_PASSWORD=${{ secrets.USER_PSSWRD }}
+          
+          python manage.py createsuperuser --noinput  
+          python manage.py collectstatic --noinput
+
+          # Configura Gunicorn con il nome utente e il nome del repository
+          cd /home/$USER_NAME/$REPO_NAME
+          pwd
+          sed -i "s/USER/${{ secrets.USER_NAME }}/" ./scripts/gunicorn/gunicorn.service
+          sed -i "s/PROJECTDIR/$REPO_NAME/" ./scripts/gunicorn/gunicorn.service
+          sudo cp ./scripts/gunicorn/gunicorn.socket /etc/systemd/system/
+          sudo cp ./scripts/gunicorn/gunicorn.service /etc/systemd/system/
+          sudo systemctl start gunicorn.socket
+          sudo systemctl enable gunicorn.socket
+          sudo systemctl daemon-reload
+          sudo systemctl restart gunicorn
+          
+          # Configura Nginx con l'indirizzo IP, il nome utente e il nome del repository
+          cd /home/$USER_NAME/$REPO_NAME
+          pwd
+          ip_addr=$(curl -s ifconfig.co)
+          sed -i "s/IP/$ip_addr/" ./scripts/nginx/conf.nginx
+          sed -i "s/USER/${{ secrets.USER_NAME }}/" ./scripts/nginx/conf.nginx
+          sed -i "s/PROJECTDIR/$REPO_NAME/" ./scripts/nginx/conf.nginx
+          sudo cp ./scripts/nginx/conf.nginx /etc/nginx/sites-available/
+          sudo ln -s /etc/nginx/sites-available/conf.nginx /etc/nginx/sites-enabled/
+          sudo nginx -t
+          sudo systemctl restart nginx
+
+          # Correggi le regole del firewall
+          sudo ufw delete allow 8000
+          sudo ufw allow 'Nginx Full'
+          
+          # Riavvia Gunicorn e Nginx
+          sudo -u www-data systemctl restart gunicorn.socket
+          sudo -u www-data systemctl restart gunicorn
+          sudo -u www-data systemctl restart nginx
+          
+          # Esegui gli ultimi controlli
+          sudo -u www-data systemctl status gunicorn.socket
+          sudo -u www-data systemctl status gunicorn
+          sudo -u www-data systemctl status nginx
+
+          
+          sudo -u ${{ secrets.USER_NAME }} git pull
+          # change owner to home and everything
+          sudo chown -R www-data:www-data /home
+          
+
+

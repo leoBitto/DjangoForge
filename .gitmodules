@@ -1,0 +1,3 @@
+[submodule "src/logging_app"]
+	path = src/logging_app
+	url = https://github.com/leoBitto/Django-logging.git

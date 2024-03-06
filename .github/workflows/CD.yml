@@ -1,0 +1,72 @@
+name: CD to Digital Ocean
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+
+    - name: Define REPO_NAME
+      run: |
+        # Ottieni il nome del repository dalla variabile GITHUB_REPOSITORY e definisci REPO_NAME
+        REPO_NAME=$(basename $GITHUB_REPOSITORY)
+        echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
+        echo $GITHUB_ENV
+      shell: bash
+
+
+    - name: Update server and repo
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.DO_SERVER_IP }}
+        username: ${{ secrets.DO_SSH_USERNAME }}
+        key: ${{ secrets.DO_SSH_KEY }}
+        script: |
+          
+          # Update Server
+          apt update -y
+          apt upgrade -y
+          
+          USER_NAME=${{ secrets.USER_NAME }}
+          REPO_NAME=${{ env.REPO_NAME }}       
+
+          # Update Repository
+          cd /home/$USER_NAME/$REPO_NAME
+          sudo -u www-data git pull --recurse-submodules
+          
+          # Activate Virtual Environment and install dependencies
+          sudo -u $USER_NAME virtualenv env_dj
+          source env_dj/bin/activate
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+          # Run Django Commands
+          cd /home/$USER_NAME/$REPO_NAME/src
+          python manage.py makemigrations
+          python manage.py migrate
+          python manage.py collectstatic --noinput
+
+          # Riavvia Gunicorn e Nginx
+          sudo systemctl daemon-reload
+          sudo systemctl restart gunicorn.socket
+          sudo systemctl restart gunicorn
+          sudo systemctl restart nginx
+          
+          # Esegui gli ultimi controlli
+          sudo systemctl status gunicorn.socket
+          sudo systemctl status gunicorn
+          sudo systemctl status nginx
+
+
+
+
