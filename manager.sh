@@ -2,7 +2,7 @@
 
 # Questa funzione elimina le immagini precedenti e avvia i container
 build_and_start_containers() {
-    # Stop tutti i container, incluso i volumi e quelli orfani
+    # Elimina i container e i volumi esistenti (opzionale)
     sudo docker-compose down -v --remove-orphans
 
     # Avvia i container Docker in background e ricrea le immagini se necessario
@@ -26,9 +26,6 @@ build_and_start_containers() {
 
 # Questa funzione avvia solo i container Docker
 start_containers() {
-    # Stop tutti i container, incluso i volumi e quelli orfani
-    sudo docker-compose down -v --remove-orphans
-
     # Avvia i container Docker in background 
     sudo docker-compose -f docker-compose.yml up -d 
     echo "Immagini create"
@@ -47,9 +44,17 @@ start_containers() {
 # Questa funzione ferma i container Docker
 stop_containers() {
     # Ferma tutti i container precedenti
-    sudo docker-compose down -v --remove-orphans
+    sudo docker-compose -f docker-compose.yml down
 
     echo "Server fermato"
+}
+
+# Questa funzione elimina tutti i container e i volumi
+destroy_containers() {
+    # Elimina tutti i container e i volumi associati
+    sudo docker-compose -f docker-compose.yml down -v --remove-orphans
+
+    echo "Container e volumi eliminati"
 }
 
 # Controlla gli argomenti passati allo script
@@ -63,8 +68,11 @@ case "$1" in
     stop)
         stop_containers
         ;;
+    destroy)
+        destroy_containers
+        ;;
     *)
-        echo "Utilizzo: $0 {build|start|stop}"
+        echo "Utilizzo: $0 {build|start|stop|destroy}"
         exit 1
         ;;
 esac
