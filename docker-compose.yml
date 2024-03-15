@@ -20,7 +20,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - ./config/.env.db
+      - ./config/.env
 
   nginx:
     build: ./nginx
@@ -28,7 +28,7 @@ services:
       - static_volume:/home/app/web/static
       - media_volume:/home/app/web/media
     ports:
-      - 8000:80
+      - 80:80
     depends_on:
       - web
 

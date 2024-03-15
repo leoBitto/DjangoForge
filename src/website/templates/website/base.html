@@ -39,7 +39,7 @@
         
     <!-- modal for messages -->
     {% if messages %}
-        <div class="alert alert-info alert-dismissible fade show position-fixed bottom-0 end-0 m-4" role="alert">
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %} alert-dismissible fade show position-fixed bottom-0 end-0 m-4 z-index-3" role="alert">
             {% for message in messages %}
                 {{ message }}
                 {% if not forloop.last %}<br>{% endif %}
