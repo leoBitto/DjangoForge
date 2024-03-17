@@ -56,6 +56,95 @@ Inside this directory, there should be a file called `dashboard.html` that expan
 
 This file should be expanded using the expand statement with templates that show the objects needed.
 
+
+# SET TO PRODUCTION
+
+#### Automated Server Setup with Deployment Script
+
+## Overview
+
+This guide explains how to use the provided deployment script to set up a server for the DjangoForge project. The script automates various steps involved in server setup, application deployment, and database configuration.
+Digital Ocean provides a feature called Droplets. Droplets are scalable compute platforms with add-on storage, where your applications can be deployed. In the script, there might be references to Digital Ocean-specific details like IP addresses, server configurations, etc. Before using the script we need to grant access to Digital Ocean to Github. To do so we need to access the remote server, so after creating the droplet we access it with root
+NB the access from your computer to the server may be using a ssh key, that has nothing to do with the key we are creating with the following procedure:
+
+## Public SSH Key:
+
+When you create a new Droplet on Digital Ocean, make sure to add the public SSH key to your Github account. This allows you to authenticate securely when GitHub Actions tries to connect to your Droplet. To do so, you need to enter the server as root, create a ssh key pairs:
+
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
+```
+When you’re prompted to “Enter a file in which to save the key,” press Enter. This accepts the default file location.
+Just give Enter for the passphrase. Once the SSH key is generated we need to add the key with SSH-agent and start the SSH-agent in the background
+
+```bash
+eval "$(ssh-agent -s)"
+```
+Add your SSH private key to the ssh-agent. If you created your key with a different name, or if you are adding an existing key that has a different name, replace id_ed25519 in the command with the name of your private key file.
+
+```bash
+ssh-add ~/.ssh/id_ed25519
+```
+Before logout from the server we need to copy the SSH key to add in GitHub.
+
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+NB use nano to copy the key in the file autorized_keys
+
+Then select and copy the contents of the id_ed25519 file displayed in the terminal to your clipboard. Add the private SSH key to your GitHub repository as a "Secret." Go to "Settings" -> "Secrets" -> "New repository secret" and add the private SSH key with a meaningful name, DO_SSH_KEY.
+
+The last and final step is to add the SSH ***public*** key to the GitHub account. navigate to the settings -> SSH and GCP keys -> New SSH key add your copied SSH key in key add the same key to the authorized_key file inside the .ssh folder in the server
+Once you add the keys our server and GitHub sync is ready to test. You need to perform the deployment based on script written in yml file.
+
+recap: 
+the ***public*** key must be linked in github in the *profile settings* and in the *autorized_keys file* in the server
+the ***private*** key must be a secret in github
+
+## Secrets Required for Deployment
+
+To successfully deploy the application using this GitHub Actions workflow, you need to set up the following secrets in your GitHub repository.
+
+1. **DIGITALOCEAN_HOST**:
+   - Description: IP address of the target server.
+   - Where to find/create: Obtain from your hosting provider or system administrator.
+
+1. **DIGITALOCEAN_USERNAME**:
+   - Description: SSH username used to connect to the server.
+   - Where to find/create: Your server's SSH username. we need to use root
+
+1. **DIGITALOCEAN_SSH_KEY**:
+   - Description: SSH private key for authentication.
+   - Where to find/create: Generate an SSH key pair and add the private key as a secret.
+
+1. **USER_NAME**:
+   - Description: Username for the new user on the server.
+   - Where to find/create: Specify a desired username for the new user.
+
+1. **USER_PSSWRD**:
+    - Description: Password for the newly created user on the server.
+    - Where to find/create: Specify a secure password for the new user.
+
+1. **POSTGRES_PASSWORD**:
+   - Description: Password for the PostgreSQL database user.
+   - Where to find/create: Specify a secure password for the database user.
+
+1. **DJANGO_SECRET_KEY**:
+   - Description: Django secret key for security.
+   - Where to find/create: Generate a new secret key for your Django application.
+
+1. **DJANGO_ALLOWED_HOSTS**:
+   - Description: Comma-separated list of allowed hosts for the Django application.
+   - Where to find/create: Specify the allowed hosts for your application. the host needed are the 
+      human readable url eg: www.domain.com and domain.com. if there are no such url add a , as the secret content
+
+
+Note: Ensure these secrets are set up in your GitHub repository settings under the "Settings" tab, and then navigate to "Secrets".
+
+
+
+
+
 ## Dockerfile: Step-by-Step Guide
 
 **Important Commands**
@@ -155,4 +244,112 @@ This script streamlines the deployment process, automating several manual steps,
     Restarts services and performs checks to ensure successful deployment.
 
 ---
+
+Capisco, possiamo tradurre la guida in inglese. Ecco la versione rivista della documentazione:
+
+---
+
+# Project Deployment Guide
+
+## Prerequisites:
+- A GitHub account
+- A DigitalOcean account
+
+## Creating a Droplet on DigitalOcean:
+
+1. Log in to your DigitalOcean account.
+2. In the dashboard, select "Droplets" from the main menu.
+3. Click on "Create Droplet".
+4. Configure the Droplet options as desired (distribution, size, datacenter, etc.).
+5. Choose "SSH Key" as the authentication method and select or create an SSH key pair.
+6. Click on "Create Droplet" to start the creation process.
+
+## Creating SSH Keys:
+
+When you create a new Droplet on Digital Ocean, make sure to add the public SSH key to your Github account. This allows you to authenticate securely when GitHub Actions tries to connect to your Droplet. To do so, you need to enter the server as root, create a ssh key pairs:
+
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
+```
+When you’re prompted to “Enter a file in which to save the key,” press Enter. This accepts the default file location.
+Just give Enter for the passphrase. Once the SSH key is generated we need to add the key with SSH-agent and start the SSH-agent in the background
+
+```bash
+eval "$(ssh-agent -s)"
+```
+Add your SSH private key to the ssh-agent. If you created your key with a different name, or if you are adding an existing key that has a different name, replace id_ed25519 in the command with the name of your private key file.
+
+```bash
+ssh-add ~/.ssh/id_ed25519
+```
+Before logout from the server we need to copy the SSH key to add in GitHub.
+
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+NB use nano to copy the key in the file autorized_keys
+
+Then select and copy the contents of the id_ed25519 file displayed in the terminal to your clipboard. Add the private SSH key to your GitHub repository as a "Secret." Go to "Settings" -> "Secrets" -> "New repository secret" and add the private SSH key with a meaningful name, DO_SSH_KEY.
+
+The last and final step is to add the SSH ***public*** key to the GitHub account. navigate to the settings -> SSH and GCP keys -> New SSH key add your copied SSH key in key add the same key to the authorized_key file inside the .ssh folder in the server
+Once you add the keys our server and GitHub sync is ready to test. You need to perform the deployment based on script written in yml file.
+
+recap: 
+the ***public*** key must be linked in github in the *profile settings* and in the *autorized_keys file* in the server
+the ***private*** key must be a secret in github
+
+## Creating Secrets on GitHub:
+
+1. Access the repository of your project on GitHub.
+2. In the "Settings" section, select "Secrets".
+3. Click on "New repository secret".
+4. Add the following secrets:
+
+   - `SSH_PRIVATE_KEY`: Paste your server's private key here.
+   - `HOST`: Enter the IP address of your Droplet.
+   - `USERNAME`: Usually it's `root`.
+   - `DIGITALOCEAN_ACCESS_TOKEN`: To generate an access token on DigitalOcean:
+     - Log in to your DigitalOcean account.
+     - Go to the "API" section in the dashboard.
+     - Click on "Generate New Token" and assign the necessary permissions.
+     - Copy and paste the generated token as the value for this secret.
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
