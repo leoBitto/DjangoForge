@@ -298,23 +298,82 @@ recap:
 the ***public*** key must be linked in github in the *profile settings* and in the *autorized_keys file* in the server
 the ***private*** key must be a secret in github
 
-## Creating Secrets on GitHub:
 
-1. Access the repository of your project on GitHub.
-2. In the "Settings" section, select "Secrets".
-3. Click on "New repository secret".
-4. Add the following secrets:
 
-   - `SSH_PRIVATE_KEY`: Paste your server's private key here.
-   - `HOST`: Enter the IP address of your Droplet.
-   - `USERNAME`: Usually it's `root`.
-   - `DIGITALOCEAN_ACCESS_TOKEN`: To generate an access token on DigitalOcean:
-     - Log in to your DigitalOcean account.
-     - Go to the "API" section in the dashboard.
-     - Click on "Generate New Token" and assign the necessary permissions.
-     - Copy and paste the generated token as the value for this secret.
 
----
+
+
+
+
+
+# Guide to Deploying a Project Using a Template
+
+## Creating the Project Using the Template
+
+1. **Create a Project Using the Template:**
+   - Log in to GitHub and use the default template to create a new repository.
+   - Make sure to select the appropriate template for the type of project you want to develop.
+
+2. **Clone the Repository Locally:**
+   - Use Git to clone the newly created repository to your local machine.
+   - Run the command:
+     ```
+     git clone <repository_URL>
+     ```
+   to clone the repository.
+
+3. **Modify the New Project:**
+   - Open the cloned project in your preferred text editor.
+   - Modify the source code, configuration files, and other project elements according to your needs.
+
+## Configuration for Production
+
+4. **Create the Droplet:**
+   - Log in to your DigitalOcean account and create a new droplet.
+   - Select the droplet specifications based on the project requirements.
+
+5. **Update and Configure the Droplet:**
+   - After creating the droplet, access it via SSH.
+   - Update the droplet's operating system by running:
+     ```
+     sudo apt-get update && sudo apt-get upgrade -y
+     ```
+   - Install Docker and Docker Compose on the droplet.
+
+6. **Generate the SSH Key Pair:**
+   - Generate an SSH key pair by running the following command:
+     ```
+     ssh-keygen -t ed25519 -C "your_email@example.com"
+     ```
+   - Add the SSH private key to the `ssh-agent` and the `~/.ssh/authorized_keys` file by running the following commands:
+     ```
+     eval "$(ssh-agent -s)"
+     ssh-add ~/.ssh/id_ed25519
+     ```
+   - To view the SSH public key, run:
+     ```
+     cat ~/.ssh/id_ed25519.pub
+     ```
+   - Copy the displayed SSH public key and add it to your GitHub Secrets and the `~/.ssh/authorized_keys` file on the droplet.
+
+7. **Create the Token on DigitalOcean:**
+   - Log in to your DigitalOcean account and generate a new access token for the API.
+   - Copy the generated token securely.
+
+8. **Create the Secrets on GitHub:**
+   - Add the following secrets to the GitHub repository:
+     - `DIGITALOCEAN_ACCESS_TOKEN`: The access token generated on DigitalOcean.
+     - `DO_SSH_PRIVATE_KEY`: The SSH private key generated for the droplet.
+     - `HOST`: The IP address or hostname of the droplet.
+     - `POSTGRES_DB`: The name of the PostgreSQL database.
+     - `POSTGRES_PASSWORD`: The password for the PostgreSQL database.
+     - `POSTGRES_USER`: The user for the PostgreSQL database.
+     - `USERNAME`: The username to access the droplet.
+
+9. **Push Changes to the GitHub Repository:**
+   - Stage, commit, and push the changes made to the repository to GitHub.
+
+Once these steps are completed, your project will be ready to be deployed using the DigitalOcean droplet. Be sure to test the process and monitor the application after deployment to ensure everything is functioning correctly.
 
 
 
