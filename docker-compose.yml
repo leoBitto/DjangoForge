@@ -5,6 +5,7 @@ services:
     build:
       context: ./src
       dockerfile: Dockerfile
+    image: django
     command: gunicorn base.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 90
     volumes:
       - static_volume:/home/app/web/static
@@ -24,6 +25,7 @@ services:
 
   nginx:
     build: ./nginx
+    image: nginx:latest
     volumes:
       - static_volume:/home/app/web/static
       - media_volume:/home/app/web/media
