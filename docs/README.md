@@ -125,8 +125,8 @@ other info used by the droplet and the container registry:
 1. USERNAME          -> root
 
 
-____________________________________________________________________________________________________________________________________________________
-
+After the creation of the secrets you can 
+_______________________________________________________________________________
 
 # stuff for the wiki
 - folder structure of the project
