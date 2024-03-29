@@ -9,12 +9,15 @@ DjangoForge is a project ready for deployment, based on Django. This manual prov
 ### Create a Repository from Template
 
 1. Click on the "Use this template" button on the GitHub repository page.
+
+[! use this template](./assets/img/for_readme/usethistemplate.png "use this template")
+
 2. Create a new repository based on the template.
 
 ### Clone the New Repository Locally
 
 ```bash
-git clone --recursive https://github.com/your-username/your-new-repo.git
+git clone --recursive https://github.com/your-username/your-new-repo.git your-new-repo
 cd your-new-repo
 ```
 
@@ -24,16 +27,33 @@ cd your-new-repo
    ```bash
    git submodule add <URL to submodule> src/<name of app>
    ```
-   Then `git add`, `git commit`, and push.
+   
+1. Update the setting file with all the Django apps we intend to use and add the new set of URLs the application uses in the `urls.py` file. In `settings.py` update the `INSTALLED_APPS` list with the apps we use.
 
-2. Update the setting file with all the Django apps we intend to use and add the new set of URLs the application uses in the `urls.py` file. In `settings.py` update the `INSTALLED_APPS` list with the apps we use.
+1. Then `git add`, `git commit`, and `git push`. 
+
+### use the manager.sh
+manager.sh is a shell script that can work in a linux machine. it is used to simplify the process of starting the project locally for development
+run : `source manager.sh build` to build and start containers
+run : `source manager.sh start` to start containers
+run : `source manager.sh stop`  to stop containers
+run : `source manager.sh destroy` to eliminate containers
+
+the build command is the most used in development:
+1. eliminates the containers along with their images; 
+1. build them again; 
+1. create the migrations for django;
+1. run collectstatic;
+1. prompt for superuser creation.
+
+after running the command you can find the app running at http://localhost
 
 
 ## Project Deployment 
 
 ### Prerequisites:
 - A GitHub account
-- A DigitalOcean account
+- A DigitalOcean account ( or another server provider )
 
 ### Creating a Droplet on DigitalOcean:
 
@@ -43,6 +63,15 @@ cd your-new-repo
 4. Configure the Droplet options as desired (distribution, size, datacenter, etc.).
 5. Choose "SSH Key" as the authentication method and select or create an SSH key pair.
 6. Click on "Create Droplet" to start the creation process.
+
+> [!NOTE]  
+> the service Digital Ocean is a suggestion. the project is not bound to be on a droplet.
+> this document and the following wiki will refer to digital ocean services since 
+> this is the service used by the author at the time of writing this document
+
+> [!TIP] 
+> before using the docker implementation it's better to use the full power of Django for debugging purpose
+> so start the development server of Django during the first stages of development
 
 #### Creating SSH Keys:
 
@@ -67,21 +96,53 @@ Before logout from the server we need to copy the SSH key to add in GitHub.
 ```bash
 cat ~/.ssh/id_ed25519.pub
 ```
-NB use nano to copy the key in the file autorized_keys
+> [!TIP] 
+> use nano to copy the key in the file autorized_keys
 
 Then select and copy the contents of the id_ed25519 file displayed in the terminal to your clipboard. Add the private SSH key to your GitHub repository as a "Secret." Go to "Settings" -> "Secrets" -> "New repository secret" and add the private SSH key with a meaningful name, DO_SSH_KEY.
 
 The last and final step is to add the SSH ***public*** key to the GitHub account. navigate to the settings -> SSH and GCP keys -> New SSH key add your copied SSH key in key add the same key to the authorized_key file inside the .ssh folder in the server
-Once you add the keys our server and GitHub sync is ready to test. You need to perform the deployment based on script written in yml file.
+Once you add the keys our server and GitHub sync is ready to test. 
 
 recap: 
-the ***public*** key must be linked in github in the *profile settings* and in the *autorized_keys file* in the server
+the ***public*** key must be linked in github in the *profile settings* ***and*** in the *autorized_keys file* in the server
 the ***private*** key must be a secret in github
+
+### create the secrets on Github
+the actions read from the secrets of github, they contain the following information:
+
+1. DEBUG             -> False (DJANGO)
+1. SECRET_KEY        -> yousecretkey (DJANGO)
+1. POSTGRES_DB       -> the name of the db (POSTGRES)
+1. POSTGRES_USER     -> the name of the db user (POSTGRES)
+1. POSTGRES_PASSWORD -> the password of the db (POSTGRES)
+1. DOMAIN            -> names of the domain (NGINX)
+
+other info used by the droplet and the container registry:
+
+1. DO_SSH_PRIVATE_KEY-> private key from server
+1. GHCR_TOKEN        -> token of github
+1. HOST              -> droplet address IP 
+1. USERNAME          -> root
+
 
 
 
 
 ____________________________________________________________________________________________________________________________________________________
+
+
+# stuff for the wiki
+- folder structure of the project
+- what to touch (urls.py,settings.py)
+- website
+- logging app
+- docker
+- docker compose
+- nginx
+- github actions & secrets
+- in production
+- in development
 
 the deploy consist in various steps. it is automated with github actions that require secrets to work.
 the actions are two:
@@ -126,21 +187,6 @@ the configuration file are basically two:
 - one is a generic config file for both django and postgres
 - the other is a nginx.conf file to set up nginx and SSL
 
-the files read from the secrets of github, they contain the following information:
-
-1. DEBUG             -> False (DJANGO)
-1. SECRET_KEY        -> yousecretkey (DJANGO)
-1. POSTGRES_DB       -> the name of the db (POSTGRES)
-1. POSTGRES_USER     -> the name of the db user (POSTGRES)
-1. POSTGRES_PASSWORD -> the password of the db (POSTGRES)
-1. DOMAIN            -> names of the domain (NGINX)
-
-other info used by the droplet and the container registry:
-
-1. DO_SSH_PRIVATE_KEY-> private key from server
-1. GHCR_TOKEN        -> token of github
-1. HOST              -> droplet address IP 
-1. USERNAME          -> root
 
 
 
