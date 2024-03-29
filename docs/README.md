@@ -1,4 +1,5 @@
 # DjangoForge: User Manual
+[![pages-build-deployment](https://github.com/leoBitto/DjangoForge/actions/workflows/pages/pages-build-deployment/badge.svg?branch=main)](https://github.com/leoBitto/DjangoForge/actions/workflows/pages/pages-build-deployment)
 
 ## Introduction
 
@@ -47,7 +48,7 @@ the build command is the most used in development:
 
 after running the command you can find the app running at http://localhost
 
-
+=============================================================================
 ## Project Deployment 
 
 ### Prerequisites:
@@ -110,218 +111,22 @@ the ***private*** key must be a secret in github
 ### create the secrets on Github
 the actions read from the secrets of github, they contain the following information:
 
-1. DEBUG             -> False (DJANGO)
-1. SECRET_KEY        -> yousecretkey (DJANGO)
-1. POSTGRES_DB       -> the name of the db (POSTGRES)
-1. POSTGRES_USER     -> the name of the db user (POSTGRES)
-1. POSTGRES_PASSWORD -> the password of the db (POSTGRES)
-1. DOMAIN            -> names of the domain (NGINX)
+1. **DEBUG**             -> False (DJANGO)
+1. **SECRET_KEY**        -> yousecretkey (DJANGO)
+1. **POSTGRES_DB**       -> the name of the db (POSTGRES)
+1. **POSTGRES_USER**     -> the name of the db user (POSTGRES)
+1. **POSTGRES_PASSWORD** -> the password of the db (POSTGRES)
+1. **DOMAIN**            -> names of the domain (NGINX)
 
 other info used by the droplet and the container registry:
 
-1. DO_SSH_PRIVATE_KEY-> private key from server
-1. GHCR_TOKEN        -> token of github
-1. HOST              -> droplet address IP 
-1. USERNAME          -> root
+1. **DO_SSH_PRIVATE_KEY**-> private key from server
+1. **GHCR_TOKEN**        -> [token of github]("https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens")
+1. **HOST**              -> droplet IP address  
+1. **USERNAME**          -> root
 
 
-After the creation of the secrets you can 
+After the creation of the secrets you can manually start the workflow nominated BUILD & PUSH ON GHCR or it will start on every push to the repo.
+Same for the Deploy workflow.
 _______________________________________________________________________________
 
-# stuff for the wiki
-- folder structure of the project
-- what to touch (urls.py,settings.py)
-- website
-- logging app
-- docker
-- docker compose
-- nginx
-- github actions & secrets
-- in production
-- in development
-
-the deploy consist in various steps. it is automated with github actions that require secrets to work.
-the actions are two:
-1. build and push
-1. deploy
-
-the first action allow to create and image from the repository and upload it on the ghcr connected to the repo
-the second will need a digital ocean droplet to connect with, it will upload the docker-compose file 
-and create and run the images.
-
-the project is compose of three images: nginx, db and web. 
-- nginx is the container of nginx, it serves as a reverse proxy to direct connection to the web container
-- web is container that run gunicorn/django is the actual app
-- db is the container for postgres
-
-only web is a personalized image. db and nginx are images that come from the dockerhub
-
-the steps taken by the two actions are as follows:
-### build and push
-1. create two environment variables: REGISTRY and IMAGE_NAME 
-   REGISTRY point to the name of the registry: ghcr.io
-   IMAGE_NAME point the name of the image it is used primarly to tag the image
-1. checkout the repo
-1. create the conf file ( more info in the next section )
-1. build the web image
-1. log in to the container registry
-1. tag image
-1. push image to the container registry
-
-at this point you should be able to see the image in the section packages of you main GitHub page. it has the name equal to the 
-environment variable IMAGE_NAME 
-
-### deploy 
-1. checkout the repo
-1. enter server and update & upgrade, install docker and docker compose
-1. enter server and create conf file
-1. enter server and scp docker-compose file and nginx conf
-1. enter server and stop old container, start new containers
-
-## CONFIG
-the configuration file are basically two:
-- one is a generic config file for both django and postgres
-- the other is a nginx.conf file to set up nginx and SSL
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## Dockerfile: Step-by-Step Guide
-
-**Important Commands**
-To start:
-`sudo docker-compose -f docker-compose.yml up -d --build`
-`sudo docker-compose -f docker-compose.yml exec web python manage.py migrate --noinput`
-`sudo docker-compose -f docker-compose.yml exec web python manage.py collectstatic --no-input --clear`
-To stop:
-`sudo docker-compose down -v`
-
-1. **Introduction:**
-   This Dockerfile defines a multi-stage build process for a production Django application. It creates an optimized and deployment-ready Docker image.
-
-2. **Builder Stage:**
-   - **Base Image:** `python:3.11.4-slim-buster` provides a minimal Python environment.
-   - **Working Directory:** `/usr/src/app` is set as the working directory.
-   - **Environment Variables:**
-     - `PYTHONDONTWRITEBYTECODE=1`: Disables bytecode generation for better performance.
-     - `PYTHONUNBUFFERED=1`: Enables unbuffered output for real-time logging.
-   - **System Dependencies:** `gcc` is installed for potential compiled dependencies.
-   - **Pip Installation:** `pip` is updated and used to install Python dependencies.
-   - **Copying Source Code:** The entire project is copied to the builder's working directory.
-   - **Wheel Creation:** `pip wheel` is used to create wheel files from dependencies in the build stage, improving efficiency in the final stage.
-
-3. **Final Stage:**
-   - **Base Image:** The `python:3.11.4-slim-buster` image is used again.
-   - **App User:** A dedicated user `app` is created to run the application.
-   - **Application Directory:** Directories are created for the `app` user, static files, media files, and the working directory is set.
-   - **Copying Artifacts from Builder:**
-     - Pre-built wheel files are copied from the build stage using `COPY --from=builder`.
-     - `requirements.txt` is copied for reference.
-   - **Installing Dependencies:** `pip install` is used to install dependencies using the pre-built wheel files and `requirements.txt`.
-   - **Copying Project:** The entire project source code is copied to the application directory.
-   - **Permissions:** Ownership of all files and directories is changed to `app:app`.
-   - **Run User:** The user is set to `app` to run the application.
-   - **Command:** `gunicorn` is run with specific options.
-
-4. **Notes:**
-   - This Dockerfile uses a multi-stage approach to improve efficiency and reduce the size of the final image.
-   - The `app` user is used for security purposes and to separate application privileges.
-   - The `gunicorn` command is configured with specific options for worker management and timeout.
-
-5. **Usage:**
-   To use this Dockerfile:
-   1. Build the image: `docker build -t my-django-app .`
-   2. Run the container: `docker run -p 8000:8000 my-django-app` (replace `8000` with the desired port number)
-
-6. **Further Resources:**
-   - Docker documentation: https://docs.docker.com/
-   - Django documentation: https://docs.djangoproject.com/
-   - Gunicorn documentation: https://gunicorn.org/
-
-7. **Conclusion:**
-   This Dockerfile provides a robust and efficient way to build and deploy a Django application.
-
-## Automated Deployment with Script
-
-### Overview
-
-This script streamlines the deployment process, automating several manual steps, and can be triggered automatically on every push to the main branch of the GitHub repository.
-
-### Deployment Workflow
-
-1. **Checkout Repository:**
-   Clones the repository GitHub into the GitHub Actions runner.
-
-2. **Define REPO_NAME:**
-   Extracts the repository name and saves it in the `REPO_NAME` variable within GitHub Actions Environment Variables (`$GITHUB_ENV`).
-
-3. **Configure Server:**
-  
-
- Connects to the server configured in secret variables and performs setup tasks.
-
-4. **Clone Repository:**
-   Clones the GitHub repository inside the server using the GitHub username and repository name.
-
-5. **Activate Virtual Environment and install dependencies:**
-   Creates a Python virtual environment, activates it, and installs project dependencies.
-
-6. **Create .env file:**
-   Creates the `.env` file with necessary configurations.
-
-7. **Run Django Commands:**
-   Executes Django commands for setup and configuration.
-
-8. **Configure Gunicorn:**
-   Configures Gunicorn for serving the Django application.
-
-9. **Configure Nginx:**
-   Configures Nginx as a reverse proxy.
-
-10. **Fix Firewall:**
-    Adjusts firewall rules to allow traffic.
-
-11. **Final Checks:**
-    Restarts services and performs checks to ensure successful deployment.
-
----
-
-## Module `website`
-
-The `website` module allows you to load images, gather them in galleries, add contacts, and opening hours. To use the module:
-
-1. Modify the landing page.
-2. Modify the navbar and footer with the links of all the pages you want to be accessible.
-3. Modify the view called "base", it will call the page `landing.html`. Add the info in the context you use in the landing. It will be the first page seen by the user.
-4. Modify the favicon and title in the template `base.html`.
-
-### Dashboard
-
-The `website` application has a dashboard part that allows you to perform CRUD operations on graphical objects such as images and galleries...
-The dashboard can be the place where all such operations for the other apps should be done.
-It can be expanded by creating a dashboard directory inside the templates directory of the new app.
-
-```
-app folder
-│   ├── ... 
-├── templates/        
-│   ├── dashboard
-└── ...  
-```
-
-This allows you to keep the dashboard components inside of the new app separated from the rest.
-Inside this directory, there should be a file called `dashboard.html` that expands using include `dashboard.html` inside the website app.
-
-This file should be expanded using the expand statement with templates that show the objects needed.
