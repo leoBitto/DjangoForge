@@ -121,7 +121,7 @@ the actions read from the secrets of github, they contain the following informat
 other info used by the droplet and the container registry:
 
 1. **DO_SSH_PRIVATE_KEY**-> private key from server
-1. **GHCR_TOKEN**        -> [token of github]("https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens")
+1. **GHCR_TOKEN**        -> [token of github](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
 1. **HOST**              -> droplet IP address  
 1. **USERNAME**          -> root
 
