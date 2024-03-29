@@ -10,7 +10,6 @@ DjangoForge is a project ready for deployment, based on Django. This manual prov
 
 1. Click on the "Use this template" button on the GitHub repository page.
 
-[! use this template](/docs/assets/img/for_readme/usethistemplate.png "use this template")
 
 2. Create a new repository based on the template.
 
@@ -124,9 +123,6 @@ other info used by the droplet and the container registry:
 1. GHCR_TOKEN        -> token of github
 1. HOST              -> droplet address IP 
 1. USERNAME          -> root
-
-
-[Code of conduct](/CODE_OF_CONDUCT.md)
 
 
 ____________________________________________________________________________________________________________________________________________________
