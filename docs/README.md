@@ -2,16 +2,16 @@
 
 ## Introduction
 
-DjangoForge is a project ready for deployment, based on Django. This manual provides detailed instructions on how to use the project and automate the deployment process using GitHub Actions.
+DjangoForge is a project ready for deployment, based on Django. This manual provides detailed instructions on how to use the automatic procedure of deployment using GitHub Actions.
 
 ## Project Setup
 
-### 1. Create a Repository from Template
+### Create a Repository from Template
 
 1. Click on the "Use this template" button on the GitHub repository page.
 2. Create a new repository based on the template.
 
-### 2. Clone the New Repository Locally
+### Clone the New Repository Locally
 
 ```bash
 git clone --recursive https://github.com/your-username/your-new-repo.git
@@ -28,38 +28,60 @@ cd your-new-repo
 
 2. Update the setting file with all the Django apps we intend to use and add the new set of URLs the application uses in the `urls.py` file. In `settings.py` update the `INSTALLED_APPS` list with the apps we use.
 
-## Module `website`
 
-The `website` module allows you to load images, gather them in galleries, add contacts, and opening hours. To use the module:
+## Project Deployment 
 
-1. Modify the landing page.
-2. Modify the navbar and footer with the links of all the pages you want to be accessible.
-3. Modify the view called "base", it will call the page `landing.html`. Add the info in the context you use in the landing. It will be the first page seen by the user.
-4. Modify the favicon and title in the template `base.html`.
+### Prerequisites:
+- A GitHub account
+- A DigitalOcean account
 
-### Dashboard
+### Creating a Droplet on DigitalOcean:
 
-The `website` application has a dashboard part that allows you to perform CRUD operations on graphical objects such as images and galleries...
-The dashboard can be the place where all such operations for the other apps should be done.
-It can be expanded by creating a dashboard directory inside the templates directory of the new app.
+1. Log in to your DigitalOcean account.
+2. In the dashboard, select "Droplets" from the main menu.
+3. Click on "Create Droplet".
+4. Configure the Droplet options as desired (distribution, size, datacenter, etc.).
+5. Choose "SSH Key" as the authentication method and select or create an SSH key pair.
+6. Click on "Create Droplet" to start the creation process.
 
+#### Creating SSH Keys:
+
+When you create a new Droplet on Digital Ocean, make sure to add the public SSH key to your Github account. This allows you to authenticate securely when GitHub Actions tries to connect to your Droplet. To do so, you need to enter the server as root, create a ssh key pairs:
+
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
 ```
-app folder
-│   ├── ... 
-├── templates/        
-│   ├── dashboard
-└── ...  
+When you’re prompted to “Enter a file in which to save the key,” press Enter. This accepts the default file location.
+Just give Enter for the passphrase. Once the SSH key is generated we need to add the key with SSH-agent and start the SSH-agent in the background
+
+```bash
+eval "$(ssh-agent -s)"
 ```
+Add your SSH private key to the ssh-agent. If you created your key with a different name, or if you are adding an existing key that has a different name, replace id_ed25519 in the command with the name of your private key file.
 
-This allows you to keep the dashboard components inside of the new app separated from the rest.
-Inside this directory, there should be a file called `dashboard.html` that expands using include `dashboard.html` inside the website app.
+```bash
+ssh-add ~/.ssh/id_ed25519
+```
+Before logout from the server we need to copy the SSH key to add in GitHub.
 
-This file should be expanded using the expand statement with templates that show the objects needed.
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+NB use nano to copy the key in the file autorized_keys
+
+Then select and copy the contents of the id_ed25519 file displayed in the terminal to your clipboard. Add the private SSH key to your GitHub repository as a "Secret." Go to "Settings" -> "Secrets" -> "New repository secret" and add the private SSH key with a meaningful name, DO_SSH_KEY.
+
+The last and final step is to add the SSH ***public*** key to the GitHub account. navigate to the settings -> SSH and GCP keys -> New SSH key add your copied SSH key in key add the same key to the authorized_key file inside the .ssh folder in the server
+Once you add the keys our server and GitHub sync is ready to test. You need to perform the deployment based on script written in yml file.
+
+recap: 
+the ***public*** key must be linked in github in the *profile settings* and in the *autorized_keys file* in the server
+the ***private*** key must be a secret in github
 
 
 
 
-# DEPLOYMENT
+____________________________________________________________________________________________________________________________________________________
 
 the deploy consist in various steps. it is automated with github actions that require secrets to work.
 the actions are two:
@@ -121,54 +143,7 @@ other info used by the droplet and the container registry:
 1. USERNAME          -> root
 
 
-# Project Deployment Guide
 
-## Prerequisites:
-- A GitHub account
-- A DigitalOcean account
-
-## Creating a Droplet on DigitalOcean:
-
-1. Log in to your DigitalOcean account.
-2. In the dashboard, select "Droplets" from the main menu.
-3. Click on "Create Droplet".
-4. Configure the Droplet options as desired (distribution, size, datacenter, etc.).
-5. Choose "SSH Key" as the authentication method and select or create an SSH key pair.
-6. Click on "Create Droplet" to start the creation process.
-
-## Creating SSH Keys:
-
-When you create a new Droplet on Digital Ocean, make sure to add the public SSH key to your Github account. This allows you to authenticate securely when GitHub Actions tries to connect to your Droplet. To do so, you need to enter the server as root, create a ssh key pairs:
-
-```bash
-ssh-keygen -t ed25519 -C "your_email@example.com"
-```
-When you’re prompted to “Enter a file in which to save the key,” press Enter. This accepts the default file location.
-Just give Enter for the passphrase. Once the SSH key is generated we need to add the key with SSH-agent and start the SSH-agent in the background
-
-```bash
-eval "$(ssh-agent -s)"
-```
-Add your SSH private key to the ssh-agent. If you created your key with a different name, or if you are adding an existing key that has a different name, replace id_ed25519 in the command with the name of your private key file.
-
-```bash
-ssh-add ~/.ssh/id_ed25519
-```
-Before logout from the server we need to copy the SSH key to add in GitHub.
-
-```bash
-cat ~/.ssh/id_ed25519.pub
-```
-NB use nano to copy the key in the file autorized_keys
-
-Then select and copy the contents of the id_ed25519 file displayed in the terminal to your clipboard. Add the private SSH key to your GitHub repository as a "Secret." Go to "Settings" -> "Secrets" -> "New repository secret" and add the private SSH key with a meaningful name, DO_SSH_KEY.
-
-The last and final step is to add the SSH ***public*** key to the GitHub account. navigate to the settings -> SSH and GCP keys -> New SSH key add your copied SSH key in key add the same key to the authorized_key file inside the .ssh folder in the server
-Once you add the keys our server and GitHub sync is ready to test. You need to perform the deployment based on script written in yml file.
-
-recap: 
-the ***public*** key must be linked in github in the *profile settings* and in the *autorized_keys file* in the server
-the ***private*** key must be a secret in github
 
 
 
@@ -281,4 +256,30 @@ This script streamlines the deployment process, automating several manual steps,
 
 ---
 
+## Module `website`
 
+The `website` module allows you to load images, gather them in galleries, add contacts, and opening hours. To use the module:
+
+1. Modify the landing page.
+2. Modify the navbar and footer with the links of all the pages you want to be accessible.
+3. Modify the view called "base", it will call the page `landing.html`. Add the info in the context you use in the landing. It will be the first page seen by the user.
+4. Modify the favicon and title in the template `base.html`.
+
+### Dashboard
+
+The `website` application has a dashboard part that allows you to perform CRUD operations on graphical objects such as images and galleries...
+The dashboard can be the place where all such operations for the other apps should be done.
+It can be expanded by creating a dashboard directory inside the templates directory of the new app.
+
+```
+app folder
+│   ├── ... 
+├── templates/        
+│   ├── dashboard
+└── ...  
+```
+
+This allows you to keep the dashboard components inside of the new app separated from the rest.
+Inside this directory, there should be a file called `dashboard.html` that expands using include `dashboard.html` inside the website app.
+
+This file should be expanded using the expand statement with templates that show the objects needed.
