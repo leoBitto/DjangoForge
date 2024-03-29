@@ -23,7 +23,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('dashboard/logging/', include('logging_app.urls', namespace='logging')),
     path('', include('website.urls', namespace='website')),
-    path('bookings/', include('bookings.urls', namespace='bookings')),
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

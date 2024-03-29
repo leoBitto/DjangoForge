@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     # add here the app names
-    'bookings',
     'website',
     'fontawesomefree',
     'logging_app',
