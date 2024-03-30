@@ -51,6 +51,14 @@ after running the command you can find the app running at http://localhost
 =============================================================================
 ## Project Deployment 
 
+> [!TIP] 
+> before using the docker implementation it's better to use the full power of Django for debugging purpose
+> so start the development server of Django during the first stages of development
+
+>[!WARNING]
+> you should change the name of the IMAGE_NAME in the build-and-push.yml 
+> file so you can control the name you'll see in the packages tab on Github
+
 ### Prerequisites:
 - A GitHub account
 - A DigitalOcean account ( or another server provider )
@@ -69,9 +77,6 @@ after running the command you can find the app running at http://localhost
 > this document and the following wiki will refer to digital ocean services since 
 > this is the service used by the author at the time of writing this document
 
-> [!TIP] 
-> before using the docker implementation it's better to use the full power of Django for debugging purpose
-> so start the development server of Django during the first stages of development
 
 #### Creating SSH Keys:
 
@@ -116,7 +121,7 @@ the actions read from the secrets of github, they contain the following informat
 1. **POSTGRES_DB**       -> the name of the db (POSTGRES)
 1. **POSTGRES_USER**     -> the name of the db user (POSTGRES)
 1. **POSTGRES_PASSWORD** -> the password of the db (POSTGRES)
-1. **DOMAIN**            -> names of the domain (NGINX)
+1. **DOMAIN**            -> names of the domain (NGINX) if you don't have a domain yet use the ip adress of the droplet
 
 other info used by the droplet and the container registry:
 
@@ -124,6 +129,10 @@ other info used by the droplet and the container registry:
 1. **GHCR_TOKEN**        -> [token of github](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
 1. **HOST**              -> droplet IP address  
 1. **USERNAME**          -> root
+
+>[!WARNING]
+> you should change the name of the IMAGE_NAME in the build-and-push.yml 
+> file so you can control the name you'll see in the packages tab on Github
 
 
 After the creation of the secrets you can manually start the workflow nominated BUILD & PUSH ON GHCR or it will start on every push to the repo.
