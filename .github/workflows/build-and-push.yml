@@ -1,4 +1,4 @@
-name: BUILD & PUSH ON GHCR
+name: Build & Push on GHCR
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: webapp_django
+  IMAGE_NAME: tester
 
 jobs:
   build_and_push:
@@ -35,6 +35,11 @@ jobs:
 
       - name: Display content of .env file
         run: cat ./config/.env
+
+      - name: Update Nginx configuration file
+        run: |
+          sed -i "s/server_name localhost/server_name ${{ secrets.DOMAIN }}/g" ./nginx/nginx.conf
+        working-directory: .
       
       - name: Build Docker image using Docker Compose
         run: docker-compose -f docker-compose.yml build
@@ -53,19 +58,16 @@ jobs:
         
       - name: Tag image 
         run: |
-          echo ${REGISTRY}/${OWNER_LC}/${IMAGE_NAME}:${{ github.run_number }}
-          docker tag  ${IMAGE_NAME} ${REGISTRY}/${OWNER_LC}/${IMAGE_NAME}:latest
-          docker tag  nginx_django ${REGISTRY}/${OWNER_LC}/nginx_django:latest
+          echo ${REGISTRY}/${OWNER_LC}/${IMAGE_NAME}:latest
+          docker tag  webapp_django ${REGISTRY}/${OWNER_LC}/${IMAGE_NAME}:latest
 
       - name: List Docker images
         run: docker images
         
-
       - name: Push image to GitHub Container Registry
         run: | 
           echo ${REGISTRY}/${OWNER_LC}/${{ env.IMAGE_NAME }}:latest
           docker push ${REGISTRY}/${OWNER_LC}/${{ env.IMAGE_NAME }}:latest
-          docker push ${REGISTRY}/${OWNER_LC}/nginx_django:latest
 
 
   
