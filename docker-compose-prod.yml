@@ -2,7 +2,8 @@ version: '3.8'
 
 services:
   web:
-    image: ghcr.io/leobitto/tester:latest  # Utilizza l'immagine pre-build presente nel registry
+    image: tester:latest  # Utilizza l'immagine pre-build presente nel registry
+    container_name: web
     command: gunicorn base.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 90
     volumes:
       - static_volume:/home/app/web/static
@@ -14,6 +15,7 @@ services:
 
   db:
     image: postgres:15
+    container_name: postgres_db
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
@@ -21,6 +23,7 @@ services:
 
   nginx:
     image: nginx:latest
+    container_name: nginx_reverse_proxy
     volumes:
       - static_volume:/home/app/web/static
       - media_volume:/home/app/web/media

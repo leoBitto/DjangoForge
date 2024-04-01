@@ -30,7 +30,7 @@ jobs:
           echo "SQL_HOST=db" >> config/.env
           echo "SQL_PORT=5432" >> config/.env
           echo "DATABASE=postgres" >> config/.env
-          echo "DOMAIN=localhost" >> config/.env
+          echo "DOMAIN=${{ secrets.DOMAIN }}" >> config/.env
         working-directory: .
 
       - name: Display content of .env file

@@ -103,16 +103,16 @@ jobs:
         env:
           OWNER: '${{ github.repository_owner }}'
 
-      - name: LOG IN to container registry
-        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+     # - name: LOG IN to container registry
+     #   run: |
+     #     echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
  
-      - name: Pull image from GitHub Container Registry
-        run: | 
-          echo ${REGISTRY}/${OWNER_LC}/${{ env.IMAGE_NAME }}:latest
-          docker pull ${REGISTRY}/${OWNER_LC}/${{ env.IMAGE_NAME }}:latest
-
-      - name: List Docker images
-        run: docker images
+     # - name: Pull image from GitHub Container Registry
+     #   run: | 
+     #     echo ${REGISTRY}/${OWNER_LC}/${{ env.IMAGE_NAME }}:latest
+     #     docker pull ${REGISTRY}/${OWNER_LC}/${{ env.IMAGE_NAME }}:latest 
+     #     docker tag ${REGISTRY}/${OWNER_LC}/${{ env.IMAGE_NAME }}:latest ${{ env.IMAGE_NAME }}
+     #     docker images
 
       - name: Stop And Start containers
         uses: appleboy/ssh-action@v0.1.3
@@ -121,8 +121,19 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.DO_SSH_PRIVATE_KEY }}
           script: |
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo ${REGISTRY}/${OWNER_LC}/${{ env.IMAGE_NAME }}:latest 
+            echo ${REGISTRY}
+            echo ${OWNER_LC}
+            docker pull ghcr.io/leobitto/${{ env.IMAGE_NAME }}:latest 
+            docker tag ghcr.io/leobitto/${{ env.IMAGE_NAME }}:latest ${{ env.IMAGE_NAME }}
+            docker images
+            docker tag ${REGISTRY}/${OWNER_LC}/${{ env.IMAGE_NAME }}:latest ${{ env.IMAGE_NAME }}
             docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose-prod.yml down
-            docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose-prod.yml up -d
-        #working-directory: /opt/${{ env.REPO_NAME }}
+            docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose-prod.yml up -d --force-recreate
+      #      docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose-prod.yml exec -T web python manage.py migrate --noinput
+      #      docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose-prod.yml exec -T web python manage.py collectstatic --noinput --clear
+
+        
 
 
