@@ -51,7 +51,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
-          source: "./docker-compose-prod.yml"
+          source: "./docker-compose.prod.yml"
           target: "/opt/${{ env.REPO_NAME }}/"
 
       - name: SCP Nginx conf file
@@ -129,8 +129,8 @@ jobs:
             docker tag ghcr.io/leobitto/${{ env.IMAGE_NAME }}:latest ${{ env.IMAGE_NAME }}
             docker images
             docker tag ${REGISTRY}/${OWNER_LC}/${{ env.IMAGE_NAME }}:latest ${{ env.IMAGE_NAME }}
-            docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose-prod.yml down
-            docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose-prod.yml up -d --force-recreate
+            docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose.prod.yml down
+            docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose.prod.yml up -d --force-recreate
       #      docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose-prod.yml exec -T web python manage.py migrate --noinput
       #      docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose-prod.yml exec -T web python manage.py collectstatic --noinput --clear
 
