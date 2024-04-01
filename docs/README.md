@@ -135,6 +135,13 @@ other info used by the droplet and the container registry:
 > file so you can control the name you'll see in the packages tab on Github
 
 
+>[!WARNING]
+> you should change the name of the repo and your username in the docker 
+> compose prod (docker-compose-prod.yml) so that you will point to your image
+
+
+
+
 After the creation of the secrets you can manually start the workflow nominated BUILD & PUSH ON GHCR or it will start on every push to the repo.
 Same for the Deploy workflow.
 _______________________________________________________________________________
