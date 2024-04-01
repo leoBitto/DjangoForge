@@ -42,7 +42,7 @@ jobs:
         working-directory: .
       
       - name: Build Docker image using Docker Compose
-        run: docker-compose -f docker-compose.yml build
+        run: docker-compose -f docker-compose-dev.yml build
 
       - name: verify that all the container have been built
         run: docker images
