@@ -69,7 +69,6 @@ jobs:
           echo ${REGISTRY}/${OWNER_LC}/${{ env.IMAGE_NAME }}:latest
           docker push ${REGISTRY}/${OWNER_LC}/${{ env.IMAGE_NAME }}:latest
 
-jobs:
   deploy:
     runs-on: ubuntu-latest
 
