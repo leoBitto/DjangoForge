@@ -191,7 +191,6 @@ jobs:
             docker pull ghcr.io/leobitto/${{ env.IMAGE_NAME }}:latest 
             docker tag ghcr.io/leobitto/${{ env.IMAGE_NAME }}:latest ${{ env.IMAGE_NAME }}
             docker images
-      #      docker tag ${REGISTRY}/${OWNER_LC}/${{ env.IMAGE_NAME }}:latest ${{ env.IMAGE_NAME }}
             docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose.prod.yml down
             docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose.prod.yml up -d --force-recreate
       #      docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose-prod.yml exec -T web python manage.py migrate --noinput
