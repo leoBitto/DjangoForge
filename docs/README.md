@@ -1,8 +1,5 @@
 # DjangoForge: User Manual
 
-<p align="center">
-  <img src="./assets/img/DjangoForge_sfondo.png" />
-</p>
 
 
 [![pages-build-deployment](https://github.com/leoBitto/DjangoForge/actions/workflows/pages/pages-build-deployment/badge.svg?branch=main)](https://github.com/leoBitto/DjangoForge/actions/workflows/pages/pages-build-deployment)
