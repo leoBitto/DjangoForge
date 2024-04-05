@@ -62,4 +62,4 @@ RUN chown -R app:app $APP_HOME
 # change to the app user
 USER app
 
-CMD ["gunicorn", "--workers=3", "--timeout 90", "base.wsgi:application"]
+CMD ["gunicorn", "--workers=3", "--timeout 120", "base.wsgi:application"]
