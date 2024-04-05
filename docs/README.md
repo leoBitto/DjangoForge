@@ -1,4 +1,7 @@
 # DjangoForge: User Manual
+
+![pages-build-deployment](./assets/img/DjangoForge.png)
+
 [![pages-build-deployment](https://github.com/leoBitto/DjangoForge/actions/workflows/pages/pages-build-deployment/badge.svg?branch=main)](https://github.com/leoBitto/DjangoForge/actions/workflows/pages/pages-build-deployment)
 
 ## Introduction
