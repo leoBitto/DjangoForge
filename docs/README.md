@@ -1,7 +1,7 @@
 # DjangoForge: User Manual
 
 <p align="center">
-  <img src="./assets/img/DjangoForge.png" />
+  <img src="./assets/img/DjangoForge_sfondo.png" />
 </p>
 
 
