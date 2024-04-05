@@ -15,7 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repo 
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        with:
+            submodules: recursive
+            token: ${{ secrets.GITHUB_TOKEN }}
         
       - name: Create config directory and .env file
         run: |
@@ -76,7 +79,7 @@ jobs:
     steps:
 
       - name: Checkout del repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set ENV variables
         run: |
@@ -182,13 +185,10 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            echo ${REGISTRY}/${OWNER_LC}/${{ env.IMAGE_NAME }}:latest 
-            echo ${REGISTRY}
-            echo ${OWNER_LC}
+
             docker pull ghcr.io/leobitto/${{ env.IMAGE_NAME }}:latest 
             docker tag ghcr.io/leobitto/${{ env.IMAGE_NAME }}:latest ${{ env.IMAGE_NAME }}
-            docker images
-            docker tag ${REGISTRY}/${OWNER_LC}/${{ env.IMAGE_NAME }}:latest ${{ env.IMAGE_NAME }}
+
             docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose.prod.yml down
             docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose.prod.yml up -d --force-recreate
       #      docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose-prod.yml exec -T web python manage.py migrate --noinput
