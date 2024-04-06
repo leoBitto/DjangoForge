@@ -184,7 +184,7 @@ jobs:
             echo "wait for it.."
             sleep 5
             echo "5 seconds has passed"
-            docker-compose exec web python manage.py migrate
-            docker-compose exec web python manage.py collectstatic --noinput --clear
+            docker exec web python manage.py migrate
+            docker exec web python manage.py collectstatic --noinput --clear
 
     
