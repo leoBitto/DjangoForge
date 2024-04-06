@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'website',
     'fontawesomefree',
     'logging_app',
+    'BBlog',
     
 ]
 
