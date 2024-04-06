@@ -181,6 +181,7 @@ jobs:
 
             docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose.prod.yml down
             docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose.prod.yml up -d --force-recreate
+            sleep 5
             docker-compose exec web python manage.py migrate
             docker-compose exec web python manage.py collectstatic --noinput --clear
 
