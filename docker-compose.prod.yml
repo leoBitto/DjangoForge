@@ -36,7 +36,7 @@ services:
     depends_on:
       - web
 
-### MODIFICA L'EMAIL E IL DOMINIO IN ENTRYPOINT!!!
+
   certbot:
     image: certbot/certbot
     container_name: certbot
@@ -45,8 +45,9 @@ services:
       - ./config:/etc/letsencrypt/config
       - certbot_webroot:/var/www/certbot
     entrypoint: /bin/sh -c "trap exit TERM; while :; do certbot certonly --webroot -w /var/www/certbot --email ${EMAIL} --agree-tos --no-eff-email --domains ${DOMAIN}; sleep 12h & wait $${!}; done;"
-    env_file:
-      - ./config/.env
+    environment:
+      - EMAIL=leonardobitto@gmail.com
+      - DOMAIN=h1v3.xyz 
 
 
 volumes:
