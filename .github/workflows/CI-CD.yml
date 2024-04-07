@@ -106,6 +106,7 @@ jobs:
             echo "SQL_HOST=db" >> "/opt/${{ env.REPO_NAME }}/config/.env"
             echo "SQL_PORT=5432" >> "/opt/${{ env.REPO_NAME }}/config/.env"
             echo "DATABASE=postgres" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "EMAIL=${{ secrets.EMAIL }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
             echo "DOMAIN=${{ secrets.DOMAIN }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
 
       - name: SCP Docker Compose file and Nginx conf
@@ -123,7 +124,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
-          source: "./nginx/nginx.conf"
+          source: "./nginx/nginx.prod.conf"
           target: "/opt/${{ env.REPO_NAME }}/"
 
       - name: Update Nginx configuration file
@@ -133,7 +134,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
-            sed -i "s/server_name localhost/server_name ${{ secrets.DOMAIN }}/g" /opt/${{ env.REPO_NAME }}/nginx/nginx.conf
+            sed -i "s/mydomain.com/${{ secrets.DOMAIN }}/g" /opt/${{ env.REPO_NAME }}/nginx/nginx.prod.conf
 
       - name: Upgrade server and install Docker
         uses: appleboy/ssh-action@v0.1.3
