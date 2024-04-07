@@ -125,10 +125,11 @@ the actions read from the secrets of github, they contain the following informat
 1. **POSTGRES_USER**     -> the name of the db user (POSTGRES)
 1. **POSTGRES_PASSWORD** -> the password of the db (POSTGRES)
 1. **DOMAIN**            -> names of the domain (NGINX) if you don't have a domain yet use the ip adress of the droplet
+1. **EMAIL**             -> add a valid email for SSL (CERTBOT)
 
 other info used by the droplet and the container registry:
 
-1. **PRIVATE_KEY**-> private key from server
+1. **PRIVATE_KEY**       -> private key from server
 1. **GHCR_TOKEN**        -> [token of github](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
 1. **HOST**              -> droplet IP address  
 1. **USERNAME**          -> root
