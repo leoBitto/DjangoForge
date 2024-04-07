@@ -1,0 +1,32 @@
+name: Create Django Superuser
+
+on:
+  workflow_dispatch:  # Trigger manual workflow run
+    inputs:
+        superuser-name:
+            description: 'Superuser username'
+            required: true
+        superuser-email:
+            description: 'Superuser email'
+            required: true
+        superuser-password:
+            description: 'Superuser password'
+            required: true
+
+jobs:
+  create_superuser:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: SSH into server and execute Docker command
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            docker exec web python manage.py createsuperuser --username "${{ inputs.superuser-name }}" --email "${{ inputs.superuser-email }}" --noinput
+            echo -e "${{ inputs.superuser-password }}\n${{ inputs.superuser-password }}" | docker exec -i web python manage.py changepassword "${{ inputs.superuser-name }}"

@@ -142,7 +142,11 @@ other info used by the droplet and the container registry:
 > you should change the name of the repo and your username in the docker 
 > compose prod (docker-compose-prod.yml) so that you will point to your image
 
-
+###  change the IMAGE_NAME
+after the creation of the secret you have to change the image name in the workflow.
+image name is an environment variable of the workflow that will be used as the name
+to create the directory inside the server and as the name of the image inside the 
+repository container.
 
 
 After the creation of the secrets you can manually start the workflow nominated BUILD & PUSH ON GHCR or it will start on every push to the repo.
