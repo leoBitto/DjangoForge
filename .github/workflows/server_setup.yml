@@ -106,7 +106,7 @@ jobs:
             key: ${{ secrets.PRIVATE_KEY }}
             source: "./nginx/nginx.conf"
             target: "/etc/nginx/sites-available/${{ env.REPO_NAME }}/"
-            strip_components: 1
+            strip_components: 2
 
 
       - name: check nginx2
