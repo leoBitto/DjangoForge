@@ -42,7 +42,7 @@ jobs:
         run: cat ./config/.env
       
       - name: Build Docker image using Docker Compose
-        run: docker-compose -f docker-compose.prod.yml build
+        run: docker-compose -f docker-compose.dev.yml build
 
       - name: verify that all the container have been built
         run: docker images
@@ -149,7 +149,7 @@ jobs:
             sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose docker-compose-plugin -y
             sudo apt upgrade -y
 
-            
+
       - name: set lower case owner name
         run: |
           echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
