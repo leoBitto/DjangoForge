@@ -21,38 +21,8 @@ services:
     env_file:
       - ./config/.env
 
-  nginx:
-    image: nginx:latest
-    container_name: nginx_reverse_proxy
-    volumes:
-      - static_volume:/home/app/web/static
-      - media_volume:/home/app/web/media
-      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
-      - certbot_volume:/etc/letsencrypt
-    ports:
-      - 80:80
-      - 443:443
-    restart: always
-    depends_on:
-      - web
-
-
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes:
-      - certbot_volume:/etc/letsencrypt
-      - ./config:/etc/letsencrypt/config
-      - certbot_webroot:/var/www/certbot
-    env_file:
-      - ./config/.env
-    entrypoint: /bin/sh -c "trap exit TERM; while :; do certbot certonly --webroot -w /var/www/certbot --email leonardobitto@gmail.com --agree-tos --no-eff-email --domains h1v3.xyz; sleep 12h & wait $${!}; done;"
-    
-
 
 volumes:
   postgres_data:
   static_volume:
   media_volume:
-  certbot_volume:
-  certbot_webroot:  

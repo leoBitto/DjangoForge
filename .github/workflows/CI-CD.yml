@@ -13,7 +13,9 @@ env:
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
+
     steps:
+
       - name: Checkout the repo 
         uses: actions/checkout@v3
         with:
@@ -38,14 +40,9 @@ jobs:
 
       - name: Display content of .env file
         run: cat ./config/.env
-
-      - name: Update Nginx configuration file
-        run: |
-          sed -i "s/server_name localhost/server_name ${{ secrets.DOMAIN }}/g" ./nginx/nginx.conf
-        working-directory: .
       
       - name: Build Docker image using Docker Compose
-        run: docker-compose -f docker-compose.dev.yml build
+        run: docker-compose -f docker-compose.prod.yml build
 
       - name: verify that all the container have been built
         run: docker images
@@ -84,11 +81,13 @@ jobs:
           submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
 
+
       - name: Set ENV variables
         run: |
           echo "REPO_NAME=${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}" >> $GITHUB_ENV
           echo $GITHUB_ENV
       
+
       - name: Create project directory and conf file
         uses: appleboy/ssh-action@v0.1.3
         with:
@@ -113,6 +112,7 @@ jobs:
             echo "DOMAIN=${{ secrets.DOMAIN }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
             cat "/opt/${{ env.REPO_NAME }}/config/.env"
 
+
       - name: SCP Docker Compose file and Nginx conf
         uses: appleboy/scp-action@master
         with:
@@ -122,23 +122,6 @@ jobs:
           source: "./docker-compose.prod.yml"
           target: "/opt/${{ env.REPO_NAME }}/"
 
-      - name: SCP Nginx conf file
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.PRIVATE_KEY }}
-          source: "./nginx/nginx.prod.conf"
-          target: "/opt/${{ env.REPO_NAME }}/"
-
-      - name: Update Nginx configuration file
-        uses: appleboy/ssh-action@v0.1.3
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.PRIVATE_KEY }}
-          script: |
-            sed -i "s/yourdomain.com/${{ secrets.DOMAIN }}/g" /opt/${{ env.REPO_NAME }}/nginx/nginx.prod.conf
 
       - name: Upgrade server and install Docker
         uses: appleboy/ssh-action@v0.1.3
@@ -164,7 +147,9 @@ jobs:
             sudo apt-get update -y
 
             sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose docker-compose-plugin -y
+            sudo apt upgrade -y
 
+            
       - name: set lower case owner name
         run: |
           echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
@@ -191,5 +176,15 @@ jobs:
             echo "5 seconds has passed"
             docker exec web python manage.py migrate
             docker exec web python manage.py collectstatic --noinput --clear
+
+
+      - name: Restart Nginx Service
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            sudo systemctl restart nginx
 
     

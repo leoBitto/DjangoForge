@@ -2,16 +2,7 @@ name: Setup Server
 
 on:
   workflow_dispatch:  # Trigger manual workflow run
-    inputs:
-        superuser-name:
-            description: 'Superuser username'
-            required: true
-        superuser-email:
-            description: 'Superuser email'
-            required: true
-        superuser-password:
-            description: 'Superuser password'
-            required: true
+
 
 jobs:
   setup-server:
@@ -66,7 +57,7 @@ jobs:
             script: |
                 mkdir -p "/opt/${{ env.REPO_NAME }}"
                 mkdir -p "/opt/${{ env.REPO_NAME }}/config"
-                rm /opt/${{ env.REPO_NAME }}/config/.env
+
                 echo "DEBUG=False" >> "/opt/${{ env.REPO_NAME }}/config/.env"
                 echo "SECRET_KEY=foo" >> "/opt/${{ env.REPO_NAME }}/config/.env"
                 echo "DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1] *" >> "/opt/${{ env.REPO_NAME }}/config/.env"
@@ -79,6 +70,7 @@ jobs:
                 echo "DATABASE=postgres" >> "/opt/${{ env.REPO_NAME }}/config/.env"
                 echo "EMAIL=${{ secrets.EMAIL }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
                 echo "DOMAIN=${{ secrets.DOMAIN }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+
                 cat "/opt/${{ env.REPO_NAME }}/config/.env"
 
       - name: SCP Docker Compose file and Nginx conf
@@ -108,7 +100,7 @@ jobs:
             username: ${{ secrets.USERNAME }}
             key: ${{ secrets.PRIVATE_KEY }}
             script: |
-                sed -i "s/yourdomain.com/${{ secrets.DOMAIN }}/g" /etc/nginx/sites-available/${{ env.REPO_NAME }}/nginx.conf
+                sed -i "s/localhost/${{ secrets.DOMAIN }}/g" /etc/nginx/sites-available/${{ env.REPO_NAME }}/nginx.conf
                 ln -s /etc/nginx/sites-available/${{ env.REPO_NAME }} /etc/nginx/sites-enabled
                 nginx -t
                 systemctl restart nginx
