@@ -113,7 +113,7 @@ jobs:
             cat "/opt/${{ env.REPO_NAME }}/config/.env"
 
 
-      - name: SCP Docker Compose file and Nginx conf
+      - name: SCP Docker Compose file 
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }}

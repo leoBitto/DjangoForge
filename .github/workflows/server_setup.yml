@@ -41,7 +41,7 @@ jobs:
                 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose docker-compose-plugin -y
                 sudo apt install nginx curl -y
 
-                
+
       - name: Set ENV variables
         run: |
           echo "REPO_NAME=${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}" >> $GITHUB_ENV
@@ -57,7 +57,7 @@ jobs:
             script: |
                 mkdir -p "/opt/${{ env.REPO_NAME }}"
                 mkdir -p "/opt/${{ env.REPO_NAME }}/config"
-
+                rm /opt/${{ env.REPO_NAME }}/config/.env
                 echo "DEBUG=False" >> "/opt/${{ env.REPO_NAME }}/config/.env"
                 echo "SECRET_KEY=foo" >> "/opt/${{ env.REPO_NAME }}/config/.env"
                 echo "DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1] *" >> "/opt/${{ env.REPO_NAME }}/config/.env"
@@ -73,7 +73,8 @@ jobs:
 
                 cat "/opt/${{ env.REPO_NAME }}/config/.env"
 
-      - name: SCP Docker Compose file and Nginx conf
+
+      - name: SCP Docker Compose file 
         uses: appleboy/scp-action@master
         with:
             host: ${{ secrets.HOST }}
@@ -81,6 +82,16 @@ jobs:
             key: ${{ secrets.PRIVATE_KEY }}
             source: "./docker-compose.prod.yml"
             target: "/opt/${{ env.REPO_NAME }}/"
+
+      - name: Update Nginx configuration file
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+            host: ${{ secrets.HOST }}
+            username: ${{ secrets.USERNAME }}
+            key: ${{ secrets.PRIVATE_KEY }}
+            script: |
+              cd /etc/nginx/sites-available/${{ env.REPO_NAME }}/
+
 
 
       - name: SCP Nginx conf file
@@ -107,6 +118,7 @@ jobs:
                 ufw delete allow 8000
                 ufw allow 'Nginx Full'
         
+
       - name: Request Certbot certificates
         uses: appleboy/ssh-action@v0.1.3
         with:
