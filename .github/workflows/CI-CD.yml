@@ -123,7 +123,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           source: "./nginx/nginx.conf"
           target: "/etc/nginx/"
-          strip_components: 2
+          strip_components: 3
 
       - name: Update Nginx configuration file
         uses: appleboy/ssh-action@v0.1.3
