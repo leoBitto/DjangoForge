@@ -121,9 +121,9 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
-          source: "/nginx/nginx.conf"
-          target: "/etc/nginx/sites-available"
-          strip_components: 3
+          source: "nginx/"
+          target: "/etc/nginx/sites-available/"
+          strip_components: 1
 
       - name: Update Nginx configuration file
         uses: appleboy/ssh-action@v0.1.3
