@@ -144,7 +144,14 @@ jobs:
                 apt-get remove certbot
                 snap install --classic certbot
                 ln -s /snap/bin/certbot /usr/bin/certbot
-                certbot --nginx --non-interactive --agree-tos --email ${{ secrets.EMAIL }} --domains ${{ secrets.DOMAIN }}
+
+                # Estrai il valore del segreto in una variabile
+                DOMAINS="${{ secrets.DOMAINS }}"
+
+                # Sostituisci gli spazi con virgole
+                DOMAINS=$(echo "$DOMAINS" | sed 's/ /,/g')               
+
+                certbot --nginx --non-interactive --agree-tos --email ${{ secrets.EMAIL }} --domains "${DOMAINS}"
                 certbot renew --dry-run
 
 
