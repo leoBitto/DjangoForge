@@ -104,6 +104,10 @@ jobs:
 
             docker tag ghcr.io/leobitto/${{ env.IMAGE_NAME }}:latest ${{ env.IMAGE_NAME }}
 
+            mkdir -p /opt/web/static
+            mkdir -p /opt/web/media
+
+
             docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose.prod.yml up -d 
             echo "wait 5 sec for POSTGRES service to fully start"
             sleep 5
