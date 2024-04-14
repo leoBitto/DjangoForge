@@ -121,7 +121,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
-          source: "./nginx/nginx.conf"
+          source: "/nginx/nginx.conf"
           target: "/etc/nginx/sites_available"
           strip_components: 3
 
