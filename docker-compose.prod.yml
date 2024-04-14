@@ -32,9 +32,12 @@ services:
 
 
 volumes:
-  postgres_data:
   static_volume:
+    external:
+      name: static_volume  # Volume esterno per i file statici
   media_volume:
+    external:
+      name: media_volume  # Volume esterno per i file multimediali
 
 
 networks:
