@@ -150,7 +150,7 @@ jobs:
 
                 # Sostituisci gli spazi con virgole
                 DOMAINS=$(echo "$DOMAINS" | sed 's/ /,/g')               
-
+                echo $DOMAINS
                 certbot --nginx --non-interactive --agree-tos --email ${{ secrets.EMAIL }} --domains "${DOMAINS}"
                 certbot renew --dry-run
 
