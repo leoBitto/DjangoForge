@@ -144,7 +144,7 @@ jobs:
                 apt-get remove certbot
                 snap install --classic certbot
                 ln -s /snap/bin/certbot /usr/bin/certbot
-                certbot --nginx --non-interactive --agree-tos --email ${{ secrets.EMAIL }}
+                certbot --nginx --non-interactive --agree-tos --email ${{ secrets.EMAIL }} --domains ${{ secrets.DOMAIN }}
                 certbot renew --dry-run
 
 
