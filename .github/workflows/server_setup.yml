@@ -104,11 +104,6 @@ jobs:
 
             docker tag ghcr.io/leobitto/${{ env.IMAGE_NAME }}:latest ${{ env.IMAGE_NAME }}
 
-            docker volume create --name=static_volume
-            docker volume create --name=media_volume
-            docker volume create --name=postgres_data
-
-
             docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose.prod.yml up -d 
             echo "wait 5 sec for POSTGRES service to fully start"
             sleep 5
