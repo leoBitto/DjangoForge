@@ -155,6 +155,7 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8000", "http://*:8000"]
+
+CSRF_TRUSTED_ORIGINS = ["http://localhost:8000", "http://*:8000", "http://" + os.environ.get("DOMAIN").split(' ')[0], "http://" + os.environ.get("DOMAIN").split(' ')[1]]
 
 
