@@ -2,6 +2,10 @@ name: Setup Server
 
 on:
   workflow_dispatch:  # Trigger manual workflow run
+    inputs:
+      domains:
+        description: 'Domain names, separated by commas'
+        required: true
 
 env:
   REGISTRY: ghcr.io
@@ -145,7 +149,7 @@ jobs:
                 snap install --classic certbot
                 ln -s /snap/bin/certbot /usr/bin/certbot
 
-                certbot --nginx --non-interactive --agree-tos --email ${{ secrets.EMAIL }} --domains "$(echo "${{ secrets.DOMAINS }}" | tr ' ' ',')"
+                certbot --nginx --non-interactive --agree-tos --email ${{ secrets.EMAIL }} --domains ${{ inputs.domains }}
                 certbot renew --dry-run
 
 
