@@ -122,7 +122,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           source: "./nginx/nginx.conf"
-          target: "/etc/nginx/"
+          target: "/etc/nginx/sites_available"
           strip_components: 3
 
       - name: Update Nginx configuration file
