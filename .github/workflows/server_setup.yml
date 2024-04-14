@@ -145,13 +145,7 @@ jobs:
                 snap install --classic certbot
                 ln -s /snap/bin/certbot /usr/bin/certbot
 
-                # Estrai il valore del segreto in una variabile
-                DOMAINS="${{ secrets.DOMAINS }}"
-
-                # Sostituisci gli spazi con virgole
-                DOMAINS=$(echo "$DOMAINS" | sed 's/ /,/g')               
-                echo $DOMAINS
-                certbot --nginx --non-interactive --agree-tos --email ${{ secrets.EMAIL }} --domains "${DOMAINS}"
+                certbot --nginx --non-interactive --agree-tos --email ${{ secrets.EMAIL }} --domains "$(echo "${{ secrets.DOMAINS }}" | tr ' ' ',')"
                 certbot renew --dry-run
 
 
