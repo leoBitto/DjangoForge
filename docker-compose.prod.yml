@@ -2,12 +2,12 @@ version: '3.8'
 
 services:
   web:
-    image: djangoforge:latest  # Utilizza l'immagine pre-build presente nel registry
+    image: djangoforge:latest # Utilizza l'immagine pre-build presente nel registry
     container_name: web
     command: gunicorn base.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 90
     volumes:
-      - static_volume:/opt/web/static
-      - media_volume:/opt/web/media
+      - static_volume:/home/app/web/static
+      - media_volume:/home/app/web/media
     env_file:
       - ./config/.env
     depends_on:
@@ -17,7 +17,6 @@ services:
     networks:
       app_network:
         ipv4_address: 192.168.100.2
-
 
   db:
     image: postgres:15
@@ -30,17 +29,20 @@ services:
       app_network:
         ipv4_address: 192.168.100.3
 
-
 volumes:
-  postgres_data:
-    external:
-      name: postgres_data  # Volume esterno per i dati di PostgreSQL
   static_volume:
-    external:
-      name: static_volume  # Volume esterno per i file statici
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/web/static
   media_volume:
-    external:
-      name: media_volume  # Volume esterno per i file multimediali
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/web/media
+  postgres_data:
 
 
 networks:
@@ -49,5 +51,3 @@ networks:
     ipam:
       config:
         - subnet: 192.168.100.0/24
-
-
