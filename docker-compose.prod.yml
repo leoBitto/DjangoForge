@@ -6,8 +6,8 @@ services:
     container_name: web
     command: gunicorn base.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 90
     volumes:
-      - static_volume:/home/app/web/static
-      - media_volume:/home/app/web/media
+      - static_volume:/opt/web/static
+      - media_volume:/opt/web/media
     env_file:
       - ./config/.env
     depends_on:
