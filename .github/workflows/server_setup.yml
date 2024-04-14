@@ -3,6 +3,9 @@ name: Setup Server
 on:
   workflow_dispatch:  # Trigger manual workflow run
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: djangoforge
 
 
 jobs:
@@ -110,12 +113,13 @@ jobs:
             docker pull ghcr.io/leobitto/${{ env.IMAGE_NAME }}:latest 
 
             docker images
+            echo ghcr.io/leobitto/${{ env.IMAGE_NAME }}:latest
 
             docker tag ghcr.io/leobitto/${{ env.IMAGE_NAME }}:latest ${{ env.IMAGE_NAME }}
 
             docker images
 
-            docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose.prod.yml up -d --force-recreate
+            docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose.prod.yml up -d 
             echo "wait for it.."
             sleep 5
             echo "5 seconds has passed"
