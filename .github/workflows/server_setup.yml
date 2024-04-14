@@ -104,9 +104,9 @@ jobs:
             host: ${{ secrets.HOST }}
             username: ${{ secrets.USERNAME }}
             key: ${{ secrets.PRIVATE_KEY }}
-            source: "./nginx/nginx.conf"
-            target: "/etc/nginx/sites-available/${{ env.REPO_NAME }}/"
-            strip_components: 2
+            source: "nginx/"
+            target: "/etc/nginx/sites-available/"
+            strip_components: 1
 
 
       - name: check nginx2
