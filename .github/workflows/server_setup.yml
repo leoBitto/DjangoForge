@@ -106,6 +106,7 @@ jobs:
 
             docker volume create --name=static_volume
             docker volume create --name=media_volume
+            docker volume create --name=postgres_data
 
 
             docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose.prod.yml up -d 

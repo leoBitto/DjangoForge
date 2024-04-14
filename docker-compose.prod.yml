@@ -32,6 +32,9 @@ services:
 
 
 volumes:
+  postgres_data:
+    external:
+      name: postgres_data  # Volume esterno per i dati di PostgreSQL
   static_volume:
     external:
       name: static_volume  # Volume esterno per i file statici
