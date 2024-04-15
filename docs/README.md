@@ -152,7 +152,12 @@ image name is an environment variable of the workflow that will be used as the n
 to create the directory inside the server and as the name of the image inside the 
 repository container.
 
-
+## start the actions
 After the creation of the secrets you can manually start the workflow in server_setup.yml
+it will set up the server at the ip address you provided in the secrets. 
+it will require the domain names separated by a comma if more than one. they will be used by certbot
+
+
+then you can create a super user 
 _______________________________________________________________________________
 
