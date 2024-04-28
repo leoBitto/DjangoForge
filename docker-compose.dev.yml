@@ -16,30 +16,37 @@ services:
       - ./config/.env
     depends_on:
       - db
-    ports:
-      - 80:8000
+    networks:
+      - app_network
 
-      
   db:
     image: postgres:15
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./config/.env
+    networks:
+      - app_network
 
   nginx:
     image: nginx:latest
     volumes:
       - static_volume:/home/app/web/static
       - media_volume:/home/app/web/media
-      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro  # metti il file di conf di nginx sul suo container e impostalo in read only
+      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
     ports:
       - 80:80
     restart: always
     depends_on:
       - web
+    networks:
+      - app_network
 
 volumes:
   postgres_data:
   static_volume:
   media_volume:
+
+networks:
+  app_network:
+    driver: bridge
