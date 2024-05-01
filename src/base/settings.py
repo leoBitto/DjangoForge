@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'website',
     'fontawesomefree',
     'logging_app',
+    'pwa',
     
     
 ]
@@ -139,13 +140,14 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+#STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 
-LOGIN_REDIRECT_URL = '/dashboard/'
-LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/website/dashboard/'
+LOGOUT_REDIRECT_URL = '/website/'
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 102400000000
 DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600  
@@ -157,5 +159,29 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:8000", "http://*:8000", "https://" + os.environ.get("DOMAIN").split(' ')[0], "https://" + os.environ.get("DOMAIN").split(' ')[1]]
+
+
+
+PWA_APP_NAME = 'My App'
+PWA_APP_DESCRIPTION = "My app description"
+PWA_APP_THEME_COLOR = '#0A0302'
+PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/'
+PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/pwa/icons/icon-256x256.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_SPLASH_SCREEN = [
+    {
+        'src': '/static/pwa/icons/icon-512x512.png',
+        'media': '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
+    }
+]
 
 
