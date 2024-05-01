@@ -33,6 +33,14 @@ jobs:
           echo "SQL_PORT=5432" >> config/.env
           echo "DATABASE=postgres" >> config/.env
           echo "DOMAIN=${{ secrets.DOMAIN }}" >> config/.env
+
+          echo "PWA_APP_NAME=${{ secrets.PWA_APP_NAME }}" >> config/.env
+          echo "PWA_APP_DESCRIPTION=${{ secrets.PWA_APP_DESCRIPTION }}" >> config/.env
+          echo "PWA_APP_THEME_COLOR=${{ secrets.PWA_APP_THEME_COLOR }}" >> config/.env
+          echo "PWA_APP_BACKGROUND_COLOR=${{ secrets.PWA_APP_BACKGROUND_COLOR }}" >> config/.env
+          echo "PWA_ICON_LOCATION=${{ secrets.PWA_ICON_LOCATION }}" >> config/.env
+          echo "PWA_SPLASH_SCREEN_LOCATION=${{ secrets.PWA_SPLASH_SCREEN_LOCATION }}" >> config/.env
+
         working-directory: .
 
       - name: Display content of .env file
