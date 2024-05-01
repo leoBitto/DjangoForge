@@ -174,7 +174,7 @@ PWA_APP_STATUS_BAR_COLOR = 'default'
 PWA_APP_ICONS = [
     {
         'src': os.environ.get("PWA_ICON_LOCATION"),
-        'sizes': '160x160'
+        'sizes': '256x256'
     }
 ]
 PWA_APP_SPLASH_SCREEN = [
