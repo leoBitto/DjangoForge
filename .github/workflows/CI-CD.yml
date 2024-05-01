@@ -105,6 +105,15 @@ jobs:
             echo "DATABASE=postgres" >> "/opt/${{ env.REPO_NAME }}/config/.env"
             echo "EMAIL=${{ secrets.EMAIL }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
             echo "DOMAIN=${{ secrets.DOMAIN }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+
+            echo "PWA_APP_NAME=${{ secrets.PWA_APP_NAME }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "PWA_APP_DESCRIPTION=${{ secrets.PWA_APP_DESCRIPTION }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "PWA_APP_THEME_COLOR=${{ secrets.PWA_APP_THEME_COLOR }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "PWA_APP_BACKGROUND_COLOR=${{ secrets.PWA_APP_BACKGROUND_COLOR }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "PWA_ICON_LOCATION=${{ secrets.PWA_ICON_LOCATION }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "PWA_SPLASH_SCREEN_LOCATION=${{ secrets.PWA_SPLASH_SCREEN_LOCATION }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
+
+
             cat "/opt/${{ env.REPO_NAME }}/config/.env"
 
       - name: SCP Docker Compose file 
