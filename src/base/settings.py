@@ -146,8 +146,8 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 
-LOGIN_REDIRECT_URL = '/website/dashboard/'
-LOGOUT_REDIRECT_URL = '/website/'
+LOGIN_REDIRECT_URL = '/dashboard/'
+LOGOUT_REDIRECT_URL = '/'
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 102400000000
 DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600  
@@ -162,10 +162,10 @@ CSRF_TRUSTED_ORIGINS = ["http://localhost:8000", "http://*:8000", "https://" + o
 
 
 
-PWA_APP_NAME = 'My App'
-PWA_APP_DESCRIPTION = "My app description"
-PWA_APP_THEME_COLOR = '#0A0302'
-PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_NAME = os.environ.get("PWA_APP_NAME", 'My App')
+PWA_APP_DESCRIPTION = os.environ.get("PWA_APP_DESCRIPTION","My app description")
+PWA_APP_THEME_COLOR = "#" + os.environ.get("PWA_APP_THEME_COLOR",'#0A0302')
+PWA_APP_BACKGROUND_COLOR = "#" + os.environ.get("PWA_APP_BACKGROUND_COLOR",'#ffffff')
 PWA_APP_DISPLAY = 'standalone'
 PWA_APP_SCOPE = '/'
 PWA_APP_ORIENTATION = 'any'
@@ -173,13 +173,13 @@ PWA_APP_START_URL = '/'
 PWA_APP_STATUS_BAR_COLOR = 'default'
 PWA_APP_ICONS = [
     {
-        'src': '/static/pwa/icons/icon-256x256.png',
+        'src': os.environ.get("PWA_ICON_LOCATION"),
         'sizes': '160x160'
     }
 ]
 PWA_APP_SPLASH_SCREEN = [
     {
-        'src': '/static/pwa/icons/icon-512x512.png',
+        'src': os.environ.get("PWA_SPLASH_SCREEN_LOCATION"),
         'media': '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
     }
 ]

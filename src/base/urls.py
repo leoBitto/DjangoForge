@@ -22,7 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
     path('dashboard/logging/', include('logging_app.urls', namespace='logging')),
-    path('website/', include('website.urls', namespace='website')),
+    path('', include('website.urls', namespace='website')),
     path('', include('pwa.urls')),  # You MUST use an empty string as the URL prefix
 
 ]
