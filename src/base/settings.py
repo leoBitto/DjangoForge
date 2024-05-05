@@ -162,10 +162,10 @@ CSRF_TRUSTED_ORIGINS = ["http://localhost:8000", "http://*:8000", "https://" + o
 
 
 
-PWA_APP_NAME = os.environ.get("PWA_APP_NAME", 'My App')
-PWA_APP_DESCRIPTION = os.environ.get("PWA_APP_DESCRIPTION","My app description")
-PWA_APP_THEME_COLOR = "#" + os.environ.get("PWA_APP_THEME_COLOR",'#0A0302')
-PWA_APP_BACKGROUND_COLOR = "#" + os.environ.get("PWA_APP_BACKGROUND_COLOR",'#ffffff')
+PWA_APP_NAME = "TEST name"
+PWA_APP_DESCRIPTION = "test description"
+PWA_APP_THEME_COLOR = "#eb7d34"
+PWA_APP_BACKGROUND_COLOR = "#ebc334"
 PWA_APP_DISPLAY = 'standalone'
 PWA_APP_SCOPE = '/'
 PWA_APP_ORIENTATION = 'any'
@@ -173,13 +173,13 @@ PWA_APP_START_URL = '/'
 PWA_APP_STATUS_BAR_COLOR = 'default'
 PWA_APP_ICONS = [
     {
-        'src': os.environ.get("PWA_ICON_LOCATION"),
+        'src': "/static/pwa/icons/icon-256x256.png",
         'sizes': '256x256'
     }
 ]
 PWA_APP_SPLASH_SCREEN = [
     {
-        'src': os.environ.get("PWA_SPLASH_SCREEN_LOCATION"),
+        'src': "/static/pwa/icons/icon-512x512.png",
         'media': '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
     }
 ]
