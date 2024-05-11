@@ -1,14 +1,43 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
-from django.http import HttpResponse
+from django.views.decorators.http import require_GET, require_POST
+from django.http.response import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from .models import Image, Contact, Opening_hour, Gallery
 from .forms import ImageForm, ContactForm, OpeningHourForm, GalleryForm
 from django.contrib import messages
 
+from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
+
+from django.conf import settings
+
+from webpush import send_group_notification, send_user_notification
+from .forms import GroupForm
+from webpush.models import Group, PushInformation
+
+def create_group(request):
+    if request.method == 'POST':
+        form = GroupForm(request.POST)
+        if form.is_valid():
+            form.save()  # Salva l'oggetto Group nel database
+            return redirect('website:list_group')  # Reindirizza alla lista dei gruppi dopo la creazione
+    else:
+        form = GroupForm()
+    return render(request, 'website/dashboard/create_group.html', {'form': form})
 
 
+def group_list(request):
+    groups = Group.objects.all()
+    return render(request, 'website/dashboard/group_list.html', {'groups': groups})
 
+
+def subscription_list(request):
+    push_infos = PushInformation.objects.all()
+    return render(request, 'website/dashboard/push_info.html', {'push_infos': push_infos})
+
+
+    
 # this is the part of the website accessible only to admin
 @login_required
 def dashboard(request):
@@ -178,9 +207,27 @@ def delete_opening_hour(request, opening_hour_id):
 
 
 
-# this is part of the website accessible to everyone
-def base(request):
-    
-    context = {}
 
-    return render(request, 'website/landing.html', context)
+
+def base(request):
+    # Verifica se l'utente esiste prima di tentare di inviare la notifica
+    try:
+        user = User.objects.get(username=request.user.username)
+    except User.DoesNotExist:
+        # Gestione nel caso l'utente non esista
+        # Ad esempio, mostra un messaggio di errore o esegui un'altra azione
+        return render(request, 'website/landing.html', {'error_message': 'L\'utente specificato non esiste'})
+
+    # Costruisci il payload della notifica
+    payload = {
+        "head": "Benvenuto! " + user.username,
+        "body": "Ciao Mondo",
+        "icon": "https://i.imgur.com/dRDxiCQ.png",
+        "url": "https://www.example.com"
+    }
+
+    # Invia la notifica all'utente specificato
+    send_user_notification(user=user, payload=payload, ttl=1000)
+
+    # Ritorna la risposta al render della pagina di destinazione
+    return render(request, 'website/landing.html', {'success_message': 'Notifica inviata con successo'})

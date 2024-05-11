@@ -25,6 +25,8 @@ urlpatterns = [
     path('', include('website.urls', namespace='website')),
     path('', include('pwa.urls')),  # You MUST use an empty string as the URL prefix
 
+    
+    path('webpush/', include('webpush.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,13 +1,39 @@
 {% extends "website/base.html" %}
 {% load static %}
-
+{% load webpush_notifications %}
 {% block content %}
   <h1 class="ms-3"> Dashboard </h1>
   <div class="container-fluid mt-5">
     <div class="row">
       <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
         <div class="position-sticky">
+          
           <ul class="nav flex-column">
+
+            <!-- INIZIO GESTIONE WEBPUSH-->
+            <li class="nav-item">
+              <a class="nav-link active" data-bs-toggle="collapse" href="#webpushAccordion" role="button" aria-expanded="true" aria-controls="webpushAccordion">
+                Notifications
+              </a>
+              <div class="collapse" id="webpushAccordion">
+                <ul class="nav flex-column ms-3">
+                  <li class="nav-item">
+                      {% webpush_button with_class="btn btn-primary btn-sm" %}
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'website:create_group' %}">Create group</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'website:list_group' %}">List notifications Groups</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'website:list_subscription' %}">List subscriptions</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <!-- FINE GESTIONE WEBPUSH-->
+
             <!-- INIZIO DELL'APPLICAZIONE WEBSITE-->
             <li class="nav-item">
               <a class="nav-link active" data-bs-toggle="collapse" href="#menuAccordion" role="button" aria-expanded="true" aria-controls="menuAccordion">

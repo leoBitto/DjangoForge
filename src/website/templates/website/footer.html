@@ -22,7 +22,7 @@
                               <form method="post" action="{% url 'logout' %}" id="logout-form">
                                 {% csrf_token %}
                                 <a class="d-flex align-items-center text-decoration-none" href="#">
-                                    Logout
+                                    Logout from account: {{ user.username }}
                                 </a>
                               </form>
                               <a class="d-flex align-items-center text-decoration-none " href="{% url 'website:dashboard' %}">

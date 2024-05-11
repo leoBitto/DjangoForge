@@ -1,0 +1,19 @@
+{% extends "website/dashboard/dashboard.html" %}
+{% load static %}
+{% block dashboard_app %}
+<div class="container mt-5">
+    <div class="row">
+        <h1>Elenco dei Gruppi</h1>
+        <ul class="list-group mt-4">
+            {% for group in groups %}
+                <!-- Utilizza la classe "list-group-item" di Bootstrap per ogni elemento della lista -->
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ group }} - {{ group.name }}
+                    
+                </li>
+            {% endfor %}
+        </ul>
+        
+    </div>
+</div>
+{% endblock dashboard_app %}

@@ -31,3 +31,4 @@ tenacity==8.2.3
 tzdata==2023.3
 urllib3==2.1.0
 django-pwa==1.1.0
+django-webpush==0.3.4

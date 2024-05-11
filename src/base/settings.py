@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'fontawesomefree',
     'logging_app',
     'pwa',
-    
+    'webpush',
     
 ]
 
@@ -184,4 +184,11 @@ PWA_APP_SPLASH_SCREEN = [
     }
 ]
 
+
+AUTH_USER_MODEL = 'auth.User'
+WEBPUSH_SETTINGS = {
+    "VAPID_PUBLIC_KEY": os.environ.get("VAPID_PUBLIC_KEY"),
+    "VAPID_PRIVATE_KEY":os.environ.get("VAPID_PRIVATE_KEY"),
+    "VAPID_ADMIN_EMAIL": os.environ.get("EMAIL")
+}
 
