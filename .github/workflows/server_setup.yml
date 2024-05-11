@@ -86,6 +86,9 @@ jobs:
                 echo "PWA_ICON_LOCATION=${{ secrets.PWA_ICON_LOCATION }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
                 echo "PWA_SPLASH_SCREEN_LOCATION=${{ secrets.PWA_SPLASH_SCREEN_LOCATION }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
 
+                echo "VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
+                echo "VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
+                echo "EMAIL=${{ secrets.EMAIL }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
 
                 cat "/opt/${{ env.REPO_NAME }}/config/.env"
 
