@@ -26,9 +26,6 @@
         {% progressive_web_app_meta %}
         {% webpush_header %}
 
-        {% if user.id %}
-            <meta name="user_id" content="{{ user.id }}">
-        {% endif %}
     </head>
     <body> 
     {% include 'website/navbar.html' %}

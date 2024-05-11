@@ -207,8 +207,6 @@ def delete_opening_hour(request, opening_hour_id):
 
 
 
-
-
 def base(request):
     # Verifica se l'utente esiste prima di tentare di inviare la notifica
     try:

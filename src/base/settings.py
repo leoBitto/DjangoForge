@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'logging_app',
     'pwa',
     'webpush',
-    
+
+
 ]
 
 
@@ -100,7 +101,6 @@ DATABASES = {
     }
 }
    
-
 
 
 
@@ -185,7 +185,6 @@ PWA_APP_SPLASH_SCREEN = [
 ]
 
 
-AUTH_USER_MODEL = 'auth.User'
 WEBPUSH_SETTINGS = {
     "VAPID_PUBLIC_KEY": os.environ.get("VAPID_PUBLIC_KEY"),
     "VAPID_PRIVATE_KEY":os.environ.get("VAPID_PRIVATE_KEY"),
