@@ -16,6 +16,7 @@ from webpush import send_group_notification, send_user_notification
 from .forms import GroupForm
 from webpush.models import Group, PushInformation
 
+@login_required
 def create_group(request):
     if request.method == 'POST':
         form = GroupForm(request.POST)
@@ -26,12 +27,12 @@ def create_group(request):
         form = GroupForm()
     return render(request, 'website/dashboard/create_group.html', {'form': form})
 
-
+@login_required
 def group_list(request):
     groups = Group.objects.all()
     return render(request, 'website/dashboard/group_list.html', {'groups': groups})
 
-
+@login_required
 def subscription_list(request):
     push_infos = PushInformation.objects.all()
     return render(request, 'website/dashboard/push_info.html', {'push_infos': push_infos})
