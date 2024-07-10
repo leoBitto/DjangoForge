@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     # add here the app names
+    'django_q',
     'website',
     'fontawesomefree',
     'logging_app',
@@ -94,6 +95,14 @@ DATABASES = {
     "default": {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
         "NAME": os.environ.get("POSTGRES_DB", BASE_DIR / "db.sqlite3"),
+        "USER": os.environ.get("POSTGRES_USER", "user"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "password"),
+        "HOST": os.environ.get("SQL_HOST", "localhost"),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
+    },
+    'gold': {
+        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("POSTGRES_DB", BASE_DIR / "db.sqlite3") + '_gold',
         "USER": os.environ.get("POSTGRES_USER", "user"),
         "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "password"),
         "HOST": os.environ.get("SQL_HOST", "localhost"),
@@ -191,3 +200,15 @@ WEBPUSH_SETTINGS = {
     "VAPID_ADMIN_EMAIL": os.environ.get("EMAIL")
 }
 
+# settings.py
+Q_CLUSTER = {
+    'name': 'gold_bi',
+    'workers': 4,
+    'recycle': 500,
+    'timeout': 60,
+    'django_redis': 'default',
+    'retry': 3600,
+    'queue_limit': 50,
+    'bulk': 10,
+    'orm': 'default',
+}
