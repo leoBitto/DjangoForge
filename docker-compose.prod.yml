@@ -7,7 +7,7 @@ services:
       - static_volume:/home/app/web/static
       - media_volume:/home/app/web/media
     env_file:
-      - ./config/.env
+      - ./config/.cfg
     depends_on:
       - db
     ports:
@@ -22,7 +22,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - ./config/.env
+      - ./config/.cfg
     networks:
       app_network:
         ipv4_address: 192.168.100.3
@@ -33,7 +33,7 @@ services:
     volumes:
       - postgres_data_gold:/var/lib/postgresql/data/
     env_file:
-      - ./config/.env
+      - ./config/gold.cfg
     networks:
       app_network:
         ipv4_address: 192.168.100.4

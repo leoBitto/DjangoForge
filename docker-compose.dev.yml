@@ -11,7 +11,7 @@ services:
     expose:
       - 8000
     env_file:
-      - ./config/.env
+      - ./config/.cfg
     depends_on:
       - db
       - db_gold
@@ -23,7 +23,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - ./config/.env
+      - ./config/.cfg
     networks:
       - app_network
 
@@ -32,7 +32,7 @@ services:
     volumes:
       - postgres_data_gold:/var/lib/postgresql/data/
     env_file:
-      - ./config/.env
+      - ./config/gold.cfg
     networks:
       - app_network
 
@@ -49,6 +49,7 @@ services:
       - web
     networks:
       - app_network
+
 
 volumes:
   postgres_data:
