@@ -14,13 +14,13 @@ from pathlib import Path
 import os
 
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = "key"#os.environ.get("SECRET_KEY")
 
-DEBUG = bool(os.environ.get("DEBUG", default=0))
+DEBUG = True#bool(os.environ.get("DEBUG", default=0))
 
 # 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
-# For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+# For example: 'DJANGO_ALLOWED_HOSTS='localhost' '127.0.0.1' [::1]'
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']#os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 
 
@@ -102,7 +102,7 @@ DATABASES = {
     },
     'gold': {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.environ.get("POSTGRES_DB", BASE_DIR / "db.sqlite3") + '_gold',
+        "NAME": os.environ.get("POSTGRES_DB_GOLD", BASE_DIR / "db.sqlite3"),
         "USER": os.environ.get("POSTGRES_USER", "user"),
         "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "password"),
         "HOST": os.environ.get("SQL_HOST", "localhost"),
@@ -167,7 +167,7 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8000", "http://*:8000", "https://" + os.environ.get("DOMAIN").split(' ')[0], "https://" + os.environ.get("DOMAIN").split(' ')[1]]
+#CSRF_TRUSTED_ORIGINS = ["http://localhost:8000", "http://*:8000", "https://" + os.environ.get("DOMAIN").split(' ')[0], "https://" + os.environ.get("DOMAIN").split(' ')[1]]
 
 
 

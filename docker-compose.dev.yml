@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   web:
     build:
@@ -16,6 +14,7 @@ services:
       - ./config/.env
     depends_on:
       - db
+      - db_gold
     networks:
       - app_network
 
@@ -23,6 +22,15 @@ services:
     image: postgres:15
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./config/.env
+    networks:
+      - app_network
+
+  db_gold:
+    image: postgres:15
+    volumes:
+      - postgres_data_gold:/var/lib/postgresql/data/
     env_file:
       - ./config/.env
     networks:
@@ -44,6 +52,7 @@ services:
 
 volumes:
   postgres_data:
+  postgres_data_gold:
   static_volume:
   media_volume:
 

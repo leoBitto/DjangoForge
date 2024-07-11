@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   web:
     image: djangoforge:latest # Utilizza l'immagine pre-build presente nel registry
@@ -28,6 +26,17 @@ services:
     networks:
       app_network:
         ipv4_address: 192.168.100.3
+  
+  db_gold:
+    image: postgres:15
+    container_name: postgres_db_gold
+    volumes:
+      - postgres_data_gold:/var/lib/postgresql/data/
+    env_file:
+      - ./config/.env
+    networks:
+      app_network:
+        ipv4_address: 192.168.100.4
 
 volumes:
   static_volume:
@@ -43,6 +52,7 @@ volumes:
       o: bind
       device: /opt/web/media
   postgres_data:
+  postgres_data_gold:
 
 
 networks:

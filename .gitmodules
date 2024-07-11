@@ -1,3 +1,6 @@
 [submodule "src/logging_app"]
 	path = src/logging_app
 	url = https://github.com/leoBitto/Django-logging.git
+[submodule "src/gold_bi"]
+	path = src/gold_bi
+	url = https://github.com/leoBitto/Django_gold-bi.git
