@@ -18,6 +18,16 @@ DjangoForge is a project ready for deployment, based on Django. This manual prov
 ```bash
 git clone --recursive https://github.com/your-username/your-new-repo.git your-new-repo
 cd your-new-repo
+git remote add template https://github.com/leoBitto/DjangoForge.git
+git remote add origin https://github.com/your-username/your-new-repo.git
+```
+
+to get updates from DjangoForge you must:
+
+```bash
+
+git fetch --all
+git merge template/main --allow-unrelated-histories
 ```
 
 ## Project Development
