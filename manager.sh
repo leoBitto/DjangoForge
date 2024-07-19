@@ -16,6 +16,9 @@ build_and_start_containers() {
     sudo docker compose -f docker-compose.dev.yml exec web python manage.py migrate --noinput --database=gold
     echo "Migrazioni eseguite"
 
+    sudo docker compose -f docker-compose.dev.yml exec web python manage.py qcluster
+    echo "Django_Q attivo"
+
     # Raccoglie i file statici all'interno del container "web", cancellando quelli esistenti
     sudo docker compose -f docker-compose.dev.yml exec web python manage.py collectstatic --noinput --clear
     echo "File statici raccolti"
