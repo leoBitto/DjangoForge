@@ -1,4 +1,4 @@
-{% extends "website/dashboard/dashboard.html" %}
+{% extends "backoffice/backoffice_base.html" %}
 {% load static %}
 {% block dashboard_app %}
 <div class="d-flex flex-column justify-content-center align-items-center">
@@ -10,10 +10,10 @@
 
     <!-- Form per l'aggiunta di un'immagine (nascosto per default) -->
     <div class="collapse mt-3 w-100" id="addGalleryForm">
-        <form action="{% url 'website:add_gallery' %}" method="post" >
+        <form action="{% url 'backoffice:add_gallery' %}" method="post" >
             {% csrf_token add_gallery_csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Aggiungi</button>
+            <button type="submit" class="btn btn-primary bg-dark">Aggiungi</button>
         </form>
     </div>
     
@@ -27,7 +27,7 @@
                         <div class="d-flex align-items-center justify-content-around card">
                             <div class="">
                                 <h5> Nome: {{ gallery.name }}</h5>
-                                <form action="{% url 'website:delete_gallery' gallery.id %}" method="post" style="display: inline;">
+                                <form action="{% url 'backoffice:delete_gallery' gallery.id %}" method="post" style="display: inline;">
                                     {% csrf_token delete_gallery_csrf_token %}
                                     <button type="submit" class="btn btn-danger">Elimina</button>
                                 </form>

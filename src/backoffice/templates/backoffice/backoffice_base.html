@@ -1,0 +1,100 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Backoffice - Leonardo Bitto</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{% static 'favicon/48DjangoForge.ico' %}" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css"/>
+    <script src="https://unpkg.com/htmx.org@1.6.0/dist/htmx.min.js"></script>
+    
+    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top d-flex justify-content-around">
+        <a class="navbar-brand ms-3" href="{% url 'backoffice:backoffice' %}">Backoffice</a>
+        <a class="nav-link ms-3" href="{% url 'website:home' %}">Back to website</a>
+    </nav>
+
+    <div class="container-fluid" style="margin-top: 56px;">  
+        <div class="row">
+            <!-- Sidebar per dispositivi grandi e medie dimensioni -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky">
+                    <div class="px-3 py-3 border-bottom">
+                        <h4 class="h6">Menu</h4>
+                        <hr>
+                    </div>
+                    <ul class="nav flex-column">
+                        <!-- INIZIO DELL'APPLICAZIONE WEBSITE-->
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center collapsed bg-dark text-white " data-bs-toggle="collapse" href="#menuAccordion" role="button" aria-expanded="true" aria-controls="menuAccordion">
+                                <i class="fas fa-globe me-2"></i> <span class="ms-1">Website</span>
+                            </a>
+                            <div class="collapse " id="menuAccordion">
+                                <ul class="nav flex-column ms-3">
+                                    <li class="nav-item">
+                                        <a class="nav-link d-flex align-items-center text-black" href="{% url 'backoffice:image_page' %}">
+                                            <i class="fas fa-image me-2"></i> Immagini
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link d-flex align-items-center text-black" href="{% url 'backoffice:contact_page' %}">
+                                            <i class="fas fa-address-book me-2"></i> Contatti
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link d-flex align-items-center text-black" href="{% url 'backoffice:opening_hours_page' %}">
+                                            <i class="fas fa-clock me-2"></i> Orari di Apertura
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link d-flex align-items-center text-black" href="{% url 'backoffice:gallery_page' %}">
+                                            <i class="fas fa-images me-2"></i> Galleria
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <!-- FINE DELL'APPLICAZIONE WEBSITE-->
+
+                        <!--{% include 'gold_bi/accordion.html' %}-->
+
+                    </ul>
+                </div>
+            </nav>
+            
+
+            <!-- Contenuto principale -->
+            <main id="main-content" class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Dashboard</h1>
+                </div>
+    
+                <div class="my-3">
+                    {% block dashboard_app %}
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Card Title</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">Contenuto della card. Utilizzare le card di Bootstrap per organizzare i contenuti principali in modo ordinato e accattivante.</p>
+                        </div>
+                    </div>
+                    {% endblock dashboard_app %}
+                </div>
+            </main>
+        </div>
+    </div>
+
+</body>
+</html>

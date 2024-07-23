@@ -1,4 +1,4 @@
-{% extends "website/dashboard/dashboard.html" %}
+{% extends "backoffice/backoffice_base.html" %}
 {% load static %}
 {% block dashboard_app %}
 <div class="container mt-5">
@@ -7,10 +7,10 @@
         {% if not contacts %}
             <div class="col-md-6">
                 <h2>Aggiungi Contatto</h2>
-                <form action="{% url 'website:add_contact' %}" hx-target="#main-content" method="post">
+                <form action="{% url 'backoffice:add_contact' %}" hx-target="#main-content" method="post">
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <button type="submit" class="btn btn-primary">Aggiungi</button>
+                    <button type="submit" class="btn btn-primary bg-dark">Aggiungi</button>
                 </form>
             </div>
         {% else %}
@@ -20,7 +20,7 @@
             <h2>Contatti</h2>
             <p class="mb-1">Telefono: {{ contacts.0.phone }}</p>
             <p class="mb-1">Email: {{ contacts.0.mail }}</p>
-            <form action="{% url 'website:delete_contact' contacts.0.id %}" method="post" style="display: inline;">
+            <form action="{% url 'backoffice:delete_contact' contacts.0.id %}" method="post" style="display: inline;">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger">Elimina</button>
             </form> 

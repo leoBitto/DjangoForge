@@ -1,4 +1,4 @@
-{% extends "website/dashboard/dashboard.html" %}
+{% extends "backoffice/backoffice_base.html" %}
 {% load static %}
 {% block dashboard_app %}
                    
@@ -10,7 +10,7 @@
 
     <!-- Nel tuo template 'website/dashboard/image_page.html' -->
     <div class="collapse mt-3 w-100" id="addImageForm">
-        <form action="{% url 'website:add_image' %}" method="post" enctype="multipart/form-data">
+        <form action="{% url 'backoffice:add_image' %}" method="post" enctype="multipart/form-data">
             {% csrf_token add_image_csrf_token %}
             {{ form.as_p }}
             <button type="submit" class="btn btn-primary">Aggiungi</button>
@@ -35,7 +35,7 @@
                                     <p>Nome: {{ image.description }}</p>
                                     <p>Galleria: {{ image.gallery }}</p>
                                 </div>
-                                <form action="{% url 'website:delete_image' image.id %}" method="post" style="display: inline;">
+                                <form action="{% url 'backoffice:delete_image' image.id %}" method="post" style="display: inline;">
                                     {% csrf_token delete_image_csrf_token %}
                                     <button type="submit" class="btn btn-danger">Elimina</button>
                                 </form>

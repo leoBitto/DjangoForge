@@ -6,17 +6,20 @@ build_and_start_containers() {
     sudo docker compose -f docker-compose.dev.yml down -v --remove-orphans
 
     # Avvia i container Docker in background e ricrea le immagini se necessario
-    sudo docker compose -f docker-compose.dev.yml up -d --build
+    sudo docker compose -f docker-compose.dev.yml up -d --build || echo "i could not build the images" 
     echo "Immagini create"
 
+    echo "Waiting for dbs to start properly"
+    sleep 5
+
     # Applica le migrazioni del database all'interno del container "web"
-    sudo docker compose -f docker-compose.dev.yml exec web python manage.py makemigrations --noinput
+    sudo docker compose -f docker-compose.dev.yml exec web python manage.py makemigrations --noinput || echo "i found and error trying to make migrations...."
     
     sudo docker compose -f docker-compose.dev.yml exec web python manage.py migrate --noinput
     sudo docker compose -f docker-compose.dev.yml exec web python manage.py migrate --noinput --database=gold
     echo "Migrazioni eseguite"
 
-    sudo docker compose -f docker-compose.dev.yml exec web python manage.py qcluster
+    sudo docker compose -f docker-compose.dev.yml exec web python manage.py qcluster -d
     echo "Django_Q attivo"
 
     # Raccoglie i file statici all'interno del container "web", cancellando quelli esistenti

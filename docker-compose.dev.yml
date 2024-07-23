@@ -4,6 +4,7 @@ services:
       context: ./src
       dockerfile: Dockerfile
     image: webapp_django
+    restart: always
     command: gunicorn base.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 90
     volumes:
       - static_volume:/home/app/web/static
@@ -16,16 +17,18 @@ services:
       - db
       - db_gold
     networks:
-      - app_network
+      app_network:
+        ipv4_address: 192.168.100.2
 
   db:
     image: postgres:15
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - ./config/.cfg
+      - ./config/db.cfg
     networks:
-      - app_network
+      app_network:
+        ipv4_address: 192.168.100.3
 
   db_gold:
     image: postgres:15
@@ -34,7 +37,8 @@ services:
     env_file:
       - ./config/gold.cfg
     networks:
-      - app_network
+      app_network:
+        ipv4_address: 192.168.100.4
 
   nginx:
     image: nginx:latest
@@ -60,3 +64,6 @@ volumes:
 networks:
   app_network:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24

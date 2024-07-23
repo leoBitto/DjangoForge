@@ -20,6 +20,7 @@ DEBUG = bool(os.environ.get("DEBUG", default=0))
 
 # 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
 # For example: 'DJANGO_ALLOWED_HOSTS='localhost' '127.0.0.1' [::1]'
+#ALLOWED_HOSTS=['localhost' '127.0.0.1' [::1]]
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 
@@ -45,6 +46,8 @@ INSTALLED_APPS = [
     # add here the app names
     'django_q',
     'website',
+    'backoffice',
+    'gold_bi',
     'fontawesomefree',
     'logging_app',
     'pwa',
@@ -102,11 +105,11 @@ DATABASES = {
     },
     'gold': {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.environ.get("POSTGRES_DB", BASE_DIR / "db.sqlite3"),
-        "USER": os.environ.get("POSTGRES_USER", "user"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "password"),
-        "HOST": os.environ.get("SQL_HOST", "localhost"),
-        "PORT": os.environ.get("SQL_PORT", "5432"),
+        "NAME": os.environ.get("GOLD_POSTGRES_DB", BASE_DIR / "db.sqlite3"),
+        "USER": os.environ.get("GOLD_POSTGRES_USER", "user"),
+        "PASSWORD": os.environ.get("GOLD_POSTGRES_PASSWORD", "password"),
+        "HOST": os.environ.get("GOLD_SQL_HOST", "localhost"),
+        "PORT": os.environ.get("GOLD_SQL_PORT", "5432"),
     }
 }
    
@@ -155,7 +158,7 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 
-LOGIN_REDIRECT_URL = '/dashboard/'
+LOGIN_REDIRECT_URL = '/backoffice/'
 LOGOUT_REDIRECT_URL = '/'
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 102400000000

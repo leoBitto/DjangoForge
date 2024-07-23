@@ -1,4 +1,4 @@
-{% extends "website/dashboard/dashboard.html" %}
+{% extends "backoffice/backoffice_base.html" %}
 {% load static %}
 {% block dashboard_app %}
 <div class="container mt-5">
@@ -7,10 +7,10 @@
             <!-- Se non esiste un modello di Opening Hour -->
             <div class="col-md-6">
                 <h2>Aggiungi Orario Apertura</h2>
-                <form action="{% url 'website:add_opening_hour' %}" method="post">
+                <form action="{% url 'backoffice:add_opening_hour' %}" method="post">
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <button type="submit" class="btn btn-primary">Aggiungi</button>
+                    <button type="submit" class="btn btn-primary bg-dark">Aggiungi</button>
                 </form>
             </div>
         {% else %}
@@ -21,7 +21,7 @@
                 <p>Weekend: {{ opening_hours.0.weekend }}</p>
                 <p>Giorno di Chiusura: {{ opening_hours.0.closing_day }}</p>
                 <!-- Form per eliminare il modello -->
-                <form action="{% url 'website:delete_opening_hour' opening_hours.0.id %}" method="post" style="display: inline;">
+                <form action="{% url 'backoffice:delete_opening_hour' opening_hours.0.id %}" method="post" style="display: inline;">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger">Elimina</button>
                 </form>
