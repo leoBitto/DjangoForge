@@ -94,10 +94,8 @@
                     {% block dashboard_app %}
                     <div class="card mb-4 shadow-sm">
                         <div class="card-header">
-                            <h5 class="card-title mb-0">Card Title</h5>
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text">Contenuto della card. Utilizzare le card di Bootstrap per organizzare i contenuti principali in modo ordinato e accattivante.</p>
+                            <h5 class="card-title mb-0">Benvenuto, {{ user.username }}. </h5>
+                            <p> Clicca nel menù a sinistra per gestire i vari aspetti del tuo business.</p>
                         </div>
                     </div>
                     {% endblock dashboard_app %}
@@ -106,5 +104,14 @@
         </div>
     </div>
 
+
+    <footer class="bg-dark text-white mt-5">
+        <div class="container py-4">
+            <div class="row">
+                <a class="d-flex align-items-center text-decoration-none " href="{% url 'admin:index' %}">Admin</a>
+
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

@@ -16,7 +16,6 @@
               <div class="col-6">
                   <h5>Admin links</h5>
                   <ul class="nav flex-column">
-                      <li class="ms-1"><a class="d-flex align-items-center text-decoration-none " href="{% url 'admin:index' %}">Admin</a></li>
                       {% if user.is_authenticated %}
                           <li class="ms-1">
                               <form method="post" action="{% url 'logout' %}" id="logout-form">

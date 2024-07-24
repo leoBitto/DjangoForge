@@ -20,6 +20,27 @@ services:
       app_network:
         ipv4_address: 192.168.100.2
 
+  djangoq:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    image: django_q
+    restart: always
+    command: python manage.py qcluster
+    volumes:
+      - static_volume:/home/app/web/static
+      - media_volume:/home/app/web/media
+    expose:
+      - 8000
+    env_file:
+      - ./config/.cfg
+    depends_on:
+      - db
+      - db_gold
+    networks:
+      app_network:
+        ipv4_address: 192.168.100.6
+
   db:
     image: postgres:15
     volumes:

@@ -36,17 +36,9 @@ def subscription_list(request):
 @login_required
 def dashboard(request):
     
-    # Recupera tutte le istanze dei modelli
-    gallery_images = Image.objects.all()
-    contacts = Contact.objects.all()
-    opening_hours = Opening_hour.objects.all()
-    gallery = Gallery.objects.all()
 
     context = {
-        'gallery_images': gallery_images,
-        'contacts': contacts,
-        'opening_hours': opening_hours,
-        'gallery': gallery,
+        
     }
 
     return render(request, 'backoffice/backoffice_base.html', context)
