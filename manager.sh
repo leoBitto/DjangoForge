@@ -19,7 +19,7 @@ build_and_start_containers() {
     sudo docker compose -f docker-compose.dev.yml exec web python manage.py migrate --noinput --database=gold
     echo "Migrazioni eseguite"
 
-    #sudo docker compose -f docker-compose.dev.yml exec web sh -c "python manage.py qcluster &"
+    #
     #echo "Django_Q attivo"
 
     # Raccoglie i file statici all'interno del container "web", cancellando quelli esistenti
@@ -31,6 +31,7 @@ build_and_start_containers() {
 
     echo "Superuser creato"
     echo "Server in esecuzione"
+    sudo docker compose -f docker-compose.dev.yml exec web sh -c "python manage.py qcluster"
 }
 
 # Questa funzione avvia solo i container Docker
