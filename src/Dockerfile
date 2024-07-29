@@ -41,8 +41,7 @@ RUN addgroup --system app && adduser --system --group app
 ENV HOME=/home/app
 ENV APP_HOME=/home/app/web
 RUN mkdir $APP_HOME
-RUN mkdir $APP_HOME/static
-RUN mkdir $APP_HOME/media
+RUN mkdir -p $APP_HOME/static $APP_HOME/media $APP_HOME/logs
 WORKDIR $APP_HOME
 
 # install dependencies
@@ -61,5 +60,6 @@ RUN chown -R app:app $APP_HOME
 
 # change to the app user
 USER app
+
 
 CMD ["gunicorn", "--workers=3", "--timeout 120", "base.wsgi:application"]

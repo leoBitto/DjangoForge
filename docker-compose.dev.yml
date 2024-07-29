@@ -82,6 +82,7 @@ volumes:
   static_volume:
   media_volume:
 
+
 networks:
   app_network:
     driver: bridge
