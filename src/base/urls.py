@@ -25,7 +25,9 @@ urlpatterns = [
     path('backoffice/', include('backoffice.urls', namespace='backoffice')),
     path('', include('pwa.urls')),  # You MUST use an empty string as the URL prefix
     path('BI/', include('gold_bi.urls', namespace='goldBI')),
-    
+    path('crm/', include('crm.urls', namespace='crm')),
+    path('inventory/', include('inventory.urls', namespace='inventory')),
+
     path('webpush/', include('webpush.urls')),
 ]
 if settings.DEBUG:

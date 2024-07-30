@@ -4,3 +4,9 @@
 [submodule "src/gold_bi"]
 	path = src/gold_bi
 	url = https://github.com/leoBitto/Django_gold-bi.git
+[submodule "src/inventory"]
+	path = src/inventory
+	url = https://github.com/leoBitto/Django-inventory.git
+[submodule "src/crm"]
+	path = src/crm
+	url = https://github.com/leoBitto/Django-CRM.git
