@@ -1,0 +1,14 @@
+{% extends "website/dashboard/dashboard.html" %}
+{% load static %}
+{% block dashboard_app %}
+<div class="container mt-5">
+    <div class="row">
+        <h1>Crea un nuovo Gruppo</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Salva</button>
+        </form>
+    </div>
+</div>
+{% endblock dashboard_app %}

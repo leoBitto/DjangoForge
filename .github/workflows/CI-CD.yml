@@ -1,0 +1,204 @@
+name: CI/CD
+
+on:
+  push:
+    branches: main
+
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: djangoforge
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo 
+        uses: actions/checkout@v3
+        with:
+            submodules: recursive
+            token: ${{ secrets.GITHUB_TOKEN }}
+        
+      - name: Create config directory and .env file
+        run: |
+          mkdir -p config
+          echo "DEBUG=False" >> config/.env
+          echo "SECRET_KEY=foo" >> config/.env
+          echo "DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1] *" >> config/.env
+          echo "SQL_ENGINE=django.db.backends.postgresql" >> config/.env
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> config/.env
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> config/.env
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> config/.env
+          echo "SQL_HOST=db" >> config/.env
+          echo "SQL_PORT=5432" >> config/.env
+          echo "DATABASE=postgres" >> config/.env
+          echo "DOMAIN=${{ secrets.DOMAIN }}" >> config/.env
+
+          echo "PWA_APP_NAME=${{ secrets.PWA_APP_NAME }}" >> config/.env
+          echo "PWA_APP_DESCRIPTION=${{ secrets.PWA_APP_DESCRIPTION }}" >> config/.env
+          echo "PWA_APP_THEME_COLOR=${{ secrets.PWA_APP_THEME_COLOR }}" >> config/.env
+          echo "PWA_APP_BACKGROUND_COLOR=${{ secrets.PWA_APP_BACKGROUND_COLOR }}" >> config/.env
+          echo "PWA_ICON_LOCATION=${{ secrets.PWA_ICON_LOCATION }}" >> config/.env
+          echo "PWA_SPLASH_SCREEN_LOCATION=${{ secrets.PWA_SPLASH_SCREEN_LOCATION }}" >> config/.env
+
+          echo "VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}">> config/.env
+          echo "VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}">> config/.env
+          echo "EMAIL=${{ secrets.EMAIL }}">> config/.env
+
+
+        working-directory: .
+
+      - name: Display content of .env file
+        run: cat ./config/.env
+      
+      - name: Build Docker image using Docker Compose
+        run: docker-compose -f docker-compose.dev.yml build
+
+      - name: verify that all the container have been built
+        run: docker images
+      
+      - name: LOG IN to container registry
+        run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: set lower case owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
+        
+      - name: Tag image 
+        run: |
+          docker tag webapp_django ${{ env.REGISTRY }}/${OWNER_LC}/${{ env.IMAGE_NAME }}:latest
+
+      - name: List Docker images
+        run: docker images
+        
+      - name: Push image to GitHub Container Registry
+        run: | 
+          docker push ${{ env.REGISTRY }}/${OWNER_LC}/${{ env.IMAGE_NAME }}:latest
+
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build_and_push
+
+    steps:
+
+      - name: Checkout del repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          token: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Get repo name to give directory a name
+        run: |
+          echo "REPO_NAME=${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}" >> $GITHUB_ENV
+          echo $GITHUB_ENV
+      
+      - name: Create project directory and conf file
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            mkdir -p "/opt/${{ env.REPO_NAME }}"
+            mkdir -p "/opt/${{ env.REPO_NAME }}/config"
+            rm /opt/${{ env.REPO_NAME }}/config/.env
+            echo "DEBUG=False" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "SECRET_KEY=foo" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1] *" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "SQL_ENGINE=django.db.backends.postgresql" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "SQL_HOST=db" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "SQL_PORT=5432" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "DATABASE=postgres" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "EMAIL=${{ secrets.EMAIL }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "DOMAIN=${{ secrets.DOMAIN }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+
+            echo "PWA_APP_NAME=${{ secrets.PWA_APP_NAME }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "PWA_APP_DESCRIPTION=${{ secrets.PWA_APP_DESCRIPTION }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "PWA_APP_THEME_COLOR=${{ secrets.PWA_APP_THEME_COLOR }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "PWA_APP_BACKGROUND_COLOR=${{ secrets.PWA_APP_BACKGROUND_COLOR }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "PWA_ICON_LOCATION=${{ secrets.PWA_ICON_LOCATION }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "PWA_SPLASH_SCREEN_LOCATION=${{ secrets.PWA_SPLASH_SCREEN_LOCATION }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
+
+
+            echo "VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
+            echo "EMAIL=${{ secrets.EMAIL }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
+
+
+            cat "/opt/${{ env.REPO_NAME }}/config/.env"
+
+      - name: SCP Docker Compose file 
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          source: "./docker-compose.prod.yml"
+          target: "/opt/${{ env.REPO_NAME }}/"
+
+      - name: SCP Nginx conf file
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          source: "nginx/"
+          target: "/etc/nginx/sites-available/"
+          strip_components: 1
+
+      - name: Update Nginx configuration file
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            sed -i "s/localhost/${{ secrets.DOMAIN }}/g" /etc/nginx/sites-available/nginx.conf
+
+      - name: Update server 
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            sudo apt update -y
+            sudo apt upgrade -y
+  
+      - name: set lower case owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
+
+      - name: Stop And Start containers
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+            docker system prune -f
+
+            docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose.prod.yml down
+
+            docker pull ghcr.io/leobitto/${{ env.IMAGE_NAME }}:latest 
+            docker tag ghcr.io/leobitto/${{ env.IMAGE_NAME }}:latest ${{ env.IMAGE_NAME }}
+
+            docker-compose -f /opt/${{ env.REPO_NAME }}/docker-compose.prod.yml up -d --force-recreate
+            echo "wait for it.."
+            sleep 5
+            echo "5 seconds has passed"
+            docker exec web python manage.py migrate
+            docker exec web python manage.py collectstatic --noinput --clear
+
+    
