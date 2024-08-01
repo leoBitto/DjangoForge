@@ -1,0 +1,31 @@
+<!-- logging_app/templates/logging_app/list.html -->
+
+{% extends "backoffice/backoffice_base.html" %}
+{% load static %}
+
+{% block dashboard_app %}
+<!-- Aggiungi il tuo codice HTML personalizzato qui -->
+<div class="row">
+    <!-- Colonna per la lista dei log -->
+    <div class="col-md-4">
+      <div>
+          <h3>Last IPs to make request</h3>
+          <ul>
+              {% for IP in ip_list %}
+                <li> <b>{{ IP.ip_address }}</b> at <b>{{ IP.timestamp }}</b></li>
+              {% endfor %}
+          </ul>
+      </div>
+    </div>
+    <div class="col-md-8">
+        <div>
+            <h3>Top 10 IP Addresses by Access Count</h3>
+            
+                {{ graph|safe }}
+            
+        </div>
+    </div>
+    
+
+</div>
+{% endblock %}

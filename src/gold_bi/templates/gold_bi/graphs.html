@@ -1,0 +1,74 @@
+<!-- logging_app/templates/logging_app/graphs.html -->
+
+{% extends "backoffice/backoffice_base.html" %}
+{% load static %}
+
+{% block dashboard_app %}
+<!-- Aggiungi il tuo codice HTML personalizzato qui -->
+<div class="container-fluid">
+
+    <!-- Mostra un messaggio di errore se c'è -->
+    {% if error %}
+    <div class="alert alert-danger">
+        <strong>Error:</strong> {{ error }}
+        <p>{{ error_message }}</p>
+    </div>
+    {% endif %}
+
+    {% if not error %}
+    <div class="row">
+        <!-- Grafico a Barre: Distribuzione per Ore degli Errori -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar mr-1"></i> Error Trend By Hour
+                </div>
+                <div class="card-body">
+                    <!-- Inserisci qui l'HTML per il grafico a barre degli errori per ora del giorno -->
+                    {{ error_hourly_chart | safe }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Grafico a Barre: Distribuzione per Ore degli Accessi -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar mr-1"></i> Access Trend By Hour
+                </div>
+                <div class="card-body">
+                    <!-- Inserisci qui l'HTML per il grafico a barre degli accessi per ora del giorno -->
+                    {{ access_hourly_chart | safe }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Grafico a Barre: Distribuzione per Giorno della Settimana degli Errori -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar mr-1"></i> Error Trend By Weekday
+                </div>
+                <div class="card-body">
+                    <!-- Inserisci qui l'HTML per il grafico a barre degli errori per giorno della settimana -->
+                    {{ error_daily_chart | safe }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Grafico a Barre: Distribuzione per Giorno della Settimana degli Accessi -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar mr-1"></i> Access Trend By Weekday
+                </div>
+                <div class="card-body">
+                    <!-- Inserisci qui l'HTML per il grafico a barre degli accessi per giorno della settimana -->
+                    {{ access_daily_chart | safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
