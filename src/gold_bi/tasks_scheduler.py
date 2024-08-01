@@ -27,5 +27,9 @@ def schedule_tasks():
                 cluster='gold_bi'
             )
             logger.info("Scheduled aggregate_error_logs task")
+
+
+
+            
     except Exception as e:
         logger.error("Error scheduling tasks: %s", e)
