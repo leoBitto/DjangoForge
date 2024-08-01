@@ -1,0 +1,31 @@
+{% extends "backoffice/backoffice_base.html" %}
+{% load static %}
+
+{% block dashboard_app %}
+<!-- Aggiungi il tuo codice HTML personalizzato qui -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>{% if log.error_message %}
+                    Error
+                {% else %} 
+                    Access
+                {% endif %}
+                Log Details</h2> 
+            <p> log id : {{ log.id }}</p>
+            <hr>
+            <p><strong>Timestamp:</strong> {{ log.timestamp }}</p>
+            <p><strong>IP Address:</strong> {{ log.ip_address }}</p>
+            <p><strong>Request Path:</strong> {{ log.request_path }}</p>
+            <p><strong>Request Method:</strong> {{ log.request_method }}</p>
+            <p><strong>Response Code:</strong> {{ log.response_code }}</p>
+            {% if log.error_message %}
+            <h3>Error Message:</h3>
+            <p>{{ log.error_message }}</p>
+            <h3>Stack Trace:</h3>
+            <pre>{{ log.stack_trace }}</pre>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

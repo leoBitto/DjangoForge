@@ -1,0 +1,64 @@
+{% extends "website/base.html" %}
+
+{% block content %}
+<style>
+  .blur-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.5); /* Sfondo trasparente */
+    backdrop-filter: blur(10px); /* Effetto di sfocatura */
+    z-index: 999; /* Assicura che lo sfondo sfocato sia sopra gli altri elementi */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1); /* Ombra per la card */
+  }
+
+  .card-header {
+    background-color: #f8f9fa; /* Colore di sfondo per l'header */
+    padding: 20px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  .card-footer {
+    background-color: #f8f9fa; /* Colore di sfondo per il footer */
+    padding: 20px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+</style>
+
+<div class="blur-background">
+  <div class="modal-card col-md-4">
+    <div class="card-header">
+      <h2 class="mb-0">Consenso per il trattamento dei dati</h2>
+    </div>
+    <div class="card-body">
+      <p>Ciao! Per rispettare le leggi europee sulla privacy, abbiamo bisogno del tuo consenso per trattare i tuoi dati personali.</p>
+      <p>Raccogliamo solo il tuo indirizzo IP per monitorare gli accessi al nostro sito. <strong>Non utilizziamo i cookie e non condividiamo i tuoi dati con servizi esterni o terze parti.</strong></p>
+      <p>Il consenso è necessario per garantire il corretto funzionamento del nostro sito e per migliorare i nostri servizi.</p>
+      <p>Puoi revocare il consenso in qualsiasi momento.</p>
+    </div>
+    <div class="card-footer text-muted">
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" name="consent_given" value="True" class="btn btn-primary">Accetto</button>
+        <button type="submit" name="consent_given" value="False" class="btn btn-secondary">Non accetto</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
