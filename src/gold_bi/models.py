@@ -52,78 +52,141 @@ class CRMMontlySnapshot(models.Model):
 # Inventory: Aggregazioni Temporali - Daily
 class InventoryDailyAggregation(models.Model):
     date = models.DateField()
-    total_stock_quantity = models.IntegerField()
+
+    # Stock data
+    distinct_products_in_stock = models.IntegerField()  # Numero di prodotti distinti in magazzino
     total_stock_value = models.DecimalField(max_digits=15, decimal_places=2)
+
+    # Sales data
     total_sold_units = models.IntegerField()
     total_sales_value = models.DecimalField(max_digits=15, decimal_places=2)
-    total_pending_transactions = models.IntegerField()
-    total_delivered_transactions = models.IntegerField()
-    total_paid_transactions = models.IntegerField()
-    total_cancelled_transactions = models.IntegerField()
+    total_pending_sales = models.IntegerField()
+    total_delivered_sales = models.IntegerField()
+    total_paid_sales = models.IntegerField()
+    total_cancelled_sales = models.IntegerField()
+
+    # Orders data
+    total_ordered_units = models.IntegerField()  # Nuovo campo: totale unità ordinate
+    total_orders_value = models.DecimalField(max_digits=15, decimal_places=2)  # Nuovo campo: valore totale ordini
+    total_pending_orders = models.IntegerField()
+    total_delivered_orders = models.IntegerField()
+    total_paid_orders = models.IntegerField()
+    total_cancelled_orders = models.IntegerField()
 
     class Meta:
         verbose_name = "Inventory Daily Aggregation"
         verbose_name_plural = "Inventory Daily Aggregations"
 
-# Analoghe tabelle per Weekly, Monthly, Quarterly, Yearly
+# Inventory: Aggregazioni Temporali - Weekly
 class InventoryWeeklyAggregation(models.Model):
     week = models.IntegerField()
     year = models.IntegerField()
-    total_stock_quantity = models.IntegerField()
+
+    # Stock data
+    distinct_products_in_stock = models.IntegerField()  # Numero di prodotti distinti in magazzino
     total_stock_value = models.DecimalField(max_digits=15, decimal_places=2)
+
+    # Sales data
     total_sold_units = models.IntegerField()
     total_sales_value = models.DecimalField(max_digits=15, decimal_places=2)
-    total_pending_transactions = models.IntegerField()
-    total_delivered_transactions = models.IntegerField()
-    total_paid_transactions = models.IntegerField()
-    total_cancelled_transactions = models.IntegerField()
+    total_pending_sales = models.IntegerField()
+    total_delivered_sales = models.IntegerField()
+    total_paid_sales = models.IntegerField()
+    total_cancelled_sales = models.IntegerField()
+
+    # Orders data
+    total_ordered_units = models.IntegerField()  # Totale unità ordinate
+    total_orders_value = models.DecimalField(max_digits=15, decimal_places=2)  # Valore totale ordini
+    total_pending_orders = models.IntegerField()
+    total_delivered_orders = models.IntegerField()
+    total_paid_orders = models.IntegerField()
+    total_cancelled_orders = models.IntegerField()
 
     class Meta:
         verbose_name = "Inventory Weekly Aggregation"
         verbose_name_plural = "Inventory Weekly Aggregations"
 
+# Inventory: Aggregazioni Temporali - Monthly
 class InventoryMonthlyAggregation(models.Model):
     month = models.IntegerField()
     year = models.IntegerField()
-    total_stock_quantity = models.IntegerField()
+
+    # Stock data
+    distinct_products_in_stock = models.IntegerField()  # Numero di prodotti distinti in magazzino
     total_stock_value = models.DecimalField(max_digits=15, decimal_places=2)
+
+    # Sales data
     total_sold_units = models.IntegerField()
     total_sales_value = models.DecimalField(max_digits=15, decimal_places=2)
-    total_pending_transactions = models.IntegerField()
-    total_delivered_transactions = models.IntegerField()
-    total_paid_transactions = models.IntegerField()
-    total_cancelled_transactions = models.IntegerField()
+    total_pending_sales = models.IntegerField()
+    total_delivered_sales = models.IntegerField()
+    total_paid_sales = models.IntegerField()
+    total_cancelled_sales = models.IntegerField()
+
+    # Orders data
+    total_ordered_units = models.IntegerField()  # Totale unità ordinate
+    total_orders_value = models.DecimalField(max_digits=15, decimal_places=2)  # Valore totale ordini
+    total_pending_orders = models.IntegerField()
+    total_delivered_orders = models.IntegerField()
+    total_paid_orders = models.IntegerField()
+    total_cancelled_orders = models.IntegerField()
 
     class Meta:
         verbose_name = "Inventory Monthly Aggregation"
         verbose_name_plural = "Inventory Monthly Aggregations"
 
+# Inventory: Aggregazioni Temporali - Quarterly
 class InventoryQuarterlyAggregation(models.Model):
     quarter = models.IntegerField()
     year = models.IntegerField()
-    total_stock_quantity = models.IntegerField()
+
+    # Stock data
+    distinct_products_in_stock = models.IntegerField()  # Numero di prodotti distinti in magazzino
     total_stock_value = models.DecimalField(max_digits=15, decimal_places=2)
+
+    # Sales data
     total_sold_units = models.IntegerField()
     total_sales_value = models.DecimalField(max_digits=15, decimal_places=2)
-    total_pending_transactions = models.IntegerField()
-    total_delivered_transactions = models.IntegerField()
-    total_paid_transactions = models.IntegerField()
-    total_cancelled_transactions = models.IntegerField()
+    total_pending_sales = models.IntegerField()
+    total_delivered_sales = models.IntegerField()
+    total_paid_sales = models.IntegerField()
+    total_cancelled_sales = models.IntegerField()
+
+    # Orders data
+    total_ordered_units = models.IntegerField()  # Totale unità ordinate
+    total_orders_value = models.DecimalField(max_digits=15, decimal_places=2)  # Valore totale ordini
+    total_pending_orders = models.IntegerField()
+    total_delivered_orders = models.IntegerField()
+    total_paid_orders = models.IntegerField()
+    total_cancelled_orders = models.IntegerField()
 
     class Meta:
         verbose_name = "Inventory Quarterly Aggregation"
         verbose_name_plural = "Inventory Quarterly Aggregations"
 
+# Inventory: Aggregazioni Temporali - Yearly
 class InventoryYearlyAggregation(models.Model):
     year = models.IntegerField()
-    total_stock_quantity = models.IntegerField()
+
+    # Stock data
+    distinct_products_in_stock = models.IntegerField()  # Numero di prodotti distinti in magazzino
     total_stock_value = models.DecimalField(max_digits=15, decimal_places=2)
+
+    # Sales data
     total_sold_units = models.IntegerField()
     total_sales_value = models.DecimalField(max_digits=15, decimal_places=2)
-    total_pending_transactions = models.IntegerField()
-    total_delivered_transactions = models.IntegerField()
-    total_paid_transactions = models.IntegerField()
-    total_cancelled_transactions = models.IntegerField()
+    total_pending_sales = models.IntegerField()
+    total_delivered_sales = models.IntegerField()
+    total_paid_sales = models.IntegerField()
+    total_cancelled_sales = models.IntegerField()
+
+    # Orders data
+    total_ordered_units = models.IntegerField()  # Totale unità ordinate
+    total_orders_value = models.DecimalField(max_digits=15, decimal_places=2)  # Valore totale ordini
+    total_pending_orders = models.IntegerField()
+    total_delivered_orders = models.IntegerField()
+    total_paid_orders = models.IntegerField()
+    total_cancelled_orders = models.IntegerField()
 
     class Meta:
         verbose_name = "Inventory Yearly Aggregation"
@@ -134,6 +197,7 @@ class InventoryQualityAggregation(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     month = models.IntegerField()
     year = models.IntegerField()
+    products_missing_category = models.IntegerField()
     products_missing_image = models.IntegerField()
     products_missing_description = models.IntegerField()
     products_missing_both = models.IntegerField()
@@ -150,6 +214,7 @@ class InventoryMonthlySnapshot(models.Model):
     total_products = models.IntegerField()
     total_stock_quantity = models.IntegerField()
     total_stock_value = models.DecimalField(max_digits=15, decimal_places=2)
+    average_stock_per_product = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)
 
     class Meta:
         verbose_name = "Inventory Monthly Snapshot"

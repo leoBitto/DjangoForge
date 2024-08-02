@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'webpush',
     'crm',
     'inventory',
+    'django_seed',
 
 ]
 
