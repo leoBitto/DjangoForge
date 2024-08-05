@@ -23,7 +23,7 @@ def create_company_categories():
 
 def create_companies():
     categories = CompanyCategory.objects.all()
-    for _ in range(5):
+    for _ in range(10):
         Company.objects.create(
             name=fake.company(),
             address=fake.address(),
