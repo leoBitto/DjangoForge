@@ -24,12 +24,11 @@ class GraphsView(View):
                 logger.info("No aggregated access logs found.")
 
 
-
             # Grafici
             error_hourly_chart = self.create_hourly_distribution_chart(error_data, 'Errors by Hour')
-            error_daily_chart = self.create_weekly_distribution_chart(error_data, 'Errors by Day of Week')
+            error_daily_chart = self.create_weekly_distribution_chart(error_data, 'Errors by Day of Week', 'it')
             access_hourly_chart = self.create_hourly_distribution_chart(access_data, 'Accesses by Hour')
-            access_daily_chart = self.create_weekly_distribution_chart(access_data, 'Accesses by Day of Week')
+            access_daily_chart = self.create_weekly_distribution_chart(access_data, 'Accesses by Day of Week', 'it')
 
             logger.info('Graphs created successfully.')
 
@@ -58,34 +57,53 @@ class GraphsView(View):
         return fig.to_html(full_html=False)
     
 
-    def create_weekly_distribution_chart(self, data, title):
+    def create_weekly_distribution_chart(self, data, title, language='en'):
         """
         Crea un grafico a barre che mostra il conteggio degli eventi per ogni giorno della settimana.
         """
-        # Mappatura dei giorni della settimana (Domenica = 1, ..., Sabato = 7)
+        # Mappatura dei giorni della settimana in inglese e italiano
         day_mapping = {
-            '1': 'Sunday',
-            '2': 'Monday',
-            '3': 'Tuesday',
-            '4': 'Wednesday',
-            '5': 'Thursday',
-            '6': 'Friday',
-            '7': 'Saturday'
+            1: {'en': 'sunday', 'it': 'domenica'},
+            2: {'en': 'monday', 'it': 'lunedì'},
+            3: {'en': 'tuesday', 'it': 'martedì'},
+            4: {'en': 'wednesday', 'it': 'mercoledì'},
+            5: {'en': 'thursday', 'it': 'giovedì'},
+            6: {'en': 'friday', 'it': 'venerdì'},
+            7: {'en': 'saturday', 'it': 'sabato'}
         }
-
+        #logger.info(data)
+        
+        # Controllo della lingua
+        if language not in ['en', 'it']:
+            raise ValueError(f"Unsupported language: {language}. Supported languages are 'en' and 'it'.")
+    
         # Aggregazione dei dati per giorni
-        day_counts = {}
+        # Inizializza il dizionario con tutti i giorni
+        day_counts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0}
+
         for entry in data:
-            day = entry.day
+            if not hasattr(entry, 'day') or not hasattr(entry, 'count'):
+                raise ValueError("Data entry is missing 'day' or 'count' attribute.")
+            
+            day = int(entry.day)  # Assicurati che day sia un numero intero
             count = entry.count
-            if day in day_counts:
-                day_counts[day] += count
-            else:
-                day_counts[day] = count
+
+            if day not in day_counts:
+                raise ValueError(f"Invalid day value: {day}. Expected values are 1 through 7.")
+            
+            day_counts[day] += count
+
+        #logger.info(f"day counts {day_counts}")
 
         # Conversione dei numeri dei giorni in nomi dei giorni
-        day_names = [day_mapping[day] for day in sorted(day_counts.keys())]
-        counts = [day_counts[day] for day in sorted(day_counts.keys())]
+        try:
+            day_names = [day_mapping[day][language] for day in sorted(day_counts.keys())]
+            counts = [day_counts[day] for day in sorted(day_counts.keys())]
+        except KeyError as e:
+            raise ValueError(f"Error in day mapping: {e}")
+        
+        #logger.info(f"day names {day_names}")
+        #logger.info(f"counts {counts}")
 
         # Creazione del grafico a barre
         fig = go.Figure()

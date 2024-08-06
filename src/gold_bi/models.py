@@ -1,12 +1,16 @@
 from django.db import models
 from django.utils import timezone
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 class AggregatedErrorLog(models.Model):
     """
     Modello per memorizzare gli errori aggregati.
     """
     hour = models.IntegerField()  # Ora (0-23)
-    day = models.CharField(max_length=10)  # Giorno della settimana è un numero memorizzato come stringa
+    day = models.PositiveIntegerField(validators=[
+            MaxValueValidator(7),
+            MinValueValidator(1)
+        ])  # Giorno della settimana è un numero memorizzato come stringa
     count = models.IntegerField(default=0, null=True, blank=True)  # Conteggio degli errori
 
     class Meta:
@@ -22,7 +26,10 @@ class AggregatedAccessLog(models.Model):
     Modello per memorizzare gli accessi aggregati.
     """
     hour = models.IntegerField()  # Ora (0-23)
-    day = models.CharField(max_length=10)  # Giorno della settimana (es. "Monday")
+    day = models.PositiveIntegerField(validators=[
+            MaxValueValidator(7),
+            MinValueValidator(1)
+        ])  # Giorno della settimana è un numero memorizzato come stringa
     count = models.IntegerField(default=0, null=True, blank=True)  # Conteggio degli accessi
 
     class Meta:
