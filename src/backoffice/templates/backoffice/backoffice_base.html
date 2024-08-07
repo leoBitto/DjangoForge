@@ -19,94 +19,99 @@
     <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        .flex-wrapper {
+            min-height: 100vh; /* Imposta l'altezza minima a 100% della viewport */
+        }
+    </style>
 </head>
-<body>
+<body class="d-flex flex-column justify-content-between flex-wrapper">
+    <div>
+        <!-- modal for messages -->
+        {% if messages %}
+            <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %} alert-dismissible fade show position-fixed bottom-0 end-0 m-4" style="z-index:289;" role="alert">
+                {% for message in messages %}
+                    {{ message }}
+                    {% if not forloop.last %}<br>{% endif %}
+                {% endfor %}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endif %}
 
-    <!-- modal for messages -->
-    {% if messages %}
-        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %} alert-dismissible fade show position-fixed bottom-0 end-0 m-4" style="z-index:289;" role="alert">
-            {% for message in messages %}
-                {{ message }}
-                {% if not forloop.last %}<br>{% endif %}
-            {% endfor %}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {% endif %}
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top d-flex justify-content-around">
+            <a class="navbar-brand ms-3" href="{% url 'backoffice:backoffice' %}">Backoffice</a>
+            <a class="nav-link ms-3 text-white" href="{% url 'website:home' %}"><i class="fa-solid fa-reply"></i> Back to website</a> 
+        </nav>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top d-flex justify-content-around">
-        <a class="navbar-brand ms-3" href="{% url 'backoffice:backoffice' %}">Backoffice</a>
-        <a class="nav-link ms-3 text-white" href="{% url 'website:home' %}"><i class="fa-solid fa-reply"></i> Back to website</a> 
-    </nav>
-
-    <div class="container-fluid" style="margin-top: 56px;">  
-        <div class="row">
-            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-                <div class="position-sticky">
-                    <div class="px-3 py-3 border-bottom">
-                        <h4 class="h6">Menu</h4>
-                        <hr>
-                    </div>
-                    <ul class="nav flex-column">
-                        <!-- INIZIO DELL'APPLICAZIONE WEBSITE-->
-                        <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center collapsed bg-dark text-white " data-bs-toggle="collapse" href="#menuAccordion" role="button" aria-expanded="true" aria-controls="menuAccordion">
-                                <i class="fas fa-globe me-2"></i> <span class="ms-1">Website</span>
-                            </a>
-                            <div class="collapse " id="menuAccordion">
-                                <ul class="nav flex-column ms-3">
-                                    <li class="nav-item">
-                                        <a class="nav-link d-flex align-items-center text-black" href="{% url 'website:image_page' %}">
-                                            <i class="fas fa-image me-2"></i> Immagini
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link d-flex align-items-center text-black" href="{% url 'website:contact_page' %}">
-                                            <i class="fas fa-address-book me-2"></i> Contatti
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link d-flex align-items-center text-black" href="{% url 'website:opening_hours_page' %}">
-                                            <i class="fas fa-clock me-2"></i> Orari di Apertura
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link d-flex align-items-center text-black" href="{% url 'website:gallery_page' %}">
-                                            <i class="fas fa-images me-2"></i> Galleria
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <!-- FINE DELL'APPLICAZIONE WEBSITE-->
-
-                        {% include 'gold_bi/accordion.html' %}
-                        {% include 'crm/accordion.html' %}
-                        {% include 'inventory/accordion.html' %}
-
-                    </ul>
-                </div>
-            </nav>
-            
-
-            <!-- Contenuto principale -->
-            <main id="main-content" class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-    
-                <div class="my-3">
-                    {% block dashboard_app %}
-                    <div class="card mb-4 shadow-sm">
-                        <div class="card-header">
-                            <h5 class="card-title mb-0">Benvenuto, {{ user.username }}. </h5>
-                            <p> Clicca nel menù a sinistra per gestire i vari aspetti del tuo business.</p>
+        <div class="container-fluid" style="margin-top: 56px;">  
+            <div class="row">
+                <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                    <div class="position-sticky">
+                        <div class="px-3 py-3 border-bottom">
+                            <h4 class="h6">Menu</h4>
+                            <hr>
                         </div>
+                        <ul class="nav flex-column">
+                            <!-- INIZIO DELL'APPLICAZIONE WEBSITE-->
+                            <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center collapsed bg-dark text-white " data-bs-toggle="collapse" href="#menuAccordion" role="button" aria-expanded="true" aria-controls="menuAccordion">
+                                    <i class="fas fa-globe me-2"></i> <span class="ms-1">Website</span>
+                                </a>
+                                <div class="collapse " id="menuAccordion">
+                                    <ul class="nav flex-column ms-3">
+                                        <li class="nav-item">
+                                            <a class="nav-link d-flex align-items-center text-black" href="{% url 'website:image_page' %}">
+                                                <i class="fas fa-image me-2"></i> Immagini
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link d-flex align-items-center text-black" href="{% url 'website:contact_page' %}">
+                                                <i class="fas fa-address-book me-2"></i> Contatti
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link d-flex align-items-center text-black" href="{% url 'website:opening_hours_page' %}">
+                                                <i class="fas fa-clock me-2"></i> Orari di Apertura
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link d-flex align-items-center text-black" href="{% url 'website:gallery_page' %}">
+                                                <i class="fas fa-images me-2"></i> Galleria
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <!-- FINE DELL'APPLICAZIONE WEBSITE-->
+
+                            {% include 'gold_bi/accordion.html' %}
+                            {% include 'crm/accordion.html' %}
+                            {% include 'inventory/accordion.html' %}
+
+                        </ul>
                     </div>
-                    {% endblock dashboard_app %}
-                </div>
-            </main>
+                </nav>
+                
+
+                <!-- Contenuto principale -->
+                <main id="main-content" class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        
+                    <div class="my-3">
+                        {% block dashboard_app %}
+                        <div class="card mb-4 shadow-sm">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Benvenuto, {{ user.username }}. </h5>
+                                <p> Clicca nel menù a sinistra per gestire i vari aspetti del tuo business.</p>
+                            </div>
+                        </div>
+                        {% endblock dashboard_app %}
+                    </div>
+                </main>
+            </div>
         </div>
     </div>
 
-
-    <footer class="bg-dark text-white mt-5">
+    <footer class="bg-dark text-white mt-auto">
         <div class="container py-4">
             <div class="row">
                 <a class="d-flex align-items-center text-decoration-none " href="{% url 'admin:index' %}">Admin</a>

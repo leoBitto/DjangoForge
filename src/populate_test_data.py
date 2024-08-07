@@ -180,7 +180,7 @@ def create_crm_monthly_snapshots():
     for _ in range(12):
         CRMMontlySnapshot.objects.using('gold').create(
             month=random.randint(1, 12),
-            year=fake.year(),
+            year=2024,
             total_suppliers=random.randint(10, 100),
             total_customers=random.randint(10, 100),
             total_leads=random.randint(1, 50),
@@ -213,7 +213,7 @@ def create_inventory_weekly_aggregations():
     for _ in range(52):
         InventoryWeeklyAggregation.objects.using('gold').create(
             week=random.randint(1, 52),
-            year=fake.year(),
+            year=2024,
             distinct_products_in_stock=random.randint(1, 100),
             total_stock_value=fake.pydecimal(left_digits=7, right_digits=2, positive=True),
             total_sold_units=random.randint(0, 50),
@@ -234,7 +234,7 @@ def create_inventory_monthly_aggregations():
     for _ in range(12):
         InventoryMonthlyAggregation.objects.using('gold').create(
             month=random.randint(1, 12),
-            year=fake.year(),
+            year=2024,
             distinct_products_in_stock=random.randint(1, 100),
             total_stock_value=fake.pydecimal(left_digits=7, right_digits=2, positive=True),
             total_sold_units=random.randint(0, 50),
@@ -255,7 +255,7 @@ def create_inventory_quarterly_aggregations():
     for _ in range(4):
         InventoryQuarterlyAggregation.objects.using('gold').create(
             quarter=random.randint(1, 4),
-            year=fake.year(),
+            year=2024,
             distinct_products_in_stock=random.randint(1, 100),
             total_stock_value=fake.pydecimal(left_digits=7, right_digits=2, positive=True),
             total_sold_units=random.randint(0, 50),
@@ -296,7 +296,7 @@ def create_inventory_quality_aggregations():
     for _ in range(12):
         InventoryQualityAggregation.objects.using('gold').create(
             month=random.randint(1, 12),
-            year=fake.year(),
+            year=2024,
             products_missing_category=random.randint(0, 10),
             products_missing_image=random.randint(0, 10),
             products_missing_description=random.randint(0, 10),
@@ -307,7 +307,7 @@ def create_inventory_monthly_snapshots():
     for _ in range(12):
         InventoryMonthlySnapshot.objects.using('gold').create(
             month=random.randint(1, 12),
-            year=fake.year(),
+            year=2024,
             total_products=random.randint(50, 100),
             total_stock_quantity=random.randint(1000, 5000),
             total_stock_value=fake.pydecimal(left_digits=7, right_digits=2, positive=True),
@@ -331,13 +331,13 @@ if __name__ == "__main__":
 
     #create_aggregated_error_logs()
     #create_aggregated_access_logs()
-    #create_crm_monthly_snapshots()
-    #create_inventory_daily_aggregations()
-    #create_inventory_weekly_aggregations()
-    #create_inventory_monthly_aggregations()
-    #create_inventory_quarterly_aggregations()
-    #create_inventory_yearly_aggregations()
-    #create_inventory_quality_aggregations()
-    #create_inventory_monthly_snapshots()
+    create_crm_monthly_snapshots()
+    create_inventory_daily_aggregations()
+    create_inventory_weekly_aggregations()
+    create_inventory_monthly_aggregations()
+    create_inventory_quarterly_aggregations()
+    create_inventory_yearly_aggregations()
+    create_inventory_quality_aggregations()
+    create_inventory_monthly_snapshots()
 
     print("Test data generation completed.")

@@ -1,0 +1,117 @@
+{% extends "backoffice/backoffice_base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block dashboard_app %}
+<div class="container mt-4">
+    <h1>Snapshot Mensile per {{ month }}/{{ year }}</h1>
+    
+    <div class="row">
+        <!-- Sezione per Inventory -->
+        <div class="col-md-6">
+            <div class="inventory-section">
+                <h2>Inventario del Magazzino</h2>
+                <!-- Tabelle Inventory -->
+                <div class="inventory-table">
+                    {% if current_inventory_data %}
+                        <table class="table table-striped my-2">
+                            <thead>
+                                <tr>
+                                    <th>Parametro</th>
+                                    <th>Valore</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Totale Prodotti</td>
+                                    <td>{{ current_inventory_data.total_products|intcomma }} prodotti</td>
+                                </tr>
+                                <tr>
+                                    <td>Quantità Totale Magazzino</td>
+                                    <td>{{ current_inventory_data.total_stock_quantity|intcomma }} unità</td>
+                                </tr>
+                                <tr>
+                                    <td>Valore Totale Magazzino</td>
+                                    <td>{{ current_inventory_data.total_stock_value|floatformat:2|intcomma }}€</td>
+                                </tr>
+                                <tr>
+                                    <td>Stock Medio per Prodotto</td>
+                                    <td>{{ current_inventory_data.average_stock_per_product|floatformat:2 }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p>Nessun dato trovato per il mese selezionato.</p>
+                    {% endif %}
+                </div>
+
+                <!-- Grafici Inventory -->
+                <div class="inventory-graphs mt-4">
+                    {% for graph in inventory_graphs.values %}
+                        <div class="mt-4">
+                            {{ graph|safe }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sezione per CRM -->
+        <div class="col-md-6">
+            <div class="crm-section">
+                <h2>CRM</h2>
+                <!-- Tabelle CRM -->
+                <div class="crm-table">
+                    {% if current_crm_data %}
+                        <table class="table table-striped my-2">
+                            <thead>
+                                <tr>
+                                    <th>Parametro</th>
+                                    <th>Valore</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Totale Fornitori</td>
+                                    <td>{{ current_crm_data.total_suppliers|intcomma }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Totale Clienti</td>
+                                    <td>{{ current_crm_data.total_customers|intcomma }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Totale Leads</td>
+                                    <td>{{ current_crm_data.total_leads|intcomma }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Clienti Attivi</td>
+                                    <td>{{ current_crm_data.total_active_customers|intcomma }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Clienti Inattivi</td>
+                                    <td>{{ current_crm_data.total_inactive_customers|intcomma }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Clienti Fedeli</td>
+                                    <td>{{ current_crm_data.total_loyal_customers|intcomma }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p>Nessun dato trovato per il mese selezionato.</p>
+                    {% endif %}
+                </div>
+
+                <!-- Grafici CRM -->
+                <div class="crm-graphs mt-4">
+                    {% for graph in crm_graphs.values %}
+                        <div class="mt-4">
+                            {{ graph|safe }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

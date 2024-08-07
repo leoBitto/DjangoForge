@@ -231,9 +231,3 @@ class InventoryMonthlySnapshot(models.Model):
 
 
 
-
-
-
-
-
-
