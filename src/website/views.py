@@ -51,7 +51,7 @@ def add_image(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Immagine aggiunta con successo.')
-            return redirect('backoffice:image_page')
+            return redirect('website:image_page')
         else:
             messages.error(request, 'Si è verificato un errore. Si prega di correggere il modulo.')
             return render(request, 'backoffice/image_page.html', {'form': form})
@@ -68,7 +68,7 @@ def delete_image(request, image_id):
     # Elimina l'immagine
     image.delete()
     messages.success(request, 'Immagine eliminata con successo.')
-    return redirect('backoffice:image_page')
+    return redirect('website:image_page')
 
 
 @login_required
@@ -91,7 +91,7 @@ def add_gallery(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Galleria aggiunta con successo.')
-            return redirect('backoffice:gallery_page')
+            return redirect('website:gallery_page')
         else:
             messages.error(request, 'Si è verificato un errore. Si prega di correggere il modulo.')
             return render(request, 'backoffice/gallery_page.html', {'form': form})
@@ -108,7 +108,7 @@ def delete_gallery(request, gallery_id):
     # Elimina l'immagine
     gallery.delete()
     messages.success(request, 'Galleria eliminata con successo.')
-    return redirect('backoffice:gallery_page')
+    return redirect('website:gallery_page')
 
 
 @login_required
@@ -129,7 +129,7 @@ def add_contact(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Contatto aggiunto con successo.')
-            return redirect('backoffice:contact_page')
+            return redirect('website:contact_page')
         else:
             messages.error(request, 'Si è verificato un errore. Si prega di correggere il modulo.')
             return render(request, 'backoffice/contact_page.html', {'form': form})
@@ -143,7 +143,7 @@ def delete_contact(request, contact_id):
     contact = get_object_or_404(Contact, pk=contact_id)
     contact.delete()
     messages.success(request, 'Contatto eliminato con successo.')
-    return redirect('backoffice:contact_page')
+    return redirect('website:contact_page')
 
 
 @login_required
@@ -164,7 +164,7 @@ def add_opening_hour(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Orario aggiunto con successo. Ricorda di cambiare gli orari anche su Google.')
-            return redirect('backoffice:opening_hours_page')
+            return redirect('website:opening_hours_page')
         else:
             messages.error(request, 'Si è verificato un errore. Si prega di correggere il modulo.')
             return render(request, 'backoffice/opening_hours_page.html', {'form': form})
@@ -178,7 +178,7 @@ def delete_opening_hour(request, opening_hour_id):
     hours = get_object_or_404(Opening_hour, pk=opening_hour_id)
     hours.delete()
     messages.success(request, 'Orario eliminato con successo.')
-    return redirect('backoffice:opening_hours_page')
+    return redirect('website:opening_hours_page')
 
 
 
@@ -191,7 +191,7 @@ def create_group(request):
         form = GroupForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('backoffice:group_list')
+            return redirect('website:group_list')
     else:
         form = GroupForm()
     return render(request, 'backoffice/create_group.html', {'form': form})
