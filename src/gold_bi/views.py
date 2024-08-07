@@ -9,7 +9,7 @@ import logging
 logger = logging.getLogger('gold_bi')
 
 
-class GraphsView(View):
+class AEGraphsView(View):
 
     def get(self, request):
         try:
