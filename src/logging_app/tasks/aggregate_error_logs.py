@@ -1,7 +1,7 @@
 import logging
 from django.utils import timezone
 from logging_app.models import ErrorLog
-from gold_bi.models import AggregatedErrorLog
+from logging_app.models import AggregatedErrorLog
 from django.db.models import Count, F
 from django.db import transaction
 from django.db.models.functions import ExtractHour, ExtractWeekDay

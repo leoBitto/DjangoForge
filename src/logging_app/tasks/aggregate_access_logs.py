@@ -1,7 +1,7 @@
 import logging
 from django.utils import timezone
 from logging_app.models import AccessLog
-from gold_bi.models import AggregatedAccessLog
+from logging_app.models import AggregatedAccessLog
 from django.db.models import Count, F
 from django.db import transaction
 from django.db.models.functions import ExtractHour, ExtractWeekDay

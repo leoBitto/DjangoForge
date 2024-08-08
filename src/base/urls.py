@@ -24,7 +24,7 @@ urlpatterns = [
     path('', include('website.urls', namespace='website')),
     path('backoffice/', include('backoffice.urls', namespace='backoffice')),
     path('', include('pwa.urls')),  # You MUST use an empty string as the URL prefix
-    path('logging/', include('logging.urls', namespace='logging')),
+    path('logging/', include('logging_app.urls', namespace='logging')),
     
     path('webpush/', include('webpush.urls')),
 ]
