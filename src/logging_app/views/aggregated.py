@@ -1,9 +1,7 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render
 from django.views.generic import View
 import plotly.graph_objs as go
-from django.db.models import Count
-from logging_app.models import AccessLog, ErrorLog
-from .models import AggregatedAccessLog, AggregatedErrorLog
+from logging_app.models import AggregatedAccessLog, AggregatedErrorLog
 import logging
 
 logger = logging.getLogger('gold_bi')
@@ -34,7 +32,7 @@ class AEGraphsView(View):
             logger.info('Graphs created successfully.')
 
             # Passa i dati al template della dashboard
-            return render(request, 'gold_bi/graphs.html', {
+            return render(request, 'logging_app/graphs.html', {
                 'error_hourly_chart': error_hourly_chart,
                 'error_daily_chart': error_daily_chart,
                 'access_hourly_chart': access_hourly_chart,
@@ -42,7 +40,7 @@ class AEGraphsView(View):
             })
         except Exception as e:
             logger.error('Error in GraphsView: %s', e)
-            return render(request, 'gold_bi/graphs.html', {
+            return render(request, 'logging_app/graphs.html', {
                 'error': 'An error occurred while generating the graphs.',
                 'error_message': str(e),
             })
@@ -122,34 +120,4 @@ class AEGraphsView(View):
         return fig.to_html(full_html=False)
 
 
-
-class AEListView(View):
-    def get(self, request):
-        # Recupera i log aggregati per la lista
-        accesslogs = AccessLog.objects.order_by('-timestamp')[:50]
-        errorlogs = ErrorLog.objects.order_by('-timestamp')[:50]
-
-        # Passa i dati al template della dashboard
-        return render(request, 'gold_bi/AElist.html', {
-            'accesslogs': accesslogs,
-            'errorlogs': errorlogs,
-        })
-
-
-class AccessLogDetailView(View):
-    def get(self, request, log_id):
-        # Recupera il log specifico
-        log = get_object_or_404(AccessLog, pk=log_id)
-
-        # Passa il log al template dei dettagli del log
-        return render(request, 'gold_bi/log_detail.html', {'log': log})
-
-
-class ErrorLogDetailView(View):
-    def get(self, request, log_id):
-        # Recupera il log specifico
-        log = get_object_or_404(ErrorLog, pk=log_id)
-
-        # Passa il log al template dei dettagli del log
-        return render(request, 'gold_bi/log_detail.html', {'log': log})
 

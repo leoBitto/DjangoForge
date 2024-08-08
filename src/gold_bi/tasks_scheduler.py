@@ -6,9 +6,9 @@ logger = logging.getLogger('gold_bi')
 
 def schedule_tasks():
     try:
-        if not Schedule.objects.filter(func='gold_bi.tasks.logging.aggregate_access_logs.aggregate_access_logs').exists():
+        if not Schedule.objects.filter(func='logging_app.tasks.aggregate_access_logs.aggregate_access_logs').exists():
             schedule(
-                'gold_bi.tasks.logging.aggregate_access_logs.aggregate_access_logs',
+                'logging_app.tasks.aggregate_access_logs.aggregate_access_logs',
                 schedule_type=Schedule.HOURLY,
                 #minutes=30,
                 repeats=-1,
@@ -17,9 +17,9 @@ def schedule_tasks():
             )
             logger.info("Scheduled aggregate_access_logs task")
 
-        if not Schedule.objects.filter(func='gold_bi.tasks.logging.aggregate_error_logs.aggregate_error_logs').exists():
+        if not Schedule.objects.filter(func='logging_app.tasks.aggregate_error_logs.aggregate_error_logs').exists():
             schedule(
-                'gold_bi.tasks.logging.aggregate_error_logs.aggregate_error_logs',
+                'logging_app.tasks.aggregate_error_logs.aggregate_error_logs',
                 schedule_type=Schedule.HOURLY,
                 #minutes=30,
                 repeats=-1,
