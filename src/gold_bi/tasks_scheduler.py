@@ -2,7 +2,7 @@ import logging
 from django_q.tasks import schedule, Schedule
 from django.utils import timezone
 
-logger = logging.getLogger('gold_bi')
+logger = logging.getLogger('app')
 
 def schedule_tasks():
     try:
@@ -27,5 +27,8 @@ def schedule_tasks():
                 cluster='gold_bi'
             )
             logger.info("Scheduled aggregate_error_logs task")
+
+
+
     except Exception as e:
         logger.error("Error scheduling tasks: %s", e)

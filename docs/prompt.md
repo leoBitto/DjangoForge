@@ -1,286 +1,86 @@
-ho in mente un ambizioso progetto, quello di creare un applicativo da proporre ad aziende medio piccole per gestire il proprio business. 
-in questo momento sto creando un template che verrà personalizzato in base all azienda cliente. il progetto è strutturato nel seguente modo:
-````
-.
-├── config
-├── docker-compose.dev.yml
-├── docker-compose.prod.yml
-├── docs
-│   ├── CODE_OF_CONDUCT.md
-│   ├── README.md
-│   ├── _config.yml
-│   └── assets
-│       └── img
-│           ├── DjangoForge.png
-│           ├── DjangoForge_sfondo.png
-│           └── djangoforgeico.svg
-├── manager.sh
-├── nginx
-│   ├── nginx.conf
-│   └── nginx.dev.conf
-└── src
-    ├── Dockerfile
-    ├── base
-    │   ├── __init__.py
-    │   ├── __pycache__
-    │   │   ├── __init__.cpython-310.pyc
-    │   │   └── settings.cpython-310.pyc
-    │   ├── asgi.py
-    │   ├── settings.py
-    │   ├── urls.py
-    │   └── wsgi.py
-    ├── gold_bi
-    │   ├── __init__.py
-    │   ├── admin.py
-    │   ├── apps.py
-    │   ├── migrations
-    │   │   └── __init__.py
-    │   ├── models.py
-    │   ├── tests.py
-    │   └── views.py
-    ├── logging_app
-    │   ├── __init__.py
-    │   ├── __pycache__
-    │   │   ├── __init__.cpython-310.pyc
-    │   │   ├── admin.cpython-310.pyc
-    │   │   ├── apps.cpython-310.pyc
-    │   │   └── models.cpython-310.pyc
-    │   ├── admin.py
-    │   ├── apps.py
-    │   ├── docs
-    │   │   ├── README.md
-    │   │   ├── _config.yml
-    │   │   └── assets
-    │   │       ├── Immagine 2024-03-19 124951.png
-    │   │       └── img
-    │   │           └── Immagine 2024-03-19 124951.png
-    │   ├── forms.py
-    │   ├── middleware.py
-    │   ├── migrations
-    │   │   ├── 0001_initial.py
-    │   │   └── __init__.py
-    │   ├── models.py
-    │   ├── templates
-    │   │   └── logging_app
-    │   │       ├── AElist.html
-    │   │       ├── IPlist.html
-    │   │       ├── accordion.html
-    │   │       ├── consent.html
-    │   │       ├── graphs.html
-    │   │       └── log_detail.html
-    │   ├── tests.py
-    │   ├── urls.py
-    │   └── views.py
-    ├── manage.py
-    ├── requirements.txt
-    └── website
-        ├── __init__.py
-        ├── __pycache__
-        │   ├── __init__.cpython-310.pyc
-        │   ├── admin.cpython-310.pyc
-        │   ├── apps.cpython-310.pyc
-        │   └── models.cpython-310.pyc
-        ├── admin.py
-        ├── apps.py
-        ├── docs
-        │   └── README.md
-        ├── forms.py
-        ├── migrations
-        │   ├── 0001_initial.py
-        │   ├── 0002_remove_gallery_image_header.py
-        │   ├── 0003_remove_gallery_image_img.py
-        │   ├── 0004_gallery_image_img.py
-        │   ├── 0005_remove_gallery_image_img.py
-        │   ├── 0006_gallery_image_img.py
-        │   ├── 0007_carousel_image_delete_gallery_image.py
-        │   ├── 0008_rename_carousel_gallery.py
-        │   ├── 0009_rename_carousel_image_gallery.py
-        │   ├── 0010_alter_gallery_options_alter_image_description_and_more.py
-        │   └── __init__.py
-        ├── models.py
-        ├── static
-        │   ├── favicon
-        │   │   ├── 16DjangoForge.ico
-        │   │   ├── 48DjangoForge.ico
-        │   │   └── bee.ico
-        │   ├── icons
-        │   │   ├── github.svg
-        │   │   └── linkedin.svg
-        │   └── pwa
-        │       └── icons
-        │           ├── Icon-512x512.png
-        │           └── icon-256x256.png
-        ├── templates
-        │   ├── registration
-        │   │   ├── login.html
-        │   │   ├── logout.html
-        │   │   └── password_reset.html
-        │   └── website
-        │       ├── base.html
-        │       ├── dashboard
-        │       │   ├── contact_page.html
-        │       │   ├── create_group.html
-        │       │   ├── dashboard.html
-        │       │   ├── gallery_page.html
-        │       │   ├── group_list.html
-        │       │   ├── image_page.html
-        │       │   ├── opening_hours_page.html
-        │       │   └── push_info.html
-        │       ├── footer.html
-        │       ├── landing.html
-        │       └── navbar.html
-        ├── tests.py
-        ├── urls.py
-        └── views.py
-````      
 
-**DJANGO**:
-- il progetto django è contenuto in una cartella chiamata src e ha una cartella che si chiama base in cui ci sono i file settings, asgi, wsgi e gli url di base del progetto. 
-- all'interno di src ci sono due cartelle che contengono tre distinte app:
--- la prima è website e si occupa della parte grafica del progetto che si potrebbe tradurre in termini di software business nella parte grafica di front office e back office; continene il template base.html, footer.html, header.html e landing.html. tutti i file di tutte le app estendono base.html che è composto da header e footer più altri componenti dati dalle altre app. queste pagine html compongono il front office
-nei template c'è una cartella che si chiama dashboard. all'interno di questa cartella invece ci sono i template che compongono il back office, estendnendo sempre base.html qui vengono include delle pagine speciali che permettono le operazioni crud sui modelli, e altre operazioni "speciali" come l'attivazione di azioni.
--- la seconda è logging app. la logging app per adesso va bene, devi solo sapere che esiste. questa app non ha un corrispettivo front office ma solo back office e non permette operazioni crud ma fa solamente visualizzare le operazioni che nginx registra in entrata.
--- la terza si chiama gold_bi e in pratica gestisce dei flussi ETL che permettono di popolare un database chiamato GOLD che contiene dati rifiniti adatti all'analisi. mette a disposizione delle viste che generano delle informazioni da inserire nella parte backoffice della dashboard di controllo dell'applicativo
+**Progetto**: Sto sviluppando un ecosistema di applicazioni Django destinato a piccole e medie imprese (PMI). Il progetto è strutturato in tre livelli principali:
 
-questa è , per adesso, la base minimale della parte django.
+1. **Progetto Base**: Include le funzionalità fondamentali e le app generiche necessarie per l'intero ecosistema.
 
-**NGINX**
-nginx accetta le connessioni che vengono poi date a gunicorn che le gira a django. nginx viene usato sia in sviluppo, tramite un container docker, che in produzione, direttamente sul server. nginx passa le info all'app logging app.
+2. **Tier 1**: App business generiche come CRM, ERP e altre che si basano sul Progetto Base e forniscono funzionalità di base comuni a molte imprese. Esempi includono:
+   - **Gestione degli Ordini e dell'Inventario**: Gestisce le vendite, gli ordini e l'inventario.
+   - **Gestione dei Punti di Vendita (PDV)**: Include la gestione delle sedi fisiche e dei magazzini.
+   - **Sistema di Prenotazione Eventi**: Gestisce prenotazioni e registrazioni per eventi aziendali.
+   - **Sistema di Contabilità Base**: Fornisce funzionalità per la gestione delle finanze aziendali.
 
-**DOCKER & docker-compose**
+3. **Tier 2**: App business specifiche per settori verticali, estendendo le funzionalità delle app di Tier 1 e personalizzate per esigenze particolari. Esempi includono:
+   - **Sistema di Prenotazione per Ristoranti**: Estensione del CRM per gestire prenotazioni tavoli e ordini al ristorante.
+   - **Gestione dei Magazzini Avanzata**: Estensione del sistema di gestione dei magazzini con funzionalità avanzate come tracciamento dettagliato delle spedizioni e delle scorte.
+   - **Sistema di Gestione degli Eventi per Hotel**: Estensione del sistema di prenotazione eventi per gestire conferenze e altre attività specifiche per hotel.
+   - **Modulo di Analisi Avanzata per E-Commerce**: Estensione del sistema di gestione degli ordini con reportistica e analisi dettagliata delle vendite.
 
-docker viene usato per creare l'app di django. docker compose invece viene suato per orchestrare le varie componenti. esistono due versioni del docker compose:
-- la versione sviluppo, crea l'effettiva immagine di django e quella di nginx e di un db postgres. crea il network e dei volumi per i file statici e i media. è il file che viene usato per creare l'effettiva immagine
-services:
-  web:
-    build:
-      context: ./src
-      dockerfile: Dockerfile
-    image: webapp_django
-    command: gunicorn base.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 90
-    volumes:
-      - static_volume:/home/app/web/static
-      - media_volume:/home/app/web/media
-    expose:
-      - 8000
-    env_file:
-      - ./config/.env
-    depends_on:
-      - db
-      - db_gold
-    networks:
-      - app_network
+### **Tecnologie e Infrastruttura**
 
-  db:
-    image: postgres:15
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    env_file:
-      - ./config/.env
-    networks:
-      - app_network
+- **Framework**: Django
+- **Database**:
+  - **Default**: Database principale usato come data lake per i dati grezzi.
+  - **Gold**: Database per la business intelligence, contenente dati aggregati e raffinati.
+- **Containerizzazione**: Utilizzo di Docker e Docker Compose:
+  - **Sviluppo**: Include la creazione delle immagini, inclusa quella per Nginx, e gestisce l'ambiente di sviluppo.
+  - **Produzione**: Utilizza i container dal GitHub Container Registry (GHCR) e gestisce il deployment; Nginx è configurato e gestito direttamente sul server di produzione.
+- **CI/CD**: Utilizzo di GitHub Actions per l'automazione del flusso di lavoro, inclusi creazione delle immagini Docker e deployment su servizi IaaS (Digital Ocean Droplet). È previsto un futuro passaggio a PaaS per semplificare il deployment e creare soluzioni agnostiche al vendor.
 
-  db_gold:
-    image: postgres:15
-    volumes:
-      - postgres_data_gold:/var/lib/postgresql/data/
-    env_file:
-      - ./config/.env
-    networks:
-      - app_network
+### **Struttura del Progetto**
 
-  nginx:
-    image: nginx:latest
-    volumes:
-      - static_volume:/home/app/web/static
-      - media_volume:/home/app/web/media
-      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
-    ports:
-      - 80:80
-    restart: always
-    depends_on:
-      - web
-    networks:
-      - app_network
+**1. Logging App**
+   - **Scopo**: Registra e aggrega i log delle richieste HTTP e degli errori. Attualmente scrive i dati di log nel database `default`.
+   - **Struttura Aggiornata**:
+     - **File e Directory**:
+       - `models/`: Contiene `base.py` e `aggregated.py` per i modelli di log.
+       - `tasks/`: Contiene `aggregate_access_logs.py` e `aggregate_error_logs.py` per le attività di aggregazione dei log.
+       - `views/`: Contiene `base.py` e `aggregated.py` per le visualizzazioni dei log.
+     - **Modifiche Pianificate**:
+       - Creare un nuovo modello di log e un handler personalizzato.
+       - Configurare il logger in `settings.py` per scrivere i log nel database `default`.
+       - Utilizzare il logger principalmente per il debug on-the-fly e per registrare gli errori.
+   - **Risultato Atteso**: Un sistema di logging esteso, modulare e ben strutturato, con capacità di debug in tempo reale e aggregazione dei log.
 
+**2. Website App**
+   - **Scopo**: Gestisce il frontend del sito e attualmente funziona come un semplice CMS.
+   - **Modifiche Pianificate**:
+     - Rimuovere modelli non necessari e mantenere l'app focalizzata sul rendering di pagine HTML statiche o quasi statiche.
+   - **Risultato Atteso**: Un'app semplificata e pronta per future espansioni CMS.
 
-volumes:
-  postgres_data:
-  postgres_data_gold:
-  static_volume:
-  media_volume:
+**3. Backoffice App**
+   - **Scopo**: Fornisce strumenti di gestione backend e visualizzazione dei dati.
+   - **Modifiche Pianificate**:
+     - Modularizzare l'app e integrare nuovi strumenti di visualizzazione dei dati provenienti da Gold BI.
+   - **Risultato Atteso**: Un backoffice aggiornato, modulare e ben integrato con Gold BI.
 
-networks:
-  app_network:
-    driver: bridge
+**4. Gold BI**
+   - **Scopo**: Gestisce i flussi ETL e le attività di pianificazione utilizzando Django Q. Non sono previste modifiche sostanziali, solo estensioni in base agli aggiornamenti delle altre app.
+   - **Risultato Atteso**: Un sistema ETL funzionante con pianificazione delle tasks gestita tramite Django Q.
 
-- la versione di produzione invece scarica tutte le immagini dai rispettivi register. tranne quello di nginx che come accennato prima in produzione viene fatto girare direttamente sul server. qui la configurazine del network e dei volumi è più avanzata.
-services:
-  web:
-    image: djangoforge:latest # Utilizza l'immagine pre-build presente nel registry
-    container_name: web
-    command: gunicorn base.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 90
-    volumes:
-      - static_volume:/home/app/web/static
-      - media_volume:/home/app/web/media
-    env_file:
-      - ./config/.env
-    depends_on:
-      - db
-    ports:
-      - 8000:8000
-    networks:
-      app_network:
-        ipv4_address: 192.168.100.2
+### **Milestone**
 
-  db:
-    image: postgres:15
-    container_name: postgres_db
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    env_file:
-      - ./config/.env
-    networks:
-      app_network:
-        ipv4_address: 192.168.100.3
-  
-  db_gold:
-    image: postgres:15
-    container_name: postgres_db_gold
-    volumes:
-      - postgres_data_gold:/var/lib/postgresql/data/
-    env_file:
-      - ./config/.env
-    networks:
-      app_network:
-        ipv4_address: 192.168.100.4
+1. **Milestone 1: Analisi e Pianificazione Dettagliata**
+   - **Durata**: 2 giorni
+   - **Obiettivo**: Completare una lista dettagliata delle attività da svolgere per la ristrutturazione del Progetto Base, compreso il refactor della Logging App.
+   - **Output**: Lista di attività dettagliata.
 
-volumes:
-  static_volume:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /opt/web/static
-  media_volume:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /opt/web/media
-  postgres_data:
-  postgres_data_gold:
+2. **Milestone 2: Refactor della Logging App**
+   - **Durata**: 2 giorni
+   - **Obiettivo**: Estendere l'app di logging per scrivere i log nel database `default`. Implementare un nuovo modello di log, un handler personalizzato e configurare il logger in `settings.py`.
+   - **Output**: Sistema di logging aggiornato e funzionante con capacità di aggregazione e debug in tempo reale.
 
+3. **Milestone 3: Modularizzazione e Aggiornamento della Backoffice App**
+   - **Durata**: 5 giorni
+   - **Obiettivo**: Modularizzare l'app e integrare nuovi strumenti di visualizzazione dei dati da Gold BI.
+   - **Output**: Backoffice app aggiornata e modulare.
 
-networks:
-  app_network:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 192.168.100.0/24
+4. **Milestone 4: Semplificazione e Preparazione della Website App**
+   - **Durata**: 3 giorni
+   - **Obiettivo**: Rimuovere i modelli non necessari e preparare l'app per future espansioni CMS.
+   - **Output**: Website app semplificata e migliorata.
 
+5. **Milestone 5: Implementazione e Manutenzione del Sistema ETL in Gold BI**
+   - **Durata**: In corso
+   - **Obiettivo**: Continuare a sviluppare e mantenere i flussi ETL e la pianificazione delle tasks tramite Django Q, con estensioni basate sui cambiamenti delle altre app.
+   - **Output**: Sistema ETL in continuo aggiornamento e miglioramento, con gestione delle tasks attraverso Django Q.
 
-
-**GITHUB**
-
-github viene usato come strumento di repository per la condivisione del codice tra le macchine in cui viene sviluppato il software, per hostare la docuemntazione e viene usato il ghcr per contenere l'immagine dell'app. ci sono dei flussi CD/CI che vengono usati per automatizzare la creazione dell'immagine e il caricamento su ghcr, e il deploy sul server. il server per adesso è un droplet di digital ocean. per la creazione dell'immagine viene usato docker compose dev mentre nel deploy sul server viene fatto un scp del file docker compose prod e viene fatto partire installando dal ghcr e dal dockerhub le immagini necessarie. 

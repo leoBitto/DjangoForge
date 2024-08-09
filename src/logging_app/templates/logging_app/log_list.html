@@ -1,0 +1,37 @@
+{% extends "backoffice/backoffice_base.html" %}
+{% load static %}
+
+{% block dashboard_app %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Log Content</h2>
+    </div>
+
+    <div class="mb-3">
+        <input type="text" class="form-control" id="logSearch" placeholder="Cerca nel log...">
+    </div>
+
+    <div id="logContainer" class="p-3 bg-light border rounded" style="max-height: 500px; overflow-y: auto; font-family: monospace; font-size: 14px;">
+        {% for line in log_content %}
+            <div class="log-line">{{ line }}</div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    document.getElementById('logSearch').addEventListener('input', function() {
+        let filter = this.value.toLowerCase();
+        let logContainer = document.getElementById('logContainer');
+        let logLines = logContainer.getElementsByClassName('log-line');
+
+        Array.from(logLines).forEach(line => {
+            let lineText = line.textContent.toLowerCase();
+            if (lineText.includes(filter) || filter === '') {
+                line.style.display = '';
+            } else {
+                line.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}

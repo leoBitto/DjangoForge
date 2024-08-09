@@ -1,12 +1,12 @@
 import logging
 from django.utils import timezone
-from logging_app.models import ErrorLog
+from logging_app.models import ErrorRequestLog
 from logging_app.models import AggregatedErrorLog
 from django.db.models import Count, F
 from django.db import transaction
 from django.db.models.functions import ExtractHour, ExtractWeekDay
 
-logger = logging.getLogger('gold_bi')
+logger = logging.getLogger('app')
 
 def aggregate_error_logs():
     try:
@@ -15,7 +15,7 @@ def aggregate_error_logs():
         end_time = now
 
         # Aggregazione dei dati
-        error_aggregations = ErrorLog.objects.using('default').filter(
+        error_aggregations = ErrorRequestLog.objects.using('default').filter(
             timestamp__gte=start_time, timestamp__lt=end_time
         ).annotate(
             hour=ExtractHour('timestamp'),

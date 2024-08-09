@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 
-
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 DEBUG = bool(os.environ.get("DEBUG", default=0))
@@ -221,38 +220,24 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '{filename}: {levelname}: {funcName}(): {lineno}: {message}',
+            'format': '{asctime} {name} {levelname} {filename}:{lineno} - {funcName}() - {message}',
             'style': '{',
-        },
-        'simple': {
-            'format': '{levelname} {message}',
-            'style': '{',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
         },
     },
     'handlers': {
         'file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'django.log'),
+            'filename': os.path.join(BASE_DIR, 'app.log'),
             'formatter': 'verbose',
         },
-
     },
     'loggers': {
-        'django': {
+        'app': {
             'handlers': ['file'],
             'level': 'INFO',
             'propagate': True,
-        },
-        'gold_bi': {
-            'handlers': ['file'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-        'logging_app': {
-            'handlers': ['file'],
-            'level': 'INFO',
-            'propagate': False,
         },
     },
 }

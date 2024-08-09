@@ -3,10 +3,10 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.conf import settings  # Aggiungi questa riga per accedere alle impostazioni
-from .models import AccessLog, ErrorLog
+from .models import AccessRequestLog, ErrorRequestLog
 
 class LogMiddleware:
-    LOGGING_PATH_PREFIX = ('/dashboard/logging/', '/static/', '/admin/', '/webpush/')
+    LOGGING_PATH_PREFIX = ('/dashboard/logging/', '/static/', '/admin/', '/webpush/', '/backoffice/')
     LOGGING_PATH_POSTFIX = ('js', 'json', 'css')
 
     def __init__(self, get_response):
@@ -31,7 +31,7 @@ class LogMiddleware:
         
         if not (request.path.startswith(self.LOGGING_PATH_PREFIX) or request.path.endswith(self.LOGGING_PATH_POSTFIX)):
             #ip_address = request.META.get('HTTP_X_REAL_IP', '')
-            access_log = AccessLog(
+            access_log = AccessRequestLog(
                 #ip_address=ip_address,
                 timestamp=timezone.now(),
                 request_path=request.path,
@@ -48,7 +48,7 @@ class LogMiddleware:
         Cattura l'eccezione e registra un log dell'errore.
         """
         # Cattura l'eccezione e registra l'errore solo se DEBUG è False
-        error_log = ErrorLog(
+        error_log = ErrorRequestLog(
             #ip_address=request.META.get('HTTP_X_REAL_IP', ''),  # Ottiene l'indirizzo IP del client
             timestamp=timezone.now(),  # Imposta il timestamp attuale
             request_path=request.path,  # Ottiene il percorso della richiesta
