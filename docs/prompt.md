@@ -29,17 +29,12 @@
 ### **Struttura del Progetto**
 
 **1. Logging App**
-   - **Scopo**: Registra e aggrega i log delle richieste HTTP e degli errori. Attualmente scrive i dati di log nel database `default`.
+   - **Scopo**: Registra e aggrega i log delle richieste HTTP e degli errori.
    - **Struttura Aggiornata**:
      - **File e Directory**:
        - `models/`: Contiene `base.py` e `aggregated.py` per i modelli di log.
        - `tasks/`: Contiene `aggregate_access_logs.py` e `aggregate_error_logs.py` per le attività di aggregazione dei log.
        - `views/`: Contiene `base.py` e `aggregated.py` per le visualizzazioni dei log.
-     - **Modifiche Pianificate**:
-       - Creare un nuovo modello di log e un handler personalizzato.
-       - Configurare il logger in `settings.py` per scrivere i log nel database `default`.
-       - Utilizzare il logger principalmente per il debug on-the-fly e per registrare gli errori.
-   - **Risultato Atteso**: Un sistema di logging esteso, modulare e ben strutturato, con capacità di debug in tempo reale e aggregazione dei log.
 
 **2. Website App**
    - **Scopo**: Gestisce il frontend del sito e attualmente funziona come un semplice CMS.
@@ -54,20 +49,132 @@
    - **Risultato Atteso**: Un backoffice aggiornato, modulare e ben integrato con Gold BI.
 
 **4. Gold BI**
-   - **Scopo**: Gestisce i flussi ETL e le attività di pianificazione utilizzando Django Q. Non sono previste modifiche sostanziali, solo estensioni in base agli aggiornamenti delle altre app.
+   - **Scopo**: Gestisce i flussi ETL e le attività di pianificazione utilizzando Django Q. VIENE ESTESA CON LE SCHEDULAZIONI DELLE TASK delle altre app.
    - **Risultato Atteso**: Un sistema ETL funzionante con pianificazione delle tasks gestita tramite Django Q.
 
+### Struttura filesystem
+
+DjangoForge/
+├── config
+│   ├── db.cfg
+│   └── gold.cfg
+├── docker-compose.dev.yml
+├── docker-compose.prod.yml
+├── docs
+│   ├── CODE_OF_CONDUCT.md
+│   ├── README.md
+│   ├── _config.yml
+│   ├── assets
+│   │   └── img
+│   └── prompt.md
+├── manager.sh
+├── nginx
+│   ├── nginx.conf
+│   └── nginx.dev.conf
+└── src
+    ├── Dockerfile
+    ├── backoffice
+    │   ├── __init__.py
+    │   ├── admin.py
+    │   ├── apps.py
+    │   ├── models.py
+    │   ├── templates
+    │   │   └── backoffice
+    │   │       ├── backoffice_base.html
+    │   │       ├── contact_page.html
+    │   │       ├── create_group.html
+    │   │       ├── gallery_page.html
+    │   │       ├── group_list.html
+    │   │       ├── image_page.html
+    │   │       ├── opening_hours_page.html
+    │   │       └── push_info.html
+    │   ├── tests.py
+    │   ├── urls.py
+    │   └── views.py
+    ├── base
+    │   ├── __init__.py
+    │   ├── asgi.py
+    │   ├── settings.py
+    │   ├── urls.py
+    │   └── wsgi.py
+    ├── gold_bi
+    │   ├── __init__.py
+    │   ├── __pycache__
+    │   ├── apps.py
+    │   ├── docs
+    │   │   ├── README.md
+    │   │   └── assets
+    │   │       └── images
+    │   ├── signals.py
+    │   ├── tasks_scheduler.py
+    │   └── tests.py
+    ├── logging_app
+    │   ├── __init__.py
+    │   ├── admin.py
+    │   ├── apps.py
+    │   ├── docs
+    │   │   ├── README.md
+    │   │   ├── _config.yml
+    │   │   └── assets
+    │   ├── forms.py
+    │   ├── middleware.py
+    │   ├── models
+    │   │   ├── __init__.py
+    │   │   ├── aggregated.py
+    │   │   └── base.py
+    │   ├── tasks
+    │   │   ├── __init__.py
+    │   │   ├── aggregate_access_logs.py
+    │   │   └── aggregate_error_logs.py
+    │   ├── templates
+    │   │   └── logging_app
+    │   │       ├── AElist.html
+    │   │       ├── accordion.html
+    │   │       ├── graphs.html
+    │   │       ├── log_list.html
+    │   │       └── request_log_detail.html
+    │   ├── tests.py
+    │   ├── urls.py
+    │   └── views
+    │       ├── __init__.py
+    │       ├── aggregated.py
+    │       └── base.py
+    ├── manage.py
+    ├── requirements.txt
+    └── website
+        ├── __init__.py
+        ├── admin.py
+        ├── apps.py
+        ├── docs
+        │   └── README.md
+        ├── forms.py
+        ├── models.py
+        ├── static
+        │   ├── favicon
+        │   │   ├── 16DjangoForge.ico
+        │   │   ├── 48DjangoForge.ico
+        │   │   └── bee.ico
+        │   ├── icons
+        │   └── pwa
+        │       └── icons
+        ├── templates
+        │   ├── registration
+        │   │   ├── login.html
+        │   │   ├── logout.html
+        │   │   └── password_reset.html
+        │   └── website
+        │       ├── base.html
+        │       ├── footer.html
+        │       ├── landing.html
+        │       └── navbar.html
+        ├── tests.py
+        ├── urls.py
+        └── views.py
+
+33 directories, 82 files
+
+
 ### **Milestone**
-
-1. **Milestone 1: Analisi e Pianificazione Dettagliata**
-   - **Durata**: 2 giorni
-   - **Obiettivo**: Completare una lista dettagliata delle attività da svolgere per la ristrutturazione del Progetto Base, compreso il refactor della Logging App.
-   - **Output**: Lista di attività dettagliata.
-
-2. **Milestone 2: Refactor della Logging App**
-   - **Durata**: 2 giorni
-   - **Obiettivo**: Estendere l'app di logging per scrivere i log nel database `default`. Implementare un nuovo modello di log, un handler personalizzato e configurare il logger in `settings.py`.
-   - **Output**: Sistema di logging aggiornato e funzionante con capacità di aggregazione e debug in tempo reale.
 
 3. **Milestone 3: Modularizzazione e Aggiornamento della Backoffice App**
    - **Durata**: 5 giorni
@@ -78,9 +185,4 @@
    - **Durata**: 3 giorni
    - **Obiettivo**: Rimuovere i modelli non necessari e preparare l'app per future espansioni CMS.
    - **Output**: Website app semplificata e migliorata.
-
-5. **Milestone 5: Implementazione e Manutenzione del Sistema ETL in Gold BI**
-   - **Durata**: In corso
-   - **Obiettivo**: Continuare a sviluppare e mantenere i flussi ETL e la pianificazione delle tasks tramite Django Q, con estensioni basate sui cambiamenti delle altre app.
-   - **Output**: Sistema ETL in continuo aggiornamento e miglioramento, con gestione delle tasks attraverso Django Q.
 

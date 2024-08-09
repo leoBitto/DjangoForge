@@ -171,3 +171,108 @@ it will require the domain names separated by a comma if more than one. they wil
 then you can create a super user 
 _______________________________________________________________________________
 
+_______________________________________________________________________________
+
+### Scopo e Filosofia Generale del Progetto
+
+**1. Scopo del Progetto**
+Il progetto è concepito per informatizzare e centralizzare le informazioni generate dalle piccole e medie imprese (PMI), con l'obiettivo di creare un sistema di Business Intelligence (BI). Il focus è sulla *self-service BI*, che consente agli imprenditori di accedere facilmente ai dati rilevanti della propria attività, permettendo loro di prendere decisioni più informate e di diventare maggiormente data-driven. Questo approccio rende la BI accessibile anche a coloro che non hanno competenze tecniche avanzate, democratizzando l'accesso alle informazioni strategiche.
+
+**2. Utenti Target**
+Il progetto è destinato principalmente a piccole e medie imprese, guidate da imprenditori interessati a sfruttare i dati per migliorare la gestione delle loro attività. Gli utenti ideali sono aziende che operano in settori come la distribuzione, la ristorazione, l'artigianato e altri contesti in cui il numero di dipendenti è limitato e le risorse tecniche sono spesso scarse.
+
+**3. Filosofia del Progetto**
+Il progetto si basa sulla convinzione che la Business Intelligence non debba essere esclusiva delle grandi aziende, ma che tutti possano beneficiare di queste informazioni strategiche. L'obiettivo è creare un software semplice, scalabile e standardizzato, che possa essere offerto a basso costo, rendendolo accessibile a un vasto pubblico di PMI. La semplicità nell'implementazione e nell'uso, unita alla scalabilità, è il cuore della filosofia del progetto.
+
+**4. Casi d'Uso Principali**
+Il progetto è pensato per supportare casi d'uso come:
+   - Una piccola azienda di distribuzione con un solo dipendente.
+   - Un ristorante con un numero limitato di dipendenti.
+   - Un artigiano che desidera monitorare meglio i suoi processi e le sue vendite.
+
+**5. Contesto d'Uso**
+Il progetto è destinato a essere utilizzato in contesti aziendali ben consolidati, dove le imprese cercano di ottimizzare le loro operazioni attraverso l'uso di dati e analisi avanzate, ma senza dover ricorrere a soluzioni costose e complesse solitamente riservate alle grandi organizzazioni.
+
+
+
+### **Componenti Principali del Sistema**
+
+1. **Logging App**
+   - **Scopo**: Questa applicazione è responsabile della registrazione e aggregazione dei log delle richieste HTTP e degli errori del sistema.
+   - **Struttura**:
+     - **Modelli**: I modelli per i log sono definiti in `base.py` e `aggregated.py`, situati nella directory `models/`.
+     - **Attività (Tasks)**: Le attività di aggregazione dei log vengono gestite da script come `aggregate_access_logs.py` e `aggregate_error_logs.py` all'interno della cartella `tasks/`.
+     - **Visualizzazioni (Views)**: Le visualizzazioni relative ai log sono definite in `views/base.py` e `views/aggregated.py`.
+
+2. **Website App**
+   - **Scopo**: Funziona come un semplice Content Management System (CMS) per gestire il frontend del sito. Offre funzionalità di base come pagine statiche e gestione delle autenticazioni.
+
+3. **Backoffice App**
+   - **Scopo**: Questa app fornisce strumenti per la gestione del backend e la visualizzazione dei dati, rivolta principalmente agli amministratori del sistema.
+
+4. **Gold BI**
+   - **Scopo**: Gestisce i processi ETL (Extract, Transform, Load) e le attività di schedulazione tramite Django Q. Questa app può estendersi alle schedulazioni di task di altre applicazioni, centralizzando la gestione delle operazioni pianificate.
+
+### **Interazione tra le Componenti**
+
+- **Comunicazione Inter-app**: 
+   - Le diverse app comunicano tra loro sfruttando le funzionalità native di Django. Poiché ogni app è anche un modulo Python, le classi e le funzioni possono essere richiamate da un modulo all'altro. Ad esempio, un'app può importare modelli o task da un'altra app e utilizzarli secondo necessità.
+   - Django gestisce anche il routing delle richieste tra le app e coordina l'interazione attraverso le sue funzionalità integrate, come i signal e le view.
+
+
+### **Ambiente di Sviluppo e Produzione**
+
+#### **1. Ambiente di Sviluppo**
+
+**Configurazione Docker:**
+- **Dockerfile**: Utilizzato per costruire l'immagine dell'applicazione. Include la creazione di un'immagine Python, l'installazione delle dipendenze, e la configurazione dell'ambiente di lavoro.
+  - **Fase di Build**:
+    - Installa le dipendenze di sistema e Python.
+    - Crea una cache di pacchetti Python per un'installazione più veloce.
+  - **Fase Finale**:
+    - Configura un'immagine finale con le dipendenze e il codice sorgente.
+    - Imposta il proprietario e il gruppo dei file, e avvia il server Gunicorn.
+
+**File Docker Compose per Sviluppo (`docker-compose.dev.yml`):**
+- **Servizi**:
+  - **web**: Contiene l'app Django e viene avviato con Gunicorn. Monta volumi per i file statici e media. Dipende dai servizi `db` e `db_gold`.
+  - **djangoq**: Esegue il cluster di Django Q per le operazioni di background. Utilizza lo stesso Dockerfile della `web`.
+  - **db** e **db_gold**: Servizi PostgreSQL per i database principali e Gold BI, rispettivamente.
+  - **nginx**: Servizio Nginx per servire i file statici e media, e fare da reverse proxy.
+- **Volumi**: Utilizzati per i dati dei database e i file statici/media.
+- **Network**: Configurato per il bridging tra i servizi, con indirizzi IP fissi.
+
+**Script di Gestione (`manager.sh`):**
+- **Funzioni**:
+  - `build_and_start_containers`: Costruisce le immagini e avvia i container, applica le migrazioni e raccoglie i file statici.
+  - `start_containers`: Avvia i container senza ricostruirli.
+  - `stop_containers`: Ferma i container.
+  - `destroy_containers`: Elimina tutti i container e i volumi.
+
+#### **2. Ambiente di Produzione**
+
+**File Docker Compose per Produzione (`docker-compose.prod.yml`):**
+- **Servizi**:
+  - **web**: Utilizza un'immagine pre-costruita (`djangoforge:latest`). Configurato per l'esecuzione in produzione con Gunicorn.
+  - **djangoq**: Utilizza la stessa immagine del servizio `web` e gestisce le operazioni di background.
+  - **db** e **db_gold**: Servizi PostgreSQL, configurati come in sviluppo ma senza montaggio di volumi specifici.
+- **Volumi**:
+  - **static_volume** e **media_volume**: Montati per l'archiviazione dei file statici e media.
+  - **postgres_data** e **postgres_data_gold**: Utilizzati per la persistenza dei dati dei database.
+- **Network**: Configurato per il bridging tra i servizi, con indirizzi IP fissi.
+
+**Note sul Deployment**:
+- **Immagini**: In produzione, le immagini Docker sono pre-costruite e recuperate da un registry.
+- **Port Mapping**: Esposizione delle porte per l'accesso ai servizi.
+
+
+
+
+
+
+
+
+
+
+
+
