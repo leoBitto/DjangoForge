@@ -6,5 +6,10 @@ from .views import *
 app_name = 'logging'
 
 urlpatterns = [
-
+    path('logging_graphs/', AEGraphsView.as_view(), name='logging_graphs'),
+    path('Access-ErrorList/', AEListView.as_view(), name='AElist'),
+    path('log/access/<int:log_id>/', AccessLogDetailView.as_view(), name='access_log_detail'),  # URL per visualizzare i dettagli di un log
+    path('log/error/<int:log_id>/', ErrorLogDetailView.as_view(), name='error_log_detail'),  # URL per visualizzare i dettagli di un log
+    path('read_log/', ReadLogView.as_view(), name='read_log'),
+    
 ]

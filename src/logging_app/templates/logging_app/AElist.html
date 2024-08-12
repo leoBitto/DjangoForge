@@ -12,7 +12,7 @@
           <h3>Access Logs</h3>
           <ul>
               {% for log in accesslogs %}
-              <li> {{ log.id }} <a href="{% url 'goldBI:access_log_detail' log.id %}">{{ log.timestamp }}</a> {{ log.request_method }} {{ log.response_code }} {{ log.request_path }}  </li>
+              <li> {{ log.id }} <a href="{% url 'logging:access_log_detail' log.id %}">{{ log.timestamp }}</a> {{ log.request_method }} {{ log.response_code }} {{ log.request_path }}  </li>
               {% endfor %}
           </ul>
       </div>
@@ -23,7 +23,7 @@
           <h3>Error Logs</h3>
           <ul>
               {% for log in errorlogs %}
-              <li> {{ log.id }} <a href="{% url 'goldBI:error_log_detail' log.id %}">{{ log.timestamp }}</a>  {{ log.request_method }} {{ log.response_code }} {{ log.request_path }}</li>
+              <li> {{ log.id }} <a href="{% url 'logging:error_log_detail' log.id %}">{{ log.timestamp }}</a>  {{ log.request_method }} {{ log.response_code }} {{ log.request_path }}</li>
               {% endfor %}
           </ul>
       </div>

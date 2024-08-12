@@ -1,12 +1,12 @@
 import logging
 from django.utils import timezone
-from logging_app.models import AccessLog
-from gold_bi.models import AggregatedAccessLog
+from logging_app.models import AccessRequestLog
+from logging_app.models import AggregatedAccessLog
 from django.db.models import Count, F
 from django.db import transaction
 from django.db.models.functions import ExtractHour, ExtractWeekDay
 
-logger = logging.getLogger('gold_bi')
+logger = logging.getLogger('app')
 
 def aggregate_access_logs():
     try:
@@ -15,7 +15,7 @@ def aggregate_access_logs():
         end_time = now
 
         # Aggregazione dei dati
-        access_aggregations = AccessLog.objects.using('default').filter(
+        access_aggregations = AccessRequestLog.objects.using('default').filter(
             timestamp__gte=start_time, timestamp__lt=end_time
         ).annotate(
             hour=ExtractHour('timestamp'),

@@ -84,7 +84,7 @@
                             </li>
                             <!-- FINE DELL'APPLICAZIONE WEBSITE-->
 
-                            {% include 'gold_bi/accordion.html' %}
+                            {% include 'logging_app/accordion.html' %}
                             {% include 'crm/accordion.html' %}
                             {% include 'inventory/accordion.html' %}
 
@@ -93,21 +93,20 @@
                 </nav>
                 
 
-                <!-- Contenuto principale -->
-                <main id="main-content" class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        
-                    <div class="my-3">
-                        {% block dashboard_app %}
-                        <div class="card mb-4 shadow-sm">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">Benvenuto, {{ user.username }}. </h5>
-                                <p> Clicca nel menù a sinistra per gestire i vari aspetti del tuo business.</p>
-                            </div>
+            <!-- Contenuto principale -->
+            <main id="main-content" class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    
+                <div class="my-3">
+                    {% block dashboard_app %}
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Benvenuto, {{ user.username }}. </h5>
+                            <p> Clicca nel menù a sinistra per gestire i vari aspetti del tuo business.</p>
                         </div>
-                        {% endblock dashboard_app %}
                     </div>
-                </main>
-            </div>
+                    {% endblock dashboard_app %}
+                </div>
+            </main>
         </div>
     </div>
 
