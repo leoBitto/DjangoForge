@@ -2,16 +2,16 @@ from django.shortcuts import render
 from django.views.generic import View
 import plotly.graph_objs as go
 from logging_app.models import AggregatedAccessLog, AggregatedErrorLog
+from django.contrib.auth.mixins import LoginRequiredMixin
 import logging
 
-logger = logging.getLogger('gold_bi')
+logger = logging.getLogger('app')
 
 
-class AEGraphsView(View):
+class AEGraphsView(LoginRequiredMixin, View):
 
     def get(self, request):
         try:
-
             error_data = AggregatedErrorLog.objects.using('gold').all()
             access_data = AggregatedAccessLog.objects.using('gold').all()
 
@@ -20,8 +20,6 @@ class AEGraphsView(View):
                 logger.info("No aggregated errors found.")
             if not access_data:
                 logger.info("No aggregated access logs found.")
-
-
 
             # Grafici
             error_hourly_chart = self.create_hourly_distribution_chart(error_data, 'Errors by Hour')
@@ -51,73 +49,67 @@ class AEGraphsView(View):
         """
         Crea un grafico a torta che visualizza la distribuzione dei codici di stato delle risposte.
         """
-        fig = go.Figure(data=[go.Pie(labels=[entry['response_code'] for entry in response_codes], values=[entry['count'] for entry in response_codes])])
-        fig.update_layout(title='Response Code Distribution')
-        return fig.to_html(full_html=False)
+        try:
+            fig = go.Figure(data=[go.Pie(labels=[entry['response_code'] for entry in response_codes], values=[entry['count'] for entry in response_codes])])
+            fig.update_layout(title='Response Code Distribution')
+            return fig.to_html(full_html=False)
+        except Exception as e:
+            raise Exception(f"Errore durante la creazione del grafico: {str(e)}") from e
     
-
     def create_weekly_distribution_chart(self, data, title):
-        """
-        Crea un grafico a barre che mostra il conteggio degli eventi per ogni giorno della settimana.
-        """
-        # Mappatura dei giorni della settimana (Domenica = 1, ..., Sabato = 7)
-        day_mapping = {
-            '1': 'Sunday',
-            '2': 'Monday',
-            '3': 'Tuesday',
-            '4': 'Wednesday',
-            '5': 'Thursday',
-            '6': 'Friday',
-            '7': 'Saturday'
-        }
+        try:
+            day_mapping = {
+                1: 'Sunday',
+                2: 'Monday',
+                3: 'Tuesday',
+                4: 'Wednesday',
+                5: 'Thursday',
+                6: 'Friday',
+                7: 'Saturday'
+            }
 
-        # Aggregazione dei dati per giorni
-        day_counts = {}
-        for entry in data:
-            day = entry.day
-            count = entry.count
-            if day in day_counts:
-                day_counts[day] += count
-            else:
-                day_counts[day] = count
+            day_counts = {}
+            for entry in data:
+                day = entry.day
+                count = entry.count
+                if day in day_counts:
+                    day_counts[day] += count
+                else:
+                    day_counts[day] = count
 
-        # Conversione dei numeri dei giorni in nomi dei giorni
-        day_names = [day_mapping[day] for day in sorted(day_counts.keys())]
-        counts = [day_counts[day] for day in sorted(day_counts.keys())]
+            day_names = [day_mapping[day] for day in sorted(day_counts.keys())]
+            counts = [day_counts[day] for day in sorted(day_counts.keys())]
 
-        # Creazione del grafico a barre
-        fig = go.Figure()
-        fig.add_trace(go.Bar(x=day_names, y=counts))
+            fig = go.Figure()
+            fig.add_trace(go.Bar(x=day_names, y=counts))
 
-        # Aggiornamento del layout del grafico
-        fig.update_layout(
-            title=title,
-            xaxis_title='Day of Week',
-            yaxis_title='Count'
-        )
-        return fig.to_html(full_html=False)
+            fig.update_layout(
+                title=title,
+                xaxis_title='Day of Week',
+                yaxis_title='Count'
+            )
+            return fig.to_html(full_html=False)
+        except Exception as e:
+            raise Exception(f"Errore durante la creazione del grafico settimanale: {str(e)}") from e
 
 
     def create_hourly_distribution_chart(self, data, title):
-        """
-        Crea un grafico a barre che mostra il conteggio degli eventi per ogni ora della giornata.
-        """
-        # Aggregazione dei dati per ore
-        hour_counts = {}
-        for entry in data:
-            hour = entry.hour
-            count = entry.count
-            if hour in hour_counts:
-                hour_counts[hour] += count
-            else:
-                hour_counts[hour] = count
+            try:
+                hour_counts = {}
+                for entry in data:
+                    hour = entry.hour
+                    count = entry.count
+                    if hour in hour_counts:
+                        hour_counts[hour] += count
+                    else:
+                        hour_counts[hour] = count
 
-
-        # Creazione del grafico a barre
-        fig = go.Figure()
-        fig.add_trace(go.Bar(x=list(sorted(hour_counts.keys())), y=[hour_counts[hour] for hour in sorted(hour_counts.keys())]))
-        fig.update_layout(title=title, xaxis_title='Hour of Day', yaxis_title='Count')
-        return fig.to_html(full_html=False)
+                fig = go.Figure()
+                fig.add_trace(go.Bar(x=list(sorted(hour_counts.keys())), y=[hour_counts[hour] for hour in sorted(hour_counts.keys())]))
+                fig.update_layout(title=title, xaxis_title='Hour of Day', yaxis_title='Count')
+                return fig.to_html(full_html=False)
+            except Exception as e:
+                raise Exception(f"Errore durante la creazione del grafico orario: {str(e)}") from e
 
 
 

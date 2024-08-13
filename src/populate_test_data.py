@@ -12,8 +12,8 @@ django.setup()
 
 from crm.models import CompanyCategory, Company, Supplier, Customer
 from inventory.models import Category, Product, Sale, Order
-from gold_bi.models import *
 from logging_app.models import *
+from gold_bi.models import *
 
 #fake = Faker()
 fake = Faker('it_IT')
@@ -130,7 +130,7 @@ def create_error_logs():
         # Genera uno stack trace casuale
         stack_trace = ''.join(random.choices(string.ascii_letters + string.digits + ' ', k=200))
         
-        ErrorLog.objects.create(
+        ErrorRequestLog.objects.create(
             timestamp=timestamp,
             request_path=request_path,
             request_method=request_method,
@@ -153,7 +153,7 @@ def create_access_logs():
         # Genera un codice di risposta casuale
         response_code = random.randint(100, 599)
         
-        AccessLog.objects.create(
+        AccessRequestLog.objects.create(
             timestamp=timestamp,
             request_path=request_path,
             request_method=request_method,

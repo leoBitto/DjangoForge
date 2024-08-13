@@ -224,7 +224,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '{asctime} {name} {levelname} {filename}:{lineno} - {funcName}() - {message}',
+            'format': '{asctime} {name} {levelname} {pathname}:{lineno} - {funcName}() - {message}',
             'style': '{',
             'datefmt': '%Y-%m-%d %H:%M:%S',
         },

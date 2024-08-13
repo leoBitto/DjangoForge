@@ -27,6 +27,7 @@ urlpatterns = [
     path('logging/', include('logging_app.urls', namespace='logging')),
     path('crm/', include('crm.urls', namespace='crm')),
     path('inventory/', include('inventory.urls', namespace='inventory')),
+    path('gold_bi/', include('gold_bi.urls', namespace='goldBI')),
 
     path('webpush/', include('webpush.urls')),
 ]
