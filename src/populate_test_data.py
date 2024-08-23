@@ -10,7 +10,7 @@ from datetime import timedelta
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'base.settings')  # Sostituisci con il nome del tuo progetto
 django.setup()
 
-from crm.models import CompanyCategory, Company, Supplier, Customer
+from crm.models.base import CompanyCategory, Company, Supplier, Customer
 from inventory.models import Category, Product, Sale, Order
 from logging_app.models import *
 from gold_bi.models import *

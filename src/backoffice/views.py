@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 from gold_bi.models import *
+from crm.models.aggregated import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import *
 from .utils import *
