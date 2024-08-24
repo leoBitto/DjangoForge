@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import View
-from gold_bi.models import *
+from inventory.models.aggregated import *
 from crm.models.aggregated import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import *
