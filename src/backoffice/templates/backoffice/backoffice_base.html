@@ -52,43 +52,13 @@
                                 <hr>
                             </div>
                             <ul class="nav flex-column">
-                                <!-- INIZIO DELL'APPLICAZIONE WEBSITE-->
-                                <li class="nav-item">
-                                    <a class="nav-link d-flex align-items-center collapsed bg-dark text-white " data-bs-toggle="collapse" href="#menuAccordion" role="button" aria-expanded="true" aria-controls="menuAccordion">
-                                        <i class="fas fa-globe me-2"></i> <span class="ms-1">Website</span>
-                                    </a>
-                                    <div class="collapse " id="menuAccordion">
-                                        <ul class="nav flex-column ms-3">
-                                            <li class="nav-item">
-                                                <a class="nav-link d-flex align-items-center text-black" href="{% url 'website:image_page' %}">
-                                                    <i class="fas fa-image me-2"></i> Immagini
-                                                </a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link d-flex align-items-center text-black" href="{% url 'website:contact_page' %}">
-                                                    <i class="fas fa-address-book me-2"></i> Contatti
-                                                </a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link d-flex align-items-center text-black" href="{% url 'website:opening_hours_page' %}">
-                                                    <i class="fas fa-clock me-2"></i> Orari di Apertura
-                                                </a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link d-flex align-items-center text-black" href="{% url 'website:gallery_page' %}">
-                                                    <i class="fas fa-images me-2"></i> Galleria
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <!-- FINE DELL'APPLICAZIONE WEBSITE-->
+
 
                                 {% include 'logging_app/accordion.html' %}
                                 {% include 'gold_bi/accordion.html' %}
                                 {% include 'crm/accordion.html' %}
                                 {% include 'inventory/accordion.html' %}
-                                {% include 'pdv_management/accordion.html' %}
+
 
                             </ul>
                         </div>

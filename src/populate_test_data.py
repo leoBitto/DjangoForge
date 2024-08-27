@@ -10,24 +10,25 @@ from datetime import timedelta
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'base.settings')  # Sostituisci con il nome del tuo progetto
 django.setup()
 
-from crm.models.base import CompanyCategory, Company, Supplier, Customer
-from inventory.models.base import Category, Product, Sale, Order
+from inventory.models.base import *
+from crm.models.base import *
+from inventory.models.aggregated import *
+from crm.models.aggregated import *
 from logging_app.models import *
 from gold_bi.models import *
 
-#fake = Faker()
 fake = Faker('it_IT')
 
 def create_company_categories():
-    for _ in range(10):
+    for _ in range(5):  # Crea 5 categorie aziendali
         CompanyCategory.objects.create(
             name=fake.word(),
-            description=fake.text()
+            description=fake.text(max_nb_chars=100)
         )
 
 def create_companies():
     categories = CompanyCategory.objects.all()
-    for _ in range(10):
+    for _ in range(30):  # Crea 10 aziende
         Company.objects.create(
             name=fake.company(),
             address=fake.address(),
@@ -35,61 +36,70 @@ def create_companies():
             website=fake.url(),
             phone=fake.phone_number(),
             email=fake.email(),
-            notes=fake.text(),
+            notes=fake.text(max_nb_chars=200),
             type=random.choice(['Supplier', 'Customer'])
         )
 
-def create_suppliers_and_customers():
-    companies = Company.objects.all()
+def create_suppliers():
+    companies = Company.objects.filter(type='Supplier')
     for company in companies:
-        for _ in range(2):
-            Supplier.objects.create(
-                name=fake.name(),
-                company=company,
-                email=fake.email(),
-                phone=fake.phone_number(),
-                notes=fake.text()
-            )
-        for _ in range(2):
-            Customer.objects.create(
-                name=fake.name(),
-                company=company,
-                email=fake.email(),
-                phone=fake.phone_number(),
-                status=random.choice(['LEAD', 'ACTIVE', 'INACTIVE', 'LOYAL'])
-            )
-
-def create_categories():
-    for _ in range(5):
-        Category.objects.create(
-            name=fake.word(),
-            parent=None  # Puoi aggiungere logica per sottocategorie se necessario
+        Supplier.objects.create(
+            name=fake.company(),
+            company=company,
+            email=fake.email(),
+            phone=fake.phone_number(),
+            notes=fake.text(max_nb_chars=200)
         )
 
+def create_customers():
+    companies = Company.objects.filter(type='Customer')
+    for company in companies:
+        Customer.objects.create(
+            name=fake.name(),
+            company=company,
+            email=fake.email(),
+            phone=fake.phone_number(),
+            status=random.choice(['LEAD', 'ACTIVE', 'INACTIVE', 'LOYAL'])
+        )
+
+def create_product_categories():
+    # Crea categorie di prodotto
+    for _ in range(5):  # Crea 5 categorie di prodotto principali
+        category = ProductCategory.objects.create(
+            name=fake.word()
+        )
+        for _ in range(random.randint(1, 3)):  # Crea 1-3 sotto-categorie per ogni categoria principale
+            ProductCategory.objects.create(
+                name=fake.word(),
+                parent=category
+            )
+
 def create_products():
-    categories = Category.objects.all()
-    for _ in range(20):
+    categories = ProductCategory.objects.all()  # Recupera tutte le categorie di prodotto
+    for _ in range(20):  # Crea 20 prodotti
         Product.objects.create(
             name=fake.word(),
-            category=random.choice(categories) if categories.exists() else None,
-            stock_quantity=random.randint(0, 100),
-            unit_price=fake.random_number(digits=5),
-            image=None,  # Puoi aggiungere immagini se necessario
-            is_visible=random.choice([True, False]),
-            description=fake.text()
+            category=random.choice(categories) if categories.exists() else None,  # Assegna una categoria casuale se esistono categorie
+            stock_quantity=random.randint(0, 1000),
+            is_visible=random.choice([True, False]),  # Imposta casualmente se il prodotto è visibile
+            description=fake.text(max_nb_chars=200)
         )
 
 def create_sales():
     products = Product.objects.all()
     customers = Customer.objects.all()
-    for _ in range(15):
+    for _ in range(500):
+        sale_date = fake.date_between(start_date='-2y', end_date='today')
+        delivery_date = fake.date_between(start_date=sale_date, end_date=timezone.now().date())
+        payment_date = fake.date_between(start_date=sale_date, end_date=delivery_date)
+        
         Sale.objects.create(
             product=random.choice(products) if products.exists() else None,
-            sale_date=fake.date_this_year(),
-            delivery_date=fake.date_this_year(),
-            payment_date=fake.date_this_year(),
+            sale_date=sale_date,
+            delivery_date=delivery_date,
+            payment_date=payment_date,
             quantity=random.randint(1, 10),
-            unit_price=fake.random_number(digits=5),
+            unit_price=fake.pydecimal(left_digits=2, right_digits=3, positive=True),
             status=random.choice(['pending', 'sold', 'delivered', 'paid', 'cancelled']),
             customer=random.choice(customers) if customers.exists() else None
         )
@@ -97,247 +107,60 @@ def create_sales():
 def create_orders():
     products = Product.objects.all()
     suppliers = Supplier.objects.all()
-    for _ in range(15):
+    for _ in range(500):
+        order_date = fake.date_between(start_date='-2y', end_date='today')
+        delivery_date = fake.date_between(start_date=order_date, end_date=timezone.now().date())
+        payment_date = fake.date_between(start_date=order_date, end_date=delivery_date)
+        
         Order.objects.create(
             product=random.choice(products) if products.exists() else None,
-            sale_date=fake.date_this_year(),
-            delivery_date=fake.date_this_year(),
-            payment_date=fake.date_this_year(),
+            sale_date=order_date,
+            delivery_date=delivery_date,
+            payment_date=payment_date,
             quantity=random.randint(1, 10),
-            unit_price=fake.random_number(digits=5),
+            unit_price=fake.pydecimal(left_digits=2, right_digits=3, positive=True),
             status=random.choice(['pending', 'sold', 'delivered', 'paid', 'cancelled']),
             supplier=random.choice(suppliers) if suppliers.exists() else None
         )
 
 
-def create_error_logs():
-    for _ in range(50):
-        # Genera un timestamp casuale negli ultimi 30 giorni
-        timestamp = timezone.now() - timedelta(days=random.randint(0, 30))
-        
-        # Genera un percorso di richiesta casuale
-        request_path = f"/path/to/resource/{random.randint(1, 100)}"
-        
-        # Genera un metodo di richiesta casuale
-        request_method = random.choice(['GET', 'POST', 'PUT', 'DELETE'])
-        
-        # Genera un codice di risposta casuale
-        response_code = random.randint(100, 599)
-        
-        # Genera un messaggio di errore casuale
-        error_message = ''.join(random.choices(string.ascii_letters + string.digits + ' ', k=100))
-        
-        # Genera uno stack trace casuale
-        stack_trace = ''.join(random.choices(string.ascii_letters + string.digits + ' ', k=200))
-        
-        ErrorRequestLog.objects.create(
-            timestamp=timestamp,
-            request_path=request_path,
-            request_method=request_method,
-            response_code=response_code,
-            error_message=error_message,
-            stack_trace=stack_trace
-        )
 
-def create_access_logs():
-    for _ in range(400):
-        # Genera un timestamp casuale negli ultimi 30 giorni
-        timestamp = timezone.now() - timedelta(days=random.randint(0, 30))
-        
-        # Genera un percorso di richiesta casuale
-        request_path = f"/path/to/resource/{random.randint(1, 100)}"
-        
-        # Genera un metodo di richiesta casuale
-        request_method = random.choice(['GET', 'POST', 'PUT', 'DELETE'])
-        
-        # Genera un codice di risposta casuale
-        response_code = random.randint(100, 599)
-        
-        AccessRequestLog.objects.create(
-            timestamp=timestamp,
-            request_path=request_path,
-            request_method=request_method,
-            response_code=response_code
-        )
+def run():
+    print("Creazione categorie aziendali...")
+    create_company_categories()
+    print("Categorie aziendali create!")
 
-def create_aggregated_error_logs():
-    for _ in range(20):
-        AggregatedErrorLog.objects.using('gold').create(
-            hour=random.randint(0, 23),
-            day=str(random.randint(1, 7)),  # assuming 1 = Monday, 7 = Sunday
-            count=random.randint(0, 100)
-        )
+    print("Creazione aziende...")
+    create_companies()
+    print("Aziende create!")
 
-def create_aggregated_access_logs():
-    for _ in range(20):
-        AggregatedAccessLog.objects.using('gold').create(
-            hour=random.randint(0, 23),
-            day=str(random.randint(1, 7)),
-            count=random.randint(0, 100)
-        )
+    print("Creazione fornitori...")
+    create_suppliers()
+    print("Fornitori creati!")
 
-def create_crm_monthly_snapshots():
-    for _ in range(12):
-        CRMMontlySnapshot.objects.using('gold').create(
-            month=random.randint(1, 12),
-            year=2024,
-            total_suppliers=random.randint(10, 100),
-            total_customers=random.randint(10, 100),
-            total_leads=random.randint(1, 50),
-            total_active_customers=random.randint(1, 50),
-            total_inactive_customers=random.randint(1, 50),
-            total_loyal_customers=random.randint(1, 50)
-        )
+    print("Creazione clienti...")
+    create_customers()
+    print("Clienti creati!")
 
-def create_inventory_daily_aggregations():
-    for _ in range(30):
-        InventoryDailyAggregation.objects.using('gold').create(
-            date=fake.date_this_year(),
-            distinct_products_in_stock=random.randint(1, 100),
-            total_stock_value=fake.pydecimal(left_digits=7, right_digits=2, positive=True),
-            total_sold_units=random.randint(0, 50),
-            total_sales_value=fake.pydecimal(left_digits=7, right_digits=2, positive=True),
-            total_pending_sales=random.randint(0, 20),
-            total_delivered_sales=random.randint(0, 20),
-            total_paid_sales=random.randint(0, 20),
-            total_cancelled_sales=random.randint(0, 20),
-            total_ordered_units=random.randint(0, 50),
-            total_orders_value=fake.pydecimal(left_digits=7, right_digits=2, positive=True),
-            total_pending_orders=random.randint(0, 20),
-            total_delivered_orders=random.randint(0, 20),
-            total_paid_orders=random.randint(0, 20),
-            total_cancelled_orders=random.randint(0, 20)
-        )
+    print("Creazione categorie di prodotto...")
+    create_product_categories()
+    print("Categorie di prodotto create!")
 
-def create_inventory_weekly_aggregations():
-    for _ in range(52):
-        InventoryWeeklyAggregation.objects.using('gold').create(
-            week=random.randint(1, 52),
-            year=2024,
-            distinct_products_in_stock=random.randint(1, 100),
-            total_stock_value=fake.pydecimal(left_digits=7, right_digits=2, positive=True),
-            total_sold_units=random.randint(0, 50),
-            total_sales_value=fake.pydecimal(left_digits=7, right_digits=2, positive=True),
-            total_pending_sales=random.randint(0, 20),
-            total_delivered_sales=random.randint(0, 20),
-            total_paid_sales=random.randint(0, 20),
-            total_cancelled_sales=random.randint(0, 20),
-            total_ordered_units=random.randint(0, 50),
-            total_orders_value=fake.pydecimal(left_digits=7, right_digits=2, positive=True),
-            total_pending_orders=random.randint(0, 20),
-            total_delivered_orders=random.randint(0, 20),
-            total_paid_orders=random.randint(0, 20),
-            total_cancelled_orders=random.randint(0, 20)
-        )
+    print("Creazione prodotti...")
+    create_products()
+    print("Prodotti creati!")
 
-def create_inventory_monthly_aggregations():
-    for _ in range(12):
-        InventoryMonthlyAggregation.objects.using('gold').create(
-            month=random.randint(1, 12),
-            year=2024,
-            distinct_products_in_stock=random.randint(1, 100),
-            total_stock_value=fake.pydecimal(left_digits=7, right_digits=2, positive=True),
-            total_sold_units=random.randint(0, 50),
-            total_sales_value=fake.pydecimal(left_digits=7, right_digits=2, positive=True),
-            total_pending_sales=random.randint(0, 20),
-            total_delivered_sales=random.randint(0, 20),
-            total_paid_sales=random.randint(0, 20),
-            total_cancelled_sales=random.randint(0, 20),
-            total_ordered_units=random.randint(0, 50),
-            total_orders_value=fake.pydecimal(left_digits=7, right_digits=2, positive=True),
-            total_pending_orders=random.randint(0, 20),
-            total_delivered_orders=random.randint(0, 20),
-            total_paid_orders=random.randint(0, 20),
-            total_cancelled_orders=random.randint(0, 20)
-        )
+    
+    print("Creazione ordini...")
+    create_orders()
+    print("Ordini creati!")
 
-def create_inventory_quarterly_aggregations():
-    for _ in range(4):
-        InventoryQuarterlyAggregation.objects.using('gold').create(
-            quarter=random.randint(1, 4),
-            year=2024,
-            distinct_products_in_stock=random.randint(1, 100),
-            total_stock_value=fake.pydecimal(left_digits=7, right_digits=2, positive=True),
-            total_sold_units=random.randint(0, 50),
-            total_sales_value=fake.pydecimal(left_digits=7, right_digits=2, positive=True),
-            total_pending_sales=random.randint(0, 20),
-            total_delivered_sales=random.randint(0, 20),
-            total_paid_sales=random.randint(0, 20),
-            total_cancelled_sales=random.randint(0, 20),
-            total_ordered_units=random.randint(0, 50),
-            total_orders_value=fake.pydecimal(left_digits=7, right_digits=2, positive=True),
-            total_pending_orders=random.randint(0, 20),
-            total_delivered_orders=random.randint(0, 20),
-            total_paid_orders=random.randint(0, 20),
-            total_cancelled_orders=random.randint(0, 20)
-        )
 
-def create_inventory_yearly_aggregations():
-    for _ in range(5):  # Generare 5 anni di dati
-        InventoryYearlyAggregation.objects.using('gold').create(
-            year=fake.year(),
-            distinct_products_in_stock=random.randint(1, 100),
-            total_stock_value=fake.pydecimal(left_digits=7, right_digits=2, positive=True),
-            total_sold_units=random.randint(0, 50),
-            total_sales_value=fake.pydecimal(left_digits=7, right_digits=2, positive=True),
-            total_pending_sales=random.randint(0, 20),
-            total_delivered_sales=random.randint(0, 20),
-            total_paid_sales=random.randint(0, 20),
-            total_cancelled_sales=random.randint(0, 20),
-            total_ordered_units=random.randint(0, 50),
-            total_orders_value=fake.pydecimal(left_digits=7, right_digits=2, positive=True),
-            total_pending_orders=random.randint(0, 20),
-            total_delivered_orders=random.randint(0, 20),
-            total_paid_orders=random.randint(0, 20),
-            total_cancelled_orders=random.randint(0, 20)
-        )
+    print("Creazione vendite...")
+    create_sales()
+    print("Vendite create!")
 
-def create_inventory_quality_aggregations():
-    for _ in range(12):
-        InventoryQualityAggregation.objects.using('gold').create(
-            month=random.randint(1, 12),
-            year=2024,
-            products_missing_category=random.randint(0, 10),
-            products_missing_image=random.randint(0, 10),
-            products_missing_description=random.randint(0, 10),
-            products_missing_both=random.randint(0, 5)
-        )
-
-def create_inventory_monthly_snapshots():
-    for _ in range(12):
-        InventoryMonthlySnapshot.objects.using('gold').create(
-            month=random.randint(1, 12),
-            year=2024,
-            total_products=random.randint(50, 100),
-            total_stock_quantity=random.randint(1000, 5000),
-            total_stock_value=fake.pydecimal(left_digits=7, right_digits=2, positive=True),
-            average_stock_per_product=fake.pydecimal(left_digits=5, right_digits=2, positive=True)
-        )
 
 
 if __name__ == "__main__":
-    print("Generating test data...")
-
-    create_company_categories()
-    create_companies()
-    create_suppliers_and_customers()
-    create_categories()
-    create_products()
-    create_sales()
-    create_orders()
-
-    create_access_logs()
-    create_error_logs()
-
-    #create_aggregated_error_logs()
-    #create_aggregated_access_logs()
-    create_crm_monthly_snapshots()
-    create_inventory_daily_aggregations()
-    create_inventory_weekly_aggregations()
-    create_inventory_monthly_aggregations()
-    create_inventory_quarterly_aggregations()
-    create_inventory_yearly_aggregations()
-    create_inventory_quality_aggregations()
-    create_inventory_monthly_snapshots()
-
-    print("Test data generation completed.")
+    run()

@@ -110,17 +110,6 @@ def schedule_tasks():
             )
             logger.info("Scheduled quality aggregation task")
 
-        # Monthly Snapshot
-        if not Schedule.objects.filter(func='inventory.tasks.aggregate_inventory_snapshot_monthly.aggregate_inventory_snapshot_monthly').exists():
-            schedule(
-                'inventory.tasks.aggregate_inventory_snapshot_monthly.aggregate_inventory_snapshot_monthly',
-                schedule_type=Schedule.MONTHLY,
-                repeats=-1,
-                next_run= next_month_start,  # First of next month
-                #next_run=timezone.now() + timezone.timedelta(seconds=50),
-                cluster='gold_bi'
-            )
-            logger.info("Scheduled monthly snapshot task")
 
 
 

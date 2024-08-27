@@ -28,8 +28,6 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 
 # Application definition
@@ -54,7 +52,6 @@ INSTALLED_APPS = [
     'webpush',
     'crm',
     'inventory',
-    'pdv_management',
     'django_seed',
 
 ]
