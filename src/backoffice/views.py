@@ -1,13 +1,12 @@
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.views.generic import View, ListView
+from django.views.generic import View, FormView
 from inventory.models.aggregated import *
 from crm.models.aggregated import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import *
 from .utils import *
-from django.contrib import messages
 
 
 
@@ -23,32 +22,42 @@ def dashboard(request):
     return render(request, 'backoffice/backoffice_base.html', context)
 
 
+class SelectReportTypeView(LoginRequiredMixin, FormView):
+    template_name = 'backoffice/reports/select_report_type.html'
+    form_class = ReportTypeForm
 
-class ReportView(LoginRequiredMixin, ListView):
-    template_name = 'inventory/reports/view_inventory_report.html'
-    context_object_name = 'aggregations'
+    def form_valid(self, form):
+        report_type = form.cleaned_data['report_type']
+        start_date = form.cleaned_data['start_date']
+        end_date = form.cleaned_data['end_date']
+        app_name = self.request.POST.get('app_name')
 
-    def get_queryset(self):
-        report_type = self.request.POST.get('report_type')
-        start_date = self.request.POST.get('start_date')
-        end_date = self.request.POST.get('end_date')
-
-        model_map = {
-            'daily': InventoryDailyAggregation,
-            'weekly': InventoryWeeklyAggregation,
-            'monthly': InventoryMonthlyAggregation,
-            'quarterly': InventoryQuarterlyAggregation,
-            'yearly': InventoryYearlyAggregation,
-        }
-
-        model = model_map.get(report_type)
-        if model:
-            return model.objects.filter(date__range=[start_date, end_date]).order_by('-date')
-        return model.objects.none()
+        # Costruzione dell'URL dinamico per l'applicazione specifica
+        url = reverse(f'{app_name}:generate_report') + f'?report_type={report_type}&start_date={start_date}&end_date={end_date}'
+        return redirect(url)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['report_type'] = self.request.POST.get('report_type')
-        context['start_date'] = self.request.POST.get('start_date')
-        context['end_date'] = self.request.POST.get('end_date')
+        context['report_type_form'] = self.get_form()  # Passa il form come report_type_form
         return context
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
