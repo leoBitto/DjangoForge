@@ -308,17 +308,17 @@ def run():
     create_sales()
     print("Vendite create!")
 
-    print("Creazione aggregazioni inventario...")
-    create_inventory_aggregations()
-    print("Aggregazioni inventario create!")
+    #print("Creazione aggregazioni inventario...")
+    #create_inventory_aggregations()
+    #print("Aggregazioni inventario create!")
 
-    print("Creazione aggregazione qualità inventario...")
-    create_inventory_quality_aggregation()
-    print("Aggregazione qualità inventario creata!")
+    #print("Creazione aggregazione qualità inventario...")
+    #create_inventory_quality_aggregation()
+    #print("Aggregazione qualità inventario creata!")
 
-    print("Creazione snapshot CRM mensili...")
-    create_crm_monthly_snapshot()
-    print("Snapshot CRM mensili creati!")
+    #print("Creazione snapshot CRM mensili...")
+    #create_crm_monthly_snapshot()
+    #print("Snapshot CRM mensili creati!")
 
 if __name__ == "__main__":
     run()

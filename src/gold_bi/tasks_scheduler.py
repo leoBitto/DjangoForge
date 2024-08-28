@@ -42,8 +42,8 @@ def schedule_tasks():
                 'inventory.tasks.aggregate_inventory_daily.aggregate_inventory_daily',
                 schedule_type=Schedule.DAILY,
                 repeats=-1,
-                next_run=now.replace(hour=0, minute=0, second=0, microsecond=0),
-                #next_run=timezone.now() + timezone.timedelta(seconds=50),
+                #next_run=now.replace(hour=0, minute=0, second=0, microsecond=0),
+                next_run=timezone.now() + timezone.timedelta(seconds=50),
                 cluster='gold_bi'
             )
             logger.info("Scheduled daily inventory aggregation task")
@@ -54,8 +54,8 @@ def schedule_tasks():
                 'inventory.tasks.aggregate_inventory_weekly.aggregate_inventory_weekly',
                 schedule_type=Schedule.WEEKLY,
                 repeats=-1,
-                next_run= (now + timezone.timedelta(days=(6 - now.weekday()))).replace(hour=22, minute=0, second=0, microsecond=0),  # Next Sunday
-                #next_run=timezone.now() + timezone.timedelta(seconds=50),
+                #next_run= (now + timezone.timedelta(days=(6 - now.weekday()))).replace(hour=22, minute=0, second=0, microsecond=0),  # Next Sunday
+                next_run=timezone.now() + timezone.timedelta(seconds=50),
                 cluster='gold_bi'
             )
             logger.info("Scheduled weekly inventory aggregation task")
@@ -66,8 +66,8 @@ def schedule_tasks():
                 'inventory.tasks.aggregate_inventory_monthly.aggregate_inventory_monthly',
                 schedule_type=Schedule.MONTHLY,
                 repeats=-1,
-                next_run= next_month_start,  # First of next month
-                #next_run=timezone.now() + timezone.timedelta(seconds=50),
+                #next_run= next_month_start,  # First of next month
+                next_run=timezone.now() + timezone.timedelta(seconds=50),
                 cluster='gold_bi'
             )
             logger.info("Scheduled monthly inventory aggregation task")
@@ -79,8 +79,8 @@ def schedule_tasks():
                 schedule_type=Schedule.CRON,
                 cron='0 0 1 1,4,7,10 *',  # Example: First day of Jan, Apr, Jul, and Oct
                 repeats=-1,
-                next_run=now.replace(month=(now.month - 1) // 3 * 3 + 4, day=1, hour=0, minute=0, second=0, microsecond=0),  # First of next quarter
-                #next_run=timezone.now() + timezone.timedelta(seconds=50),
+                #next_run=now.replace(month=(now.month - 1) // 3 * 3 + 4, day=1, hour=0, minute=0, second=0, microsecond=0),  # First of next quarter
+                next_run=timezone.now() + timezone.timedelta(seconds=50),
                 cluster='gold_bi'
             )
             logger.info("Scheduled quarterly inventory aggregation task")
@@ -91,8 +91,8 @@ def schedule_tasks():
                 'inventory.tasks.aggregate_inventory_yearly.aggregate_inventory_yearly',
                 schedule_type=Schedule.YEARLY,
                 repeats=-1,
-                next_run=now.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0) + timezone.timedelta(days=365),  # First of next year
-                #next_run=timezone.now() + timezone.timedelta(seconds=50),
+                #next_run=now.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0) + timezone.timedelta(days=365),  # First of next year
+                next_run=timezone.now() + timezone.timedelta(seconds=50),
                 cluster='gold_bi'
             )
             logger.info("Scheduled yearly inventory aggregation task")
@@ -104,8 +104,8 @@ def schedule_tasks():
                 schedule_type=Schedule.CRON,
                 cron='0 0 1 1,7 *',
                 repeats=-1,
-                next_run=now.replace(day=1, month=(now.month + 6) % 12, hour=0, minute=0, second=0, microsecond=0),  # First of next 6 months
-                #next_run=timezone.now() + timezone.timedelta(seconds=50),
+                #next_run=now.replace(day=1, month=(now.month + 6) % 12, hour=0, minute=0, second=0, microsecond=0),  # First of next 6 months
+                next_run=timezone.now() + timezone.timedelta(seconds=50),
                 cluster='gold_bi'
             )
             logger.info("Scheduled quality aggregation task")
