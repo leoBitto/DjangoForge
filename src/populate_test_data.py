@@ -14,7 +14,7 @@ from django.db.models import Sum
 
 from inventory.models.base import *
 from crm.models.base import *
-from inventory.models.aggregated import *
+from inventory.models.aggregated_product import *
 from crm.models.aggregated import *
 from logging_app.models import *
 from gold_bi.models import *

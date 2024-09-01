@@ -2,73 +2,9 @@
 {% load static %}
 
 {% block dashboard_app %}
-<div class="container mt-4">
-    <h1>Seleziona Tipo di Report</h1>
-    <div class="row d-flex justify-content-evenly align-items-stretch">
-        <!-- Card per Inventory Report -->
-        <div class="col-md-4 mb-4">
-            <div class="card d-flex flex-column h-100">
-                <div class="card-body d-flex flex-column">
-                    <i class="fas fa-warehouse fa-3x mb-3 text-warning"></i>
-                    <h5 class="card-title">Report per Inventario</h5>
-                    <p class="card-text">Genera report per la gestione dell'inventario. Seleziona il tipo di report e generalo.</p>
-                    <div class="mt-auto">
-                        <button class="btn btn-dark my-3" type="button" data-bs-toggle="modal" data-bs-target="#reportModalInventory">Seleziona Report</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Card per CRM Report -->
-        <div class="col-md-4 mb-4">
-            <div class="card d-flex flex-column h-100">
-                <div class="card-body d-flex flex-column">
-                    <i class="fas fa-users fa-3x mb-3 text-primary"></i>
-                    <h5 class="card-title">Report per CRM</h5>
-                    <p class="card-text">Genera report per la gestione CRM. Seleziona il tipo di report e generalo.</p>
-                    <div class="mt-auto">
-                        <button class="btn btn-dark my-3" type="button" data-bs-toggle="modal" data-bs-target="#reportModalCRM">Seleziona Report</button>
-                    </div>
-                </div>
-            </div>
-        </div> 
-
-<!-- Modal per Inventory Report -->
-<div class="modal fade" id="reportModalInventory" tabindex="-1" aria-labelledby="reportModalInventoryLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="reportModalInventoryLabel">Seleziona Report per Inventario</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="get" action="{% url 'inventory:generate_report' %}">
-                    {{ report_type_form.as_p }}
-                    <input type="hidden" name="app_name" value="inventory">
-                    <button type="submit" class="btn btn-primary">Genera Report</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal per CRM Report -->
-<div class="modal fade" id="reportModalCRM" tabindex="-1" aria-labelledby="reportModalCRMLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="reportModalCRMLabel">Seleziona Report per CRM</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="get" action="{% url 'crm:generate_report' %}">
-                    {{ report_type_form.as_p }}
-                    <input type="hidden" name="app_name" value="crm">
-                    <button type="submit" class="btn btn-primary">Genera Report</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+    {% include 'inventory/reports/select_report.html'%}
+    
+    <!-- ADD HERE OTHER REPORT SELECTORS-->
 
 {% endblock %}

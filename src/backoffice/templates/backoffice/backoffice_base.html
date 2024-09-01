@@ -52,10 +52,25 @@
                                 <hr>
                             </div>
                             <ul class="nav flex-column">
+                                <!-- REPORT SELECTION -->
+                                <li class="nav-item">
+                                    <a class="nav-link d-flex align-items-center collapsed bg-dark text-white" data-bs-toggle="collapse" href="#ReportAccordion" role="button" aria-expanded="true" aria-controls="ReportAccordion">
+                                        <i class="fas fa-file me-2"></i> <span class="ms-1">Reports</span>
+                                    </a>
+                                    <div class="collapse" id="ReportAccordion">
+                                        <ul class="nav flex-column ms-3">
+                                            <li class="nav-item">
+                                                <a class="nav-link d-flex align-items-center text-black" href="{% url 'backoffice:select_report_type' %}">
+                                                    <i class="fas fa-chart-bar me-2"></i> Seleziona Tipo
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <!-- END REPORT SELECTION -->
 
 
                                 {% include 'logging_app/accordion.html' %}
-                                {% include 'backoffice/reports/accordion.html' %}
                                 {% include 'crm/accordion.html' %}
                                 {% include 'inventory/accordion.html' %}
 
