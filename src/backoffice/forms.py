@@ -1,6 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
+# non più utile
 class ReportTypeForm(forms.Form):
     REPORT_CHOICES = [
         ('daily', 'Giornaliero'),
