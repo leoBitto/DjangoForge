@@ -2,7 +2,7 @@ import plotly.graph_objs as go
 import plotly.io as pio
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
-
+from django.db.models import Q
 
 def create_field_graph(title, data, x_labels, y_label):
     """
@@ -37,66 +37,70 @@ def create_field_graph(title, data, x_labels, y_label):
     return pio.to_html(fig, full_html=False)
 
 
-def get_previous_months(year, month, num_months=6):
+def get_previous_periods(aggregation_model, selected_period, period_type, num_previous_periods):
     """
-    Calcola i mesi precedenti a partire da una data specificata.
-
-    Questa funzione genera una lista di tuple che rappresentano i mesi precedenti, a partire dal mese e anno forniti.
-    La lista includerà il mese e anno specificati e i `num_months - 1` mesi precedenti.
-
-    Args:
-        year (int): L'anno del mese di partenza.
-        month (int): Il mese di partenza (1-12).
-        num_months (int, opzionale): Il numero totale di mesi da includere nella lista, inclusi il mese corrente. 
-                                      Il valore predefinito è 6.
-
-    Returns:
-        List[Tuple[int, int]]: Una lista di tuple, ciascuna rappresentante un mese e anno precedenti, 
-                               ordinate dal mese più recente al meno recente.
-
-    Examples:
-        >>> get_previous_months(2024, 8)
-        [(2024, 8), (2024, 7), (2024, 6), (2024, 5), (2024, 4), (2024, 3)]
-
-        >>> get_previous_months(2023, 1, num_months=3)
-        [(2023, 1), (2022, 12), (2022, 11)]
+    Questa funzione restituisce i dati per i 6 periodi precedenti basati su `period_type`.
+    - period_type può essere 'day', 'week', 'month', 'quarter', 'year'
     """
-    # Creiamo una lista per salvare i risultati
-    previous_months = []
+    previous_periods = []
 
-    # Partiamo dal mese e dall'anno corrente
-    current_date = datetime(year, month, 1)
+    if period_type == 'day':
+        for i in range(num_previous_periods):
+            period = selected_period - timedelta(days=i)
+            query = Q(date=period)
+            previous_periods.append(aggregation_model.objects.filter(query))
 
-    # Calcoliamo i mesi precedenti
-    for _ in range(num_months):
-        # Aggiungiamo la coppia (anno, mese) alla lista
-        previous_months.append((current_date.year, current_date.month))
-        # Sottraiamo un mese
-        current_date -= relativedelta(months=1)
+    elif period_type == 'week':
+        current_week = selected_period['week']
+        current_year = selected_period['year']
+        for i in range(num_previous_periods):
+            # Gestire il cambio di anno
+            if current_week - i <= 0:
+                previous_year = current_year - 1
+                previous_week = 52 + (current_week - i)  # Considera l'anno precedente
+            else:
+                previous_year = current_year
+                previous_week = current_week - i
 
-    return previous_months
+            query = Q(week=previous_week, year=previous_year)
+            previous_periods.append(aggregation_model.objects.filter(query))
 
+    elif period_type == 'month':
+        current_month = selected_period['month']
+        current_year = selected_period['year']
+        for i in range(num_previous_periods):
+            # Gestire il cambio di anno
+            if current_month - i <= 0:
+                previous_year = current_year - 1
+                previous_month = 12 + (current_month - i)
+            else:
+                previous_year = current_year
+                previous_month = current_month - i
 
-def create_field_graph(field_name, data, labels, title):
-    """
-    Crea un grafico per un campo specifico.
+            query = Q(month=previous_month, year=previous_year)
+            previous_periods.append(aggregation_model.objects.filter(query))
 
-    :param field_name: Nome del campo da graficare.
-    :param data: I valori da visualizzare.
-    :param labels: Le etichette delle ascisse (tipicamente i mesi o le date).
-    :param title: Titolo del grafico.
-    :return: Il grafico in formato HTML.
-    """
-    trace = go.Scatter(x=labels, y=data, mode='lines', name=field_name)
-    
-    layout = go.Layout(
-        title=title,
-        xaxis={'title': 'Period'},
-        yaxis={'title': field_name},
-        height=400
-    )
+    elif period_type == 'quarter':
+        current_quarter = selected_period['quarter']
+        current_year = selected_period['year']
+        for i in range(num_previous_periods):
+            # Gestire il cambio di anno
+            if current_quarter - i <= 0:
+                previous_year = current_year - 1
+                previous_quarter = 4 + (current_quarter - i)
+            else:
+                previous_year = current_year
+                previous_quarter = current_quarter - i
 
-    fig = go.Figure(data=[trace], layout=layout)
-    graph_html = pio.to_html(fig, full_html=False)
+            query = Q(quarter=previous_quarter, year=previous_year)
+            previous_periods.append(aggregation_model.objects.filter(query))
 
-    return graph_html
+    elif period_type == 'year':
+        current_year = selected_period['year']
+        for i in range(num_previous_periods):
+            previous_year = current_year - i
+            query = Q(year=previous_year)
+            previous_periods.append(aggregation_model.objects.filter(query))
+
+    return previous_periods
+
