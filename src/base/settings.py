@@ -228,16 +228,27 @@ LOGGING = {
         },
     },
     'handlers': {
-        'file': {
+        'file_schedules': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'app.log'),
+            'filename': os.path.join(BASE_DIR, 'schedules.log'),
+            'formatter': 'verbose',
+        },
+        'file_tasks': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'tasks.log'),
             'formatter': 'verbose',
         },
     },
     'loggers': {
-        'app': {
-            'handlers': ['file'],
+        'schedules': {
+            'handlers': ['file_schedules'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'tasks': {
+            'handlers': ['file_tasks'],
             'level': 'INFO',
             'propagate': True,
         },

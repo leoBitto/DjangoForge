@@ -40,19 +40,33 @@ class ErrorLogDetailView(LoginRequiredMixin, View):
 class ReadLogView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         BASE_DIR = Path(__file__).resolve().parent.parent.parent
-        file_path = os.path.join(BASE_DIR, 'app.log')
+        schedules_path = os.path.join(BASE_DIR, 'schedules.log')
+        tasks_path = os.path.join(BASE_DIR, 'tasks.log')
 
         try:
-            with open(file_path, 'r') as file:
+            with open(schedules_path, 'r') as file:
                 # Leggi tutte le righe e prendi le ultime 100
                 lines = file.readlines()[-1000:]
                 # Unisci le righe in un singolo blocco di testo
-                lines.reverse()
-                log_content = lines
+                schedules_log_content = lines
         except FileNotFoundError:
-            log_content = "File non trovato."
+            schedules_log_content = "Scheduler logging file has not been found."
 
-        return render(request, 'logging_app/log_list.html', {'log_content': log_content})
+        try:
+            with open(tasks_path, 'r') as file:
+                # Leggi tutte le righe e prendi le ultime 100
+                lines = file.readlines()[-1000:]
+                # Unisci le righe in un singolo blocco di testo
+                tasks_log_content = lines
+        except FileNotFoundError:
+            tasks_log_content = "Scheduler logging file has not been found."
+
+        context = {
+            'schedules_log_content': schedules_log_content,
+            'tasks_log_content': tasks_log_content
+            }
+
+        return render(request, 'logging_app/log_list.html', context)
     
 
 

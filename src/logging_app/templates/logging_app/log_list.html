@@ -4,25 +4,56 @@
 {% block dashboard_app %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Log Content</h2>
+        <h2>Scheduler Log Content</h2>
     </div>
 
     <div class="mb-3">
-        <input type="text" class="form-control" id="logSearch" placeholder="Cerca nel log...">
+        <input type="text" class="form-control" id="schedulerlogSearch" placeholder="Cerca nel log dello scheduler...">
     </div>
 
-    <div id="logContainer" class="p-3 bg-light border rounded" style="max-height: 500px; overflow-y: auto; font-family: monospace; font-size: 14px;">
-        {% for line in log_content %}
-            <div class="log-line">{{ line }}</div>
+    <div id="schedulerlogContainer" class="p-3 bg-light border rounded" style="max-height: 500px; overflow-y: auto; font-family: monospace; font-size: 14px;">
+        {% for line in schedules_log_content %}
+            <div class="schedulelog-line">{{ line }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Tasks Log Content</h2>
+    </div>
+
+    <div class="mb-3">
+        <input type="text" class="form-control" id="taskslogSearch" placeholder="Cerca nel log delle tasks...">
+    </div>
+
+    <div id="taskslogContainer" class="p-3 bg-light border rounded" style="max-height: 500px; overflow-y: auto; font-family: monospace; font-size: 14px;">
+        {% for line in tasks_log_content %}
+            <div class="tasklog-line">{{ line }}</div>
         {% endfor %}
     </div>
 </div>
 
 <script>
-    document.getElementById('logSearch').addEventListener('input', function() {
+    document.getElementById('schedulerlogSearch').addEventListener('input', function() {
         let filter = this.value.toLowerCase();
-        let logContainer = document.getElementById('logContainer');
-        let logLines = logContainer.getElementsByClassName('log-line');
+        let logContainer = document.getElementById('schedulerlogContainer');
+        let logLines = logContainer.getElementsByClassName('schedulelog-line');
+
+        Array.from(logLines).forEach(line => {
+            let lineText = line.textContent.toLowerCase();
+            if (lineText.includes(filter) || filter === '') {
+                line.style.display = '';
+            } else {
+                line.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+<script>
+    document.getElementById('taskslogSearch').addEventListener('input', function() {
+        let filter = this.value.toLowerCase();
+        let logContainer = document.getElementById('taskslogContainer');
+        let logLines = logContainer.getElementsByClassName('tasklog-line');
 
         Array.from(logLines).forEach(line => {
             let lineText = line.textContent.toLowerCase();
