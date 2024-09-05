@@ -38,36 +38,36 @@ class ErrorLogDetailView(LoginRequiredMixin, View):
 
 
 class ReadLogView(LoginRequiredMixin, View):
+    def get_log_content(self, log_path, log_name):
+        try:
+            with open(log_path, 'r') as file:
+                # Leggi le ultime 1000 righe efficientemente
+                file.seek(0, os.SEEK_END)
+                file_size = file.tell()
+                buffer_size = 8192
+                file.seek(max(file_size - buffer_size, 0), 0)
+                lines = file.readlines()[-1000:]
+                return lines
+        except FileNotFoundError:
+            return f"{log_name} logging file has not been found."
+
     def get(self, request, *args, **kwargs):
         BASE_DIR = Path(__file__).resolve().parent.parent.parent
         schedules_path = os.path.join(BASE_DIR, 'schedules.log')
         tasks_path = os.path.join(BASE_DIR, 'tasks.log')
+        reports_path = os.path.join(BASE_DIR, 'reports.log')
 
-        try:
-            with open(schedules_path, 'r') as file:
-                # Leggi tutte le righe e prendi le ultime 100
-                lines = file.readlines()[-1000:]
-                # Unisci le righe in un singolo blocco di testo
-                schedules_log_content = lines
-        except FileNotFoundError:
-            schedules_log_content = "Scheduler logging file has not been found."
-
-        try:
-            with open(tasks_path, 'r') as file:
-                # Leggi tutte le righe e prendi le ultime 100
-                lines = file.readlines()[-1000:]
-                # Unisci le righe in un singolo blocco di testo
-                tasks_log_content = lines
-        except FileNotFoundError:
-            tasks_log_content = "Scheduler logging file has not been found."
+        schedules_log_content = self.get_log_content(schedules_path, "Scheduler")
+        tasks_log_content = self.get_log_content(tasks_path, "Tasks")
+        reports_log_content = self.get_log_content(reports_path, "Reports")
 
         context = {
             'schedules_log_content': schedules_log_content,
-            'tasks_log_content': tasks_log_content
-            }
+            'tasks_log_content': tasks_log_content,
+            'reports_log_content': reports_log_content
+        }
 
         return render(request, 'logging_app/log_list.html', context)
-    
 
 
 

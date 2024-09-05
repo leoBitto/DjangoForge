@@ -240,6 +240,12 @@ LOGGING = {
             'filename': os.path.join(BASE_DIR, 'tasks.log'),
             'formatter': 'verbose',
         },
+        'file_reports': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'reports.log'),
+            'formatter': 'verbose',
+        },
     },
     'loggers': {
         'schedules': {
@@ -249,6 +255,11 @@ LOGGING = {
         },
         'tasks': {
             'handlers': ['file_tasks'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'reports': {
+            'handlers': ['file_reports'],
             'level': 'INFO',
             'propagate': True,
         },
