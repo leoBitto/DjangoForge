@@ -1,9 +1,11 @@
 title: "DjangoForge Documentation"
 description: "Official documentation for the DjangoForge project."
-baseurl: "" # the subpath of your site, e.g. /blog
+baseurl: "/docs" # the subpath of your site, e.g. /blog
 url: "https://leobitto.github.io/DjangoForge/" # the base hostname & protocol for your site
 
-remote_theme: yaoyao-liu/minimal-light
+remote_theme: pages-themes/minimal@v0.2.0
+plugins:
+- jekyll-remote-theme # add this line to the plugins list if you already have one
 
 # Exclude specific files or directories from being processed by Jekyll
 exclude:
