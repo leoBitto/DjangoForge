@@ -11,7 +11,7 @@ exclude:
   - LICENSE.md
   - CONTRIBUTING.md
   - CODE_OF_CONDUCT.md
-  - prompt.md
+
 
 # Permalinks configuration (optional)
 permalink: pretty
