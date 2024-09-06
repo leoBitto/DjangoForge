@@ -44,7 +44,7 @@ Contributions are welcome! For more details, please see the [CONTRIBUTING.md](CO
 
 ## License
 
-This project is licensed under the GPLv3 License. For more details, see the [LICENSE.md](LICENSE.md) file.
+This project is licensed under the GPLv3 License. For more details, see the [LICENSE](LICENSE) file.
 
 ## Contact
 
