@@ -46,7 +46,7 @@ def create_suppliers():
     companies = Company.objects.filter(type='Supplier')
     for company in companies:
         Supplier.objects.create(
-            name=fake.company(),
+            name=fake.name(),
             company=company,
             email=fake.email(),
             phone=fake.phone_number(),
@@ -87,6 +87,11 @@ def create_products():
             description=fake.text(max_nb_chars=200)
         )
 
+def generate_invoice_number():
+    year = timezone.now().year
+    random_number = random.randint(0, 100)
+    return f"{year}-{random_number:03}"
+
 def create_sales():
     products = Product.objects.all()
     customers = Customer.objects.all()
@@ -103,7 +108,8 @@ def create_sales():
             quantity=random.randint(1, 10),
             unit_price=fake.pydecimal(left_digits=2, right_digits=3, positive=True),
             status=random.choice(['pending', 'sold', 'delivered', 'paid', 'cancelled']),
-            customer=random.choice(customers) if customers.exists() else None
+            customer=random.choice(customers) if customers.exists() else None,
+            sale_invoice_number=generate_invoice_number()
         )
 
 def create_orders():
@@ -122,7 +128,8 @@ def create_orders():
             quantity=random.randint(1, 10),
             unit_price=fake.pydecimal(left_digits=2, right_digits=3, positive=True),
             status=random.choice(['pending', 'sold', 'delivered', 'paid', 'cancelled']),
-            supplier=random.choice(suppliers) if suppliers.exists() else None
+            supplier=random.choice(suppliers) if suppliers.exists() else None,
+            order_invoice_number=generate_invoice_number()
         )
 
 def run():

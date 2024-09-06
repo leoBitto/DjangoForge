@@ -1,0 +1,73 @@
+# DjangoForge Documentation
+
+Welcome to the official documentation for **DjangoForge**, a modular Django ecosystem designed for small and medium-sized enterprises (SMEs). This documentation will guide you through the installation, configuration, usage, and development of DjangoForge.
+
+## Table of Contents
+
+1. [Introduction](#introduction)
+2. [Getting Started](#getting-started)
+    - [Installation](docs/installation.md)
+    - [Configuration](docs/configuration.md)
+    - [Running the Application](docs/running.md)
+3. [Project Structure](#project-structure)
+4. [Usage](#usage)
+    - [Base Project](docs/base.md)
+    - [Tier 1 Applications](docs/tier1.md)
+    - [Tier 2 Applications](docs/tier2.md)
+5. [Advanced Topics](#advanced-topics)
+    - [Customizing DjangoForge](docs/customization.md)
+    - [Extending Functionality](docs/extending.md)
+6. [Contributing](docs/CONTRIBUTING.md)
+7. [Code of Conduct](docs/CODE_OF_CONDUCT.md)
+8. [License](docs/LICENSE.md)
+9. [FAQs](docs/faqs.md)
+
+## Introduction
+
+DjangoForge is a comprehensive and customizable platform built on Django, aimed at delivering robust business solutions for SMEs. The ecosystem is structured into three main tiers:
+
+- **Base Project**: Core functionalities and common apps needed by the entire ecosystem.
+- **Tier 1**: General business applications like CRM, ERP, and more, built on top of the Base Project.
+- **Tier 2**: Industry-specific applications that extend Tier 1 apps with tailored functionalities for particular business needs.
+
+This documentation is intended to help developers, administrators, and users to effectively use and contribute to DjangoForge.
+
+## Getting Started
+
+If you're new to DjangoForge, start by [installing](docs/installation.md) the application and configuring your development environment. Follow the guide on [running the application](docs/running.md) to get DjangoForge up and running quickly.
+
+## Project Structure
+
+DjangoForge is organized to be modular and scalable. Learn more about how the project is structured and how the different components interact in the [Project Structure](docs/project_structure.md) section.
+
+## Usage
+
+DjangoForge includes a variety of applications to meet different business needs. Explore the functionality of the:
+
+- **[Base Project](docs/base.md)**: Core modules and features.
+- **[Tier 1 Applications](docs/tier1.md)**: General business apps like CRM, ERP, and more.
+- **[Tier 2 Applications](docs/tier2.md)**: Industry-specific extensions for vertical markets.
+
+## Advanced Topics
+
+For developers looking to customize or extend DjangoForge, dive into the [Advanced Topics](docs/advanced.md). This section covers how to customize the existing modules and add new features to suit your business requirements.
+
+## Contributing
+
+We welcome contributions from the community! If you want to contribute to DjangoForge, please read the [Contributing Guidelines](docs/CONTRIBUTING.md) to get started.
+
+## Code of Conduct
+
+Please note that we have a [Code of Conduct](docs/CODE_OF_CONDUCT.md) in place to ensure a welcoming environment for everyone. Please read it before contributing.
+
+## License
+
+DjangoForge is released under the [GPL License](docs/LICENSE.md). Please refer to the license file for details on how you can use and distribute DjangoForge.
+
+## FAQs
+
+Got questions? Check out the [FAQs](docs/faqs.md) for answers to common questions about DjangoForge.
+
+---
+
+Thank you for using DjangoForge! If you encounter any issues or have suggestions, feel free to open an issue on GitHub.

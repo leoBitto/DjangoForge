@@ -1,5 +1,6 @@
 {% load static %}
-
+{% load pwa %}
+{% load webpush_notifications %}
 <!DOCTYPE html>
 <html lang="it">
     <head>
@@ -24,6 +25,8 @@
                 min-height: 100vh; /* Imposta l'altezza minima a 100% della viewport */
             }
         </style>
+        {% progressive_web_app_meta %}
+        {% webpush_header %}
     </head>
     <body class="d-flex flex-column justify-content-between flex-wrapper">
         <div>

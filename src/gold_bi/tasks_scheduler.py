@@ -1,244 +1,244 @@
 import logging
 from django_q.tasks import schedule, Schedule
-from django.utils import timezone
-import datetime as dt
 
 logger = logging.getLogger('schedules')
 
 def schedule_tasks():
+    """
+    Questo file utilizza la sintassi CRON per schedulare le task.
+
+    La sintassi CRON è composta da 5 campi separati da spazi:
+    ┌───────────── min (0 - 59)
+    │ ┌───────────── ora (0 - 23)
+    │ │ ┌───────────── giorno del mese (1 - 31)
+    │ │ │ ┌───────────── mese (1 - 12)
+    │ │ │ │ ┌───────────── giorno della settimana (0 - 6) (Domenica = 0)
+    │ │ │ │ │
+    │ │ │ │ │
+    * * * * * comando da eseguire
+
+    Esempi di sintassi CRON utilizzati:
+    - `59 23 * * *` : Ogni giorno alle 23:59.
+    - `0 * * * *` : Ogni ora all'inizio dell'ora (es: 14:00, 15:00).
+    - `59 23 * * 0` : Ogni domenica alle 23:59.
+    - `59 23 L * *`,  : Ultimo giorno del mese alle 23:59.
+    - `59 23 L 3,6,9,12 *` : L'ultimo giorno di marzo, giugno, settembre, e dicembre alle 23:59.
+    - `59 23 31 12 *` : L'ultimo giorno dell'anno (31 dicembre) alle 23:59.
+    """
+
     try:
-        now = timezone.now()
-        if now.month == 12:
-            next_month_start = now.replace(year=now.year + 1, month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
-        else:
-            next_month_start = now.replace(month=now.month + 1, day=1, hour=0, minute=0, second=0, microsecond=0)
-
-
+        # Aggregazione Access
         if not Schedule.objects.filter(func='logging_app.tasks.aggregate_access_logs.aggregate_access_logs').exists():
             schedule(
                 'logging_app.tasks.aggregate_access_logs.aggregate_access_logs',
-                schedule_type=Schedule.HOURLY,
-                #minutes=30,
+                schedule_type=Schedule.CRON,
+                cron='0 * * * *',  # Ogni ora all'inizio dell'ora
                 repeats=-1,
-                next_run=timezone.now() + timezone.timedelta(seconds=30),
                 cluster='gold_bi'
             )
-            logger.info("Scheduled aggregate_access_logs task")
+            logger.info("Scheduled hourly aggregate_access_logs task")
 
         if not Schedule.objects.filter(func='logging_app.tasks.aggregate_error_logs.aggregate_error_logs').exists():
             schedule(
                 'logging_app.tasks.aggregate_error_logs.aggregate_error_logs',
-                schedule_type=Schedule.HOURLY,
-                #minutes=30,
-                repeats=-1,
-                next_run=timezone.now() + timezone.timedelta(seconds=30),
-                #next_run=timezone.now() + timezone.timedelta(seconds=50),
-                cluster='gold_bi'
-            )
-            logger.info("Scheduled aggregate_error_logs task")
-
-        # inventory Aggregation
-        if not Schedule.objects.filter(func='inventory.tasks.aggregate_inventory.aggregate_inventory_quarter').exists():
-            schedule(
-                'inventory.tasks.aggregate_inventory.aggregate_inventory_quarter',
-                schedule_type=Schedule.DAILY,
-                repeats=-1,
-                #next_run=now.replace(hour=0, minute=0, second=0, microsecond=0),
-                next_run=timezone.now() + timezone.timedelta(seconds=35),
-                cluster='gold_bi'
-            )
-            logger.info("Scheduled quarter inventory aggregation task")
-
-        if not Schedule.objects.filter(func='inventory.tasks.aggregate_inventory.aggregate_inventory_annual').exists():
-            schedule(
-                'inventory.tasks.aggregate_inventory.aggregate_inventory_annual',
-                schedule_type=Schedule.WEEKLY,
-                repeats=-1,
-                #next_run= (now + timezone.timedelta(days=(6 - now.weekday()))).replace(hour=22, minute=0, second=0, microsecond=0),  # Next Sunday
-                next_run=timezone.now() + timezone.timedelta(seconds=40),
-                cluster='gold_bi'
-            )
-            logger.info("Scheduled weekly inventory aggregation task")
-
-        # order Aggregation
-        if not Schedule.objects.filter(func='inventory.tasks.aggregate_orders.aggregate_orders_daily').exists():
-            schedule(
-                'inventory.tasks.aggregate_orders.aggregate_orders_daily',
-                schedule_type=Schedule.MONTHLY,
-                repeats=-1,
-                #next_run= next_month_start,  # First of next month
-                next_run=timezone.now() + timezone.timedelta(seconds=45),
-                cluster='gold_bi'
-            )
-            logger.info("Scheduled monthly inventory aggregation task")
-       
-        if not Schedule.objects.filter(func='inventory.tasks.aggregate_orders.aggregate_orders_weekly').exists():
-            schedule(
-                'inventory.tasks.aggregate_orders.aggregate_orders_weekly',
                 schedule_type=Schedule.CRON,
-                cron='0 0 1 1,4,7,10 *',  # Example: First day of Jan, Apr, Jul, and Oct
+                cron='0 * * * *',  # Ogni ora all'inizio dell'ora
                 repeats=-1,
-                #next_run=now.replace(month=(now.month - 1) // 3 * 3 + 4, day=1, hour=0, minute=0, second=0, microsecond=0),  # First of next quarter
-                next_run=timezone.now() + timezone.timedelta(seconds=50),
                 cluster='gold_bi'
             )
-            logger.info("Scheduled quarterly inventory aggregation task")
+            logger.info("Scheduled hourly aggregate_error_logs task")
 
-        if not Schedule.objects.filter(func='inventory.tasks.aggregate_orders.aggregate_orders_monthly').exists():
+        #CRM
+        if not Schedule.objects.filter(func='crm.tasks.aggregate_crm.aggregate_crm_monthly').exists():
             schedule(
-                'inventory.tasks.aggregate_orders.aggregate_orders_monthly',
-                schedule_type=Schedule.YEARLY,
+                'crm.tasks.aggregate_crm.aggregate_crm_monthly',
+                schedule_type=Schedule.CRON,
+                cron='59 23 L * *', 
                 repeats=-1,
-                #next_run=now.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0) + timezone.timedelta(days=365),  # First of next year
-                next_run=timezone.now() + timezone.timedelta(seconds=55),
                 cluster='gold_bi'
             )
-            logger.info("Scheduled yearly inventory aggregation task")
+            logger.info("Scheduled monthly crm aggregation task")
+
+        
+        # INVENTORY GLOBAL
+        if not Schedule.objects.filter(func='inventory.tasks.aggregate_inventory.aggregate_inventory_annually').exists():
+            schedule(
+                'inventory.tasks.aggregate_inventory.aggregate_inventory_annually',
+                schedule_type=Schedule.CRON,
+                cron='59 23 31 12 *',  
+                repeats=-1,
+                cluster='gold_bi'
+            )
+            logger.info("Scheduled inventory annual aggregation task")
+
+        if not Schedule.objects.filter(func='inventory.tasks.aggregate_inventory.aggregate_inventory_quarterly').exists():
+            schedule(
+                'inventory.tasks.aggregate_inventory.aggregate_inventory_quarterly',
+                schedule_type=Schedule.CRON,
+                cron='59 23 L 3,6,9,12 *',  
+                repeats=-1,
+                cluster='gold_bi'
+            )
+            logger.info("Scheduled inventory quarter aggregation task")
+
+
+        # INVENTORY PRODUCT
+        if not Schedule.objects.filter(func='inventory.tasks.aggregate_product.aggregate_product_annually').exists():
+            schedule(
+                'inventory.tasks.aggregate_product.aggregate_product_annually',
+                schedule_type=Schedule.CRON,
+                cron='59 23 31 12 *',
+                repeats=-1,
+                cluster='gold_bi'
+            )
+            logger.info("Scheduled annual product aggregation task")
+
+        if not Schedule.objects.filter(func='inventory.tasks.aggregate_product.aggregate_product_quarterly').exists():
+            schedule(
+                'inventory.tasks.aggregate_product.aggregate_product_quarterly',
+                schedule_type=Schedule.CRON,
+                cron='59 23 L 3,6,9,12 *',
+                repeats=-1,
+                cluster='gold_bi'
+            )
+            logger.info("Scheduled quarter product aggregation task")
+
+        if not Schedule.objects.filter(func='inventory.tasks.aggregate_product.aggregate_product_monthly').exists():
+            schedule(
+                'inventory.tasks.aggregate_product.aggregate_product_monthly',
+                schedule_type=Schedule.CRON,
+                cron='59 23 L * *',
+                repeats=-1,
+                cluster='gold_bi'
+            )
+            logger.info("Scheduled monthly product aggregation task")
+
+        # INVENTORY QUALITY
+        if not Schedule.objects.filter(func='inventory.tasks.aggregate_quality.aggregate_quality_annually').exists():
+            schedule(
+                'inventory.tasks.aggregate_quality.aggregate_quality_annually',
+                schedule_type=Schedule.CRON,
+                cron='59 23 31 12 *',  # L'ultimo giorno dell'anno alle 23:59
+                repeats=-1,
+                cluster='gold_bi'
+            )
+            logger.info("Scheduled annual quality aggregation task")
+
+        if not Schedule.objects.filter(func='inventory.tasks.aggregate_quality.aggregate_quality_quarterly').exists():
+            schedule(
+                'inventory.tasks.aggregate_quality.aggregate_quality_quarterly',
+                schedule_type=Schedule.CRON,
+                cron='59 23 L 3,6,9,12 *', 
+                repeats=-1,
+                cluster='gold_bi'
+            )
+            logger.info("Scheduled quarterly quality aggregation task")
+
+        # INVENTORY ORDERS
+        if not Schedule.objects.filter(func='inventory.tasks.aggregate_orders.aggregate_orders_annually').exists():
+            schedule(
+                'inventory.tasks.aggregate_orders.aggregate_orders_annually',
+                schedule_type=Schedule.CRON,
+                cron='59 23 31 12 *',  # L'ultimo giorno dell'anno alle 23:59
+                repeats=-1,
+                cluster='gold_bi'
+            )
+            logger.info("Scheduled annual orders aggregation task")
 
         if not Schedule.objects.filter(func='inventory.tasks.aggregate_orders.aggregate_orders_quarterly').exists():
             schedule(
                 'inventory.tasks.aggregate_orders.aggregate_orders_quarterly',
                 schedule_type=Schedule.CRON,
-                cron='0 0 1 1,7 *',
+                cron='59 23 L 3,6,9,12 *',  # L'ultimo giorno di marzo, giugno, settembre, e dicembre alle 23:59
                 repeats=-1,
-                #next_run=now.replace(day=1, month=(now.month + 6) % 12, hour=0, minute=0, second=0, microsecond=0),  # First of next 6 months
-                next_run=timezone.now() + timezone.timedelta(seconds=60),
                 cluster='gold_bi'
             )
-            logger.info("Scheduled quality aggregation task")
+            logger.info("Scheduled quarterly orders aggregation task")
 
-        if not Schedule.objects.filter(func='inventory.tasks.aggregate_orders.aggregate_orders_annually').exists():
+        if not Schedule.objects.filter(func='inventory.tasks.aggregate_orders.aggregate_orders_monthly').exists():
             schedule(
-                'inventory.tasks.aggregate_orders.aggregate_orders_annually',
+                'inventory.tasks.aggregate_orders.aggregate_orders_monthly',
                 schedule_type=Schedule.CRON,
-                cron='0 0 1 1,7 *',
+                cron='59 23 L * *', 
                 repeats=-1,
-                #next_run=now.replace(day=1, month=(now.month + 6) % 12, hour=0, minute=0, second=0, microsecond=0),  # First of next 6 months
-                next_run=timezone.now() + timezone.timedelta(seconds=65),
                 cluster='gold_bi'
             )
-            logger.info("Scheduled quality aggregation task")
+            logger.info("Scheduled monthly orders aggregation task")
 
-        # sales Aggregation
-        if not Schedule.objects.filter(func='inventory.tasks.aggregate_sales.aggregate_sales_daily').exists():
+        if not Schedule.objects.filter(func='inventory.tasks.aggregate_orders.aggregate_orders_weekly').exists():
             schedule(
-                'inventory.tasks.aggregate_sales.aggregate_sales_daily',
-                schedule_type=Schedule.MONTHLY,
-                repeats=-1,
-                #next_run= next_month_start,  # First of next month
-                next_run=timezone.now() + timezone.timedelta(seconds=70),
-                cluster='gold_bi'
-            )
-            logger.info("Scheduled monthly inventory aggregation task")
-       
-        if not Schedule.objects.filter(func='inventory.tasks.aggregate_sales.aggregate_sales_weekly').exists():
-            schedule(
-                'inventory.tasks.aggregate_sales.aggregate_sales_weekly',
+                'inventory.tasks.aggregate_orders.aggregate_orders_weekly',
                 schedule_type=Schedule.CRON,
-                cron='0 0 1 1,4,7,10 *',  # Example: First day of Jan, Apr, Jul, and Oct
+                cron='59 23 * * 0',  # L'ultimo giorno di marzo, giugno, settembre, e dicembre alle 23:59
                 repeats=-1,
-                #next_run=now.replace(month=(now.month - 1) // 3 * 3 + 4, day=1, hour=0, minute=0, second=0, microsecond=0),  # First of next quarter
-                next_run=timezone.now() + timezone.timedelta(seconds=75),
                 cluster='gold_bi'
             )
-            logger.info("Scheduled quarterly inventory aggregation task")
+            logger.info("Scheduled weekly orders aggregation task")
 
-        if not Schedule.objects.filter(func='inventory.tasks.aggregate_sales.aggregate_sales_monthly').exists():
+        if not Schedule.objects.filter(func='inventory.tasks.aggregate_orders.aggregate_orders_daily').exists():
             schedule(
-                'inventory.tasks.aggregate_sales.aggregate_sales_monthly',
-                schedule_type=Schedule.YEARLY,
+                'inventory.tasks.aggregate_orders.aggregate_orders_daily',
+                schedule_type=Schedule.CRON,
+                cron='59 23 * * *', 
                 repeats=-1,
-                #next_run=now.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0) + timezone.timedelta(days=365),  # First of next year
-                next_run=timezone.now() + timezone.timedelta(seconds=80),
                 cluster='gold_bi'
             )
-            logger.info("Scheduled yearly inventory aggregation task")
+            logger.info("Scheduled daily orders aggregation task")
+  
+
+        # INVENTORY SALES
+        if not Schedule.objects.filter(func='inventory.tasks.aggregate_sales.aggregate_sales_annually').exists():
+            schedule(
+                'inventory.tasks.aggregate_sales.aggregate_sales_annually',
+                schedule_type=Schedule.CRON,
+                cron='59 23 31 12 *',  # L'ultimo giorno dell'anno alle 23:59
+                repeats=-1,
+                cluster='gold_bi'
+            )
+            logger.info("Scheduled annual sales aggregation task")
 
         if not Schedule.objects.filter(func='inventory.tasks.aggregate_sales.aggregate_sales_quarterly').exists():
             schedule(
                 'inventory.tasks.aggregate_sales.aggregate_sales_quarterly',
                 schedule_type=Schedule.CRON,
-                cron='0 0 1 1,7 *',
+                cron='59 23 L 3,6,9,12 *',  # L'ultimo giorno di marzo, giugno, settembre, e dicembre alle 23:59
                 repeats=-1,
-                #next_run=now.replace(day=1, month=(now.month + 6) % 12, hour=0, minute=0, second=0, microsecond=0),  # First of next 6 months
-                next_run=timezone.now() + timezone.timedelta(seconds=85),
                 cluster='gold_bi'
             )
-            logger.info("Scheduled quality aggregation task")
+            logger.info("Scheduled quarterly sales aggregation task")
 
-        if not Schedule.objects.filter(func='inventory.tasks.aggregate_sales.aggregate_sales_annually').exists():
+        if not Schedule.objects.filter(func='inventory.tasks.aggregate_sales.aggregate_sales_monthly').exists():
             schedule(
-                'inventory.tasks.aggregate_sales.aggregate_sales_annually',
+                'inventory.tasks.aggregate_sales.aggregate_sales_monthly',
                 schedule_type=Schedule.CRON,
-                cron='0 0 1 1,7 *',
+                cron='59 23 L * *',
                 repeats=-1,
-                #next_run=now.replace(day=1, month=(now.month + 6) % 12, hour=0, minute=0, second=0, microsecond=0),  # First of next 6 months
-                next_run=timezone.now() + timezone.timedelta(seconds=90),
                 cluster='gold_bi'
             )
-            logger.info("Scheduled quality aggregation task")
+            logger.info("Scheduled monthly sales aggregation task")
 
-        # product aggregations
-        if not Schedule.objects.filter(func='inventory.tasks.aggregate_product.aggregate_product_month').exists():
+        if not Schedule.objects.filter(func='inventory.tasks.aggregate_sales.aggregate_sales_weekly').exists():
             schedule(
-                'inventory.tasks.aggregate_product.aggregate_product_month',
+                'inventory.tasks.aggregate_sales.aggregate_sales_weekly',
                 schedule_type=Schedule.CRON,
-                cron='0 0 1 1,7 *',
+                cron='59 23 * * 0', 
                 repeats=-1,
-                #next_run=now.replace(day=1, month=(now.month + 6) % 12, hour=0, minute=0, second=0, microsecond=0),  # First of next 6 months
-                next_run=timezone.now() + timezone.timedelta(seconds=95),
                 cluster='gold_bi'
             )
-            logger.info("Scheduled quality aggregation task")
+            logger.info("Scheduled weekly sales aggregation task")
 
-        if not Schedule.objects.filter(func='inventory.tasks.aggregate_product.aggregate_product_quarter').exists():
+        if not Schedule.objects.filter(func='inventory.tasks.aggregate_sales.aggregate_sales_daily').exists():
             schedule(
-                'inventory.tasks.aggregate_product.aggregate_product_quarter',
+                'inventory.tasks.aggregate_sales.aggregate_sales_daily',
                 schedule_type=Schedule.CRON,
-                cron='0 0 1 1,7 *',
+                cron='59 23 * * *',  # L'ultimo giorno di marzo, giugno, settembre, e dicembre alle 23:59
                 repeats=-1,
-                #next_run=now.replace(day=1, month=(now.month + 6) % 12, hour=0, minute=0, second=0, microsecond=0),  # First of next 6 months
-                next_run=timezone.now() + timezone.timedelta(seconds=100),
                 cluster='gold_bi'
             )
-            logger.info("Scheduled quality aggregation task")
+            logger.info("Scheduled daily sales aggregation task")
 
-        if not Schedule.objects.filter(func='inventory.tasks.aggregate_product.aggregate_product_year').exists():
-            schedule(
-                'inventory.tasks.aggregate_product.aggregate_product_year',
-                schedule_type=Schedule.CRON,
-                cron='0 0 1 1,7 *',
-                repeats=-1,
-                #next_run=now.replace(day=1, month=(now.month + 6) % 12, hour=0, minute=0, second=0, microsecond=0),  # First of next 6 months
-                next_run=timezone.now() + timezone.timedelta(seconds=105),
-                cluster='gold_bi'
-            )
-            logger.info("Scheduled quality aggregation task")
 
-        # quality aggregations
-        if not Schedule.objects.filter(func='inventory.tasks.aggregate_quality.aggregate_quality_quarter').exists():
-            schedule(
-                'inventory.tasks.aggregate_quality.aggregate_quality_quarter',
-                schedule_type=Schedule.CRON,
-                cron='0 0 1 1,7 *',
-                repeats=-1,
-                #next_run=now.replace(day=1, month=(now.month + 6) % 12, hour=0, minute=0, second=0, microsecond=0),  # First of next 6 months
-                next_run=timezone.now() + timezone.timedelta(seconds=110),
-                cluster='gold_bi'
-            )
-            logger.info("Scheduled quality aggregation task")
-
-        if not Schedule.objects.filter(func='inventory.tasks.aggregate_quality.aggregate_quality_year').exists():
-            schedule(
-                'inventory.tasks.aggregate_quality.aggregate_quality_year',
-                schedule_type=Schedule.CRON,
-                cron='0 0 1 1,7 *',
-                repeats=-1,
-                #next_run=now.replace(day=1, month=(now.month + 6) % 12, hour=0, minute=0, second=0, microsecond=0),  # First of next 6 months
-                next_run=timezone.now() + timezone.timedelta(seconds=115),
-                cluster='gold_bi'
-            )
-            logger.info("Scheduled quality aggregation task")
+        
 
 
 
