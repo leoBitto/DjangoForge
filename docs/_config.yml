@@ -3,7 +3,7 @@ description: "Official documentation for the DjangoForge project."
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://leobitto.github.io/DjangoForge/" # the base hostname & protocol for your site
 
-theme: jekyll-theme-minimal # You can use a Jekyll theme or customize your own
+remote_theme: yaoyao-liu/minimal-light
 
 # Exclude specific files or directories from being processed by Jekyll
 exclude:
