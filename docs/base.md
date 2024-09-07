@@ -164,6 +164,25 @@ The **Backoffice App** provides the tools and interfaces necessary for backend m
 - **`utils.py`**: Utility functions used throughout the Backoffice app.
 - **`views.py`**: Handles the logic for rendering the backoffice pages.
 
+```
+├── backoffice
+│   ├── admin.py
+│   ├── apps.py
+│   ├── forms.py
+│   ├── __init__.py
+│   ├── models.py
+│   ├── templates
+│   │   └── backoffice
+│   │       ├── backoffice_base.html
+│   │       └── reports
+│   │           ├── select_aggregation.html
+│   │           └── select_report_type.html
+│   ├── tests.py
+│   ├── urls.py
+│   ├── utils.py
+│   └── views.py
+```
+
 ### Key Features
 
 - **Admin Interface**: Customize and manage different aspects of the DjangoForge ecosystem from a centralized backend.
@@ -182,6 +201,15 @@ The **Base App** contains the core settings and configurations that are shared a
 - **`settings.py`**: Core settings file that includes configuration for databases, installed apps, middleware, and more.
 - **`urls.py`**: Main URL routing configuration for the project.
 - **`wsgi.py`**: Configures WSGI for handling HTTP requests in a production environment.
+
+```
+├── base
+│   ├── asgi.py
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+```
 
 ### Key Features
 
@@ -207,6 +235,27 @@ The **Gold BI App** is responsible for business intelligence operations within D
     - **`quality_control.html`**: Template for quality control reports.
     - **`temporal_aggregation.html`**: Template for reports based on temporal data aggregation.
 - **`tests.py`**: Contains test cases for the Gold BI app.
+
+```
+├── gold_bi
+│   ├── apps.py
+│   ├── docs
+│   │   ├── assets
+│   │   │   └── images
+│   │   │       └── logo.png
+│   │   └── README.md
+│   ├── __init__.py
+│   ├── models.py
+│   ├── signals.py
+│   ├── tasks_scheduler.py
+│   ├── templates
+│   │   └── gold_bi
+│   │       └── report
+│   │           ├── monthly_snapshot.html
+│   │           ├── quality_control.html
+│   │           └── temporal_aggregation.html
+│   └── tests.py
+```
 
 ### Key Features
 
@@ -243,6 +292,41 @@ The **Logging App** is designed to track and aggregate logs related to HTTP requ
     - **`aggregated.py`**: Views for aggregated logs.
     - **`base.py`**: Base views for log display.
 
+```
+├── logging_app
+│   ├── admin.py
+│   ├── apps.py
+│   ├── docs
+│   │   ├── assets
+│   │   │   └── logo.png
+│   │   ├── _config.yml
+│   │   └── README.md
+│   ├── forms.py
+│   ├── __init__.py
+│   ├── middleware.py
+│   ├── models
+│   │   ├── aggregated.py
+│   │   ├── base.py
+│   │   └── __init__.py
+│   ├── tasks
+│   │   ├── aggregate_access_logs.py
+│   │   ├── aggregate_error_logs.py
+│   │   └── __init__.py
+│   ├── templates
+│   │   └── logging_app
+│   │       ├── accordion.html
+│   │       ├── AElist.html
+│   │       ├── graphs.html
+│   │       ├── log_list.html
+│   │       └── request_log_detail.html
+│   ├── tests.py
+│   ├── urls.py
+│   └── views
+│       ├── aggregated.py
+│       ├── base.py
+│       └── __init__.py
+```
+
 ### Key Features
 
 - **Request and Error Logging**: Tracks HTTP requests and errors, providing detailed logs for analysis.
@@ -272,6 +356,41 @@ The **Website App** manages the front-end of the DjangoForge site, acting as a s
 - **`tests.py`**: Contains test cases for the Website App.
 - **`urls.py`**: Defines URL routing for the website.
 - **`views.py`**: Handles logic for rendering front-end views.
+
+```
+└── website
+    ├── admin.py
+    ├── apps.py
+    ├── docs
+    │   └── README.md
+    ├── forms.py
+    ├── __init__.py
+    ├── models.py
+    ├── static
+    │   ├── favicon
+    │   │   ├── 16DjangoForge.ico
+    │   │   └── 48DjangoForge.ico
+    │   ├── icons
+    │   │   ├── github.svg
+    │   │   └── linkedin.svg
+    │   └── pwa
+    │       └── icons
+    │           ├── icon-256x256.png
+    │           └── Icon-512x512.png
+    ├── templates
+    │   ├── registration
+    │   │   ├── login.html
+    │   │   ├── logout.html
+    │   │   └── password_reset.html
+    │   └── website
+    │       ├── base.html
+    │       ├── footer.html
+    │       ├── landing.html
+    │       └── navbar.html
+    ├── tests.py
+    ├── urls.py
+    └── views.py
+```
 
 ### Key Features
 
