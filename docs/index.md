@@ -7,16 +7,16 @@ Welcome to the official documentation for **DjangoForge**, a modular Django ecos
 
 1. [Introduction](#introduction)
 2. [Getting Started](#getting-started)
-   - [Installation]({{ site.baseurl }}/docs/installation/)
-   - [Deploy the Application]({{ site.baseurl }}/docs/deployment/)
+   - [Installation]({{ site.baseurl }}/installation/)
+   - [Deploy the Application]({{ site.baseurl }}/deployment/)
 3. [Project Structure](#project-structure)
 4. [Usage](#usage)
-   - [Base Project]({{ site.baseurl }}/docs/base/)
-   - [Tier 1 Applications]({{ site.baseurl }}/docs/tier1/)
-   - [Tier 2 Applications]({{ site.baseurl }}/docs/tier2/)
-6. [Contributing]({{ site.baseurl }}/docs/CONTRIBUTING/)
-7. [Code of Conduct]({{ site.baseurl }}/docs/CODE_OF_CONDUCT/)
-8. [License]({{ site.baseurl }}/docs/LICENSE/)
+   - [Base Project]({{ site.baseurl }}/base/)
+   - [Tier 1 Applications]({{ site.baseurl }}/tier1/)
+   - [Tier 2 Applications]({{ site.baseurl }}/tier2/)
+6. [Contributing]({{ site.baseurl }}/CONTRIBUTING/)
+7. [Code of Conduct]({{ site.baseurl }}/CODE_OF_CONDUCT/)
+8. [License]({{ site.baseurl }}/LICENSE/)
 
 
 ## Introduction
@@ -31,7 +31,7 @@ This documentation is intended to help developers, administrators, and users to 
 
 ## Getting Started
 
-If you're new to DjangoForge, start by [installing]({{ site.baseurl }}/docs/installation.md) the application and configuring your development environment.
+If you're new to DjangoForge, start by [installing]({{ site.baseurl }}/installation.md) the application and configuring your development environment.
 
 ## Project Structure
 
@@ -41,22 +41,22 @@ DjangoForge is organized to be modular and scalable. Learn more about how the pr
 
 DjangoForge includes a variety of applications to meet different business needs. Explore the functionality of the:
 
-- **[Base Project]({{ site.baseurl }}/docs/base.md)**: Core modules and features.
-- **[Tier 1 Applications]({{ site.baseurl }}/docs/tier1/)**: General business apps like CRM, ERP, and more.
-- **[Tier 2 Applications]({{ site.baseurl }}/docs/tier2/)**: Industry-specific extensions for vertical markets.
+- **[Base Project]({{ site.baseurl }}/base.md)**: Core modules and features.
+- **[Tier 1 Applications]({{ site.baseurl }}/tier1/)**: General business apps like CRM, ERP, and more.
+- **[Tier 2 Applications]({{ site.baseurl }}/tier2/)**: Industry-specific extensions for vertical markets.
 
 
 ## Contributing
 
-We welcome contributions from the community! If you want to contribute to DjangoForge, please read the [Contributing Guidelines]({{ site.baseurl }}/docs/CONTRIBUTING.md) to get started.
+We welcome contributions from the community! If you want to contribute to DjangoForge, please read the [Contributing Guidelines]({{ site.baseurl }}/CONTRIBUTING.md) to get started.
 
 ## Code of Conduct
 
-Please note that we have a [Code of Conduct]({{ site.baseurl }}/docs/CODE_OF_CONDUCT.md) in place to ensure a welcoming environment for everyone. Please read it before contributing.
+Please note that we have a [Code of Conduct]({{ site.baseurl }}/CODE_OF_CONDUCT.md) in place to ensure a welcoming environment for everyone. Please read it before contributing.
 
 ## License
 
-DjangoForge is released under the [GPL License]({{ site.baseurl }}/docs/LICENSE.md). Please refer to the license file for details on how you can use and distribute DjangoForge.
+DjangoForge is released under the [GPL License]({{ site.baseurl }}/LICENSE.md). Please refer to the license file for details on how you can use and distribute DjangoForge.
 
 
 ---
