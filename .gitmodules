@@ -1,9 +1,0 @@
-[submodule "src/inventory"]
-	path = src/inventory
-	url = https://github.com/leoBitto/Django-inventory.git
-[submodule "src/crm"]
-	path = src/crm
-	url = https://github.com/leoBitto/Django-CRM.git
-[submodule "src/pdv_management"]
-	path = src/pdv_management
-	url = https://github.com/leoBitto/Django-pdv_management.git

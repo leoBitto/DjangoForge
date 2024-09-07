@@ -50,8 +50,6 @@ INSTALLED_APPS = [
     'logging_app',
     'pwa',
     'webpush',
-    'crm',
-    'inventory',
     'django_seed',
 
 ]
