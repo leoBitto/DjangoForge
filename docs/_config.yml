@@ -7,12 +7,15 @@ remote_theme: pages-themes/minimal@v0.2.0
 plugins:
   - jekyll-remote-theme
 
+
 # Site settings
+title: ""
 description: "Official documentation for the DjangoForge project."
 logo: "/assets/img/DjangoForge.png"
 favicon: "/assets/img/djangoforgeico.svg"
 show_downloads: true
-url: "https://leobitto.github.io/DjangoForge/"
+url: "https://leobitto.github.io"
+baseurl: "/DjangoForge/docs" # Base URL for the project
 
 # Exclude specific files or directories from being processed by Jekyll
 exclude:
