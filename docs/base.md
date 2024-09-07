@@ -1,5 +1,7 @@
 # DjangoForge Base Project
 
+[Back to index]({{ site.baseurl }})
+
 The **Base Project** is the foundation of the DjangoForge ecosystem, providing core functionalities and common applications that are essential for the entire platform. This document will guide you through the different components of the Base Project, including their purpose, structure, and how they can be extended.
 
 ## Table of Contents

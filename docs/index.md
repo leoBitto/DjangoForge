@@ -41,7 +41,7 @@ DjangoForge is organized to be modular and scalable. Learn more about how the pr
 
 DjangoForge includes a variety of applications to meet different business needs. Explore the functionality of the:
 
-- **[Base Project]({{ site.baseurl }}/base.md)**: Core modules and features.
+- **[Base Project]({{ site.baseurl }}/base/)**: Core modules and features.
 - **[Tier 1 Applications]({{ site.baseurl }}/tier1/)**: General business apps like CRM, ERP, and more.
 - **[Tier 2 Applications]({{ site.baseurl }}/tier2/)**: Industry-specific extensions for vertical markets.
 

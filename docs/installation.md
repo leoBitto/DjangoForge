@@ -1,5 +1,7 @@
 # DjangoForge Installation Guide
 
+[Back to index]({{ site.baseurl }})
+
 Welcome to the installation guide for DjangoForge. This document will walk you through the process of setting up a development environment for DjangoForge. By the end of this guide, you'll have the project up and running on your local machine, ready for further development.
 
 ## Prerequisites
