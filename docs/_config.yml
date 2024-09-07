@@ -11,11 +11,11 @@ plugins:
 # Site settings
 title: ""
 description: "Official documentation for the DjangoForge project."
-logo: "/assets/img/DjangoForge.png"
-favicon: "/assets/img/djangoforgeico.svg"
+logo: "/DjangoForge/docs/assets/img/DjangoForge.png"
+favicon: "/DjangoForge/docs/assets/img/djangoforgeico.svg"
 show_downloads: true
 url: "https://leobitto.github.io"
-baseurl: "/DjangoForge/docs" # Base URL for the project
+baseurl: "/DjangoForge" # Base URL for the project
 
 # Exclude specific files or directories from being processed by Jekyll
 exclude:
