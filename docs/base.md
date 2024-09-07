@@ -5,142 +5,48 @@ The **Base Project** is the foundation of the DjangoForge ecosystem, providing c
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Backoffice App](#backoffice-app)
+2. [Project Structure](#project-structure)
+3. [Backoffice App](#backoffice-app)
     - [Purpose](#purpose)
     - [Structure](#structure)
     - [Key Features](#key-features)
-3. [Base App](#base-app)
+4. [Base App](#base-app)
     - [Purpose](#purpose-1)
     - [Structure](#structure-1)
-4. [Gold BI App](#gold-bi-app)
+    - [Key Configurations in `settings.py`](#key-configurations-in-settingspy)
+5. [Gold BI App](#gold-bi-app)
     - [Purpose](#purpose-2)
     - [Structure](#structure-2)
     - [Key Features](#key-features-1)
-5. [Logging App](#logging-app)
+    - [Development Protocol](#development-protocol)
+    - [Q_CLUSTER Configuration](#q_cluster-configuration)
+6. [Logging App](#logging-app)
     - [Purpose](#purpose-3)
     - [Structure](#structure-3)
     - [Key Features](#key-features-2)
-6. [Website App](#website-app)
+    - [LOGGING Configuration](#logging-configuration)
+    - [Integration with Gold BI](#integration-with-gold-bi)
+7. [Website App](#website-app)
     - [Purpose](#purpose-4)
     - [Structure](#structure-4)
     - [Key Features](#key-features-3)
-7. [Extending the Base Project](#extending-the-base-project)
+8. [Extending the Base Project](#extending-the-base-project)
 
 ## Overview
 
-The Base Project contains several essential Django apps that provide core functionalities such as administration, business intelligence, logging, and website management. These apps are designed to be modular and scalable, allowing developers to build upon them and create complex business solutions tailored to various industries.
+The Base Project contains several essential Django apps that provide core functionalities such as administration, business intelligence, logging, and website management.
 
-## project structure
-```
+## Project Structure
+
+```bash
 src
 ├── backoffice
-│   ├── admin.py
-│   ├── apps.py
-│   ├── forms.py
-│   ├── __init__.py
-│   ├── models.py
-│   ├── templates
-│   │   └── backoffice
-│   │       ├── backoffice_base.html
-│   │       └── reports
-│   │           ├── select_aggregation.html
-│   │           └── select_report_type.html
-│   ├── tests.py
-│   ├── urls.py
-│   ├── utils.py
-│   └── views.py
 ├── base
-│   ├── asgi.py
-│   ├── __init__.py
-│   ├── settings.py
-│   ├── urls.py
-│   └── wsgi.py
-├── Dockerfile
 ├── gold_bi
-│   ├── apps.py
-│   ├── docs
-│   │   ├── assets
-│   │   │   └── images
-│   │   │       └── logo.png
-│   │   └── README.md
-│   ├── __init__.py
-│   ├── models.py
-│   ├── signals.py
-│   ├── tasks_scheduler.py
-│   ├── templates
-│   │   └── gold_bi
-│   │       └── report
-│   │           ├── monthly_snapshot.html
-│   │           ├── quality_control.html
-│   │           └── temporal_aggregation.html
-│   └── tests.py
 ├── logging_app
-│   ├── admin.py
-│   ├── apps.py
-│   ├── docs
-│   │   ├── assets
-│   │   │   └── logo.png
-│   │   ├── _config.yml
-│   │   └── README.md
-│   ├── forms.py
-│   ├── __init__.py
-│   ├── middleware.py
-│   ├── models
-│   │   ├── aggregated.py
-│   │   ├── base.py
-│   │   └── __init__.py
-│   ├── tasks
-│   │   ├── aggregate_access_logs.py
-│   │   ├── aggregate_error_logs.py
-│   │   └── __init__.py
-│   ├── templates
-│   │   └── logging_app
-│   │       ├── accordion.html
-│   │       ├── AElist.html
-│   │       ├── graphs.html
-│   │       ├── log_list.html
-│   │       └── request_log_detail.html
-│   ├── tests.py
-│   ├── urls.py
-│   └── views
-│       ├── aggregated.py
-│       ├── base.py
-│       └── __init__.py
-├── manage.py
-├── requirements.txt
 └── website
-    ├── admin.py
-    ├── apps.py
-    ├── docs
-    │   └── README.md
-    ├── forms.py
-    ├── __init__.py
-    ├── models.py
-    ├── static
-    │   ├── favicon
-    │   │   ├── 16DjangoForge.ico
-    │   │   └── 48DjangoForge.ico
-    │   ├── icons
-    │   │   ├── github.svg
-    │   │   └── linkedin.svg
-    │   └── pwa
-    │       └── icons
-    │           ├── icon-256x256.png
-    │           └── Icon-512x512.png
-    ├── templates
-    │   ├── registration
-    │   │   ├── login.html
-    │   │   ├── logout.html
-    │   │   └── password_reset.html
-    │   └── website
-    │       ├── base.html
-    │       ├── footer.html
-    │       ├── landing.html
-    │       └── navbar.html
-    ├── tests.py
-    ├── urls.py
-    └── views.py
 ```
+
 
 ## Backoffice App
 
@@ -150,7 +56,7 @@ The **Backoffice App** provides the tools and interfaces necessary for backend m
 
 ### Structure
 
-- **`admin.py`**: Configures the admin interface for the Backoffice.
+- **`admin.py`**: Configures the Django admin interface for the Backoffice.
 - **`apps.py`**: Registers the Backoffice app with Django.
 - **`forms.py`**: Contains form classes used in the backend interface.
 - **`models.py`**: Defines the database models for the backoffice features.
@@ -164,29 +70,10 @@ The **Backoffice App** provides the tools and interfaces necessary for backend m
 - **`utils.py`**: Utility functions used throughout the Backoffice app.
 - **`views.py`**: Handles the logic for rendering the backoffice pages.
 
-```
-├── backoffice
-│   ├── admin.py
-│   ├── apps.py
-│   ├── forms.py
-│   ├── __init__.py
-│   ├── models.py
-│   ├── templates
-│   │   └── backoffice
-│   │       ├── backoffice_base.html
-│   │       └── reports
-│   │           ├── select_aggregation.html
-│   │           └── select_report_type.html
-│   ├── tests.py
-│   ├── urls.py
-│   ├── utils.py
-│   └── views.py
-```
-
 ### Key Features
 
-- **Admin Interface**: Customize and manage different aspects of the DjangoForge ecosystem from a centralized backend.
-- **Report Generation**: Generate business reports with customizable aggregation and filtering options.
+- **Backoffice Interface**: Customize and manage different aspects of the DjangoForge ecosystem from a centralized backend.
+- **Report presentation**: Generate business reports with customizable aggregation and filtering options.
 
 ## Base App
 
@@ -200,9 +87,9 @@ The **Base App** contains the core settings and configurations that are shared a
 - **`__init__.py`**: Initializes the app and its settings.
 - **`settings.py`**: Core settings file that includes configuration for databases, installed apps, middleware, and more.
 - **`urls.py`**: Main URL routing configuration for the project.
-- **`wsgi.py`**: Configures WSGI for handling HTTP requests in a production environment.
+- **`wsgi.py`**: Configures WSGI for handling HTTP requests in a production environment. this is used by Gunicorn.
 
-```
+```bash
 ├── base
 │   ├── asgi.py
 │   ├── __init__.py
@@ -211,16 +98,41 @@ The **Base App** contains the core settings and configurations that are shared a
 │   └── wsgi.py
 ```
 
-### Key Features
+### Key Configurations in `settings.py`
 
-- **Central Configuration**: Provides centralized settings and configuration options that are inherited by all other apps.
-- **URL Routing**: Establishes the main routes and includes URLs from other applications.
+#### PWA Configuration
+
+DjangoForge is designed to support Progressive Web Apps (PWAs), allowing your application to function like a native app on mobile devices. The following settings configure the PWA features:
+
+- **`PWA_APP_NAME`**: The name of your PWA, displayed when the app is installed on a user's device.
+- **`PWA_APP_DESCRIPTION`**: A brief description of your PWA's functionality.
+- **`PWA_APP_THEME_COLOR`**: The color of the app's theme, which affects the browser's UI when the PWA is launched.
+- **`PWA_APP_BACKGROUND_COLOR`**: The background color of the splash screen when the app is launched.
+- **`PWA_APP_DISPLAY`**: Determines how the PWA is displayed, with `'standalone'` making it look like a native app without browser UI elements.
+- **`PWA_APP_SCOPE`**: The URL scope that the PWA is allowed to control.
+- **`PWA_APP_ORIENTATION`**: Specifies the orientation in which the app should be displayed.
+- **`PWA_APP_START_URL`**: The URL that the PWA opens when launched.
+- **`PWA_APP_STATUS_BAR_COLOR`**: Color of the status bar in the app.
+- **`PWA_APP_ICONS`**: A list of icons used by the PWA in various resolutions.
+- **`PWA_APP_SPLASH_SCREEN`**: Configuration for the splash screen images that are shown when the app is launched.
+
+These settings enable your DjangoForge app to provide a consistent and native-like experience on mobile devices, improving user engagement.
+
+#### WebPush Configuration
+
+WebPush notifications allow you to send real-time notifications to users even when they are not actively using the app. The following settings configure WebPush with VAPID keys:
+
+- **`VAPID_PUBLIC_KEY`**: The public key used for sending WebPush notifications. Stored securely using environment variables.
+- **`VAPID_PRIVATE_KEY`**: The private key associated with the public key for secure communication.
+- **`VAPID_ADMIN_EMAIL`**: The email address of the administrator, included in the VAPID authentication.
+
+These settings are critical for enabling push notifications in DjangoForge, allowing you to keep users informed with timely updates.
 
 ## Gold BI App
 
 ### Purpose
 
-The **Gold BI App** is responsible for business intelligence operations within DjangoForge. It manages ETL (Extract, Transform, Load) processes and provides scheduling capabilities using Django Q.
+The **Gold BI App** is responsible for providing basic models that should be extended, they provide the base for temporal aggregations. provide the forms used by other apps to choose the report temporal aggregations. More importantly it must be used to schedule the tasks provided by the tier 1 and tier 2 apps.
 
 ### Structure
 
@@ -236,31 +148,45 @@ The **Gold BI App** is responsible for business intelligence operations within D
     - **`temporal_aggregation.html`**: Template for reports based on temporal data aggregation.
 - **`tests.py`**: Contains test cases for the Gold BI app.
 
-```
+```bash
 ├── gold_bi
 │   ├── apps.py
 │   ├── docs
-│   │   ├── assets
-│   │   │   └── images
-│   │   │       └── logo.png
-│   │   └── README.md
-│   ├── __init__.py
 │   ├── models.py
 │   ├── signals.py
 │   ├── tasks_scheduler.py
 │   ├── templates
-│   │   └── gold_bi
-│   │       └── report
-│   │           ├── monthly_snapshot.html
-│   │           ├── quality_control.html
-│   │           └── temporal_aggregation.html
 │   └── tests.py
 ```
 
 ### Key Features
 
-- **ETL Management**: Handles data extraction, transformation, and loading processes.
+- **ETL Scheduling**: schedules the various tasks
 - **BI Reporting**: Provides tools and templates for generating detailed business intelligence reports.
+
+### Development Protocol
+
+1. **Create the models inside the tier 1 and tier 2 apps**: they should be inside the aggregated file inside models folder.
+2. **Create the views inside tier 1 and tier 2**: they should be inside the aggregated file inside the views folde, they provide the data extraction and creation of the report. every report type should handle all the relative temporal aggregation. every report type should have a view associated. 
+3. **Create the templates for the report**: create the report template to create the dashboard.
+4. **Create the tasks**: Create the task reading from the deault db, and wrte in the gold db.
+5. **Schedule Tasks**: Create the task schedulation, one for every temporal aggregation
+
+### Q_CLUSTER Configuration
+
+The Gold BI App uses Django Q for managing task scheduling, which is crucial for handling ETL operations. The following settings configure Django Q:
+
+- **`name`**: Specifies the name of the Q cluster, in this case, `'gold_bi'`.
+- **`workers`**: The number of worker processes that will handle tasks.
+- **`recycle`**: Determines how often workers are recycled to prevent memory leaks.
+- **`timeout`**: Maximum time (in seconds) that a task can run before being terminated.
+- **`django_redis`**: Specifies the Redis instance used for task queuing.
+- **`retry`**: Time (in seconds) to wait before retrying a failed task.
+- **`queue_limit`**: Maximum number of tasks that can be queued at once.
+- **`bulk`**: Number of tasks to process in a single batch.
+- **`orm`**: Specifies which ORM to use, typically `'default'` for Django’s default ORM.
+
+This configuration ensures that the Gold BI App can efficiently manage task execution, handling everything from data processing to report generation.
 
 ## Logging App
 
@@ -292,51 +218,54 @@ The **Logging App** is designed to track and aggregate logs related to HTTP requ
     - **`aggregated.py`**: Views for aggregated logs.
     - **`base.py`**: Base views for log display.
 
-```
+```bash
 ├── logging_app
 │   ├── admin.py
 │   ├── apps.py
-│   ├── docs
-│   │   ├── assets
-│   │   │   └── logo.png
-│   │   ├── _config.yml
-│   │   └── README.md
 │   ├── forms.py
-│   ├── __init__.py
 │   ├── middleware.py
 │   ├── models
-│   │   ├── aggregated.py
-│   │   ├── base.py
-│   │   └── __init__.py
 │   ├── tasks
-│   │   ├── aggregate_access_logs.py
-│   │   ├── aggregate_error_logs.py
-│   │   └── __init__.py
 │   ├── templates
-│   │   └── logging_app
-│   │       ├── accordion.html
-│   │       ├── AElist.html
-│   │       ├── graphs.html
-│   │       ├── log_list.html
-│   │       └── request_log_detail.html
 │   ├── tests.py
 │   ├── urls.py
 │   └── views
-│       ├── aggregated.py
-│       ├── base.py
-│       └── __init__.py
 ```
 
 ### Key Features
 
 - **Request and Error Logging**: Tracks HTTP requests and errors, providing detailed logs for analysis.
-- **Log Aggregation**: Aggregates log data to facilitate easier monitoring and reporting.
+- **Log Presentation**: Show log data to facilitate easier monitoring and reporting.
+
+### LOGGING Configuration
+
+The `LOGGING` settings in `settings.py` control how log data is captured and stored. DjangoForge uses these settings to ensure that logs are properly categorized and easily accessible:
+
+- **Formatters**:
+    - **`verbose`**: Defines a detailed logging format, including timestamp, logger name, log level, file path, and function name.
+- **Handlers**:
+    - **`file_schedules`**: Logs schedule-related information to `schedules.log`.
+    - **`file_tasks`**: Logs task-related information to `tasks.log`.
+    - **`file_reports`**: Logs report-related information to `reports.log`.
+- **Loggers**:
+    - **`schedules`**: Uses the `file_schedules` handler to log information about scheduling tasks.
+    - **`tasks`**: Uses the `file_tasks` handler to log task execution details.
+    - **`reports`**: Uses the `file_reports` handler to log report generation events.
+
+These configurations ensure that logs are systematically stored and can be easily monitored, providing a clear overview of the system's operations.
+
+### Integration with Gold BI
+
+the read logs tab is used to read the various log files:
+- tasks
+- reports
+- schedules
 
 ## Website App
 
 ### Purpose
 
-The **Website App** manages the front-end of the DjangoForge site, acting as a simple CMS for rendering static or near-static HTML pages.
+The **Website App** manages the front-end of the DjangoForge site.
 
 ### Structure
 
@@ -357,36 +286,14 @@ The **Website App** manages the front-end of the DjangoForge site, acting as a s
 - **`urls.py`**: Defines URL routing for the website.
 - **`views.py`**: Handles logic for rendering front-end views.
 
-```
+```bash
 └── website
     ├── admin.py
     ├── apps.py
-    ├── docs
-    │   └── README.md
     ├── forms.py
-    ├── __init__.py
     ├── models.py
     ├── static
-    │   ├── favicon
-    │   │   ├── 16DjangoForge.ico
-    │   │   └── 48DjangoForge.ico
-    │   ├── icons
-    │   │   ├── github.svg
-    │   │   └── linkedin.svg
-    │   └── pwa
-    │       └── icons
-    │           ├── icon-256x256.png
-    │           └── Icon-512x512.png
     ├── templates
-    │   ├── registration
-    │   │   ├── login.html
-    │   │   ├── logout.html
-    │   │   └── password_reset.html
-    │   └── website
-    │       ├── base.html
-    │       ├── footer.html
-    │       ├── landing.html
-    │       └── navbar.html
     ├── tests.py
     ├── urls.py
     └── views.py
@@ -403,4 +310,3 @@ The Base Project is designed to be extended and customized according to your spe
 
 ---
 
-This concludes the overview of the DjangoForge Base Project. For more detailed instructions on how to use and extend these applications, please refer to the specific sections linked above.

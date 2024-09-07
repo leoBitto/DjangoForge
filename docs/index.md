@@ -6,18 +6,16 @@ Welcome to the official documentation for **DjangoForge**, a modular Django ecos
 
 1. [Introduction](#introduction)
 2. [Getting Started](#getting-started)
-    - [Installation](docs/installation.md)
-    - [Deploy the Application](docs/deployment.md)
+    - [Installation](/DjangoForge/docs/installation/)
+    - [Deploy the Application](/DjangoForge/docs/deployment/)
 3. [Project Structure](#project-structure)
 4. [Usage](#usage)
-    - [Base Project](docs/base.md)
-    - [Tier 1 Applications](docs/tier1.md)
-    - [Tier 2 Applications](docs/tier2.md)
-5. [Advanced Topics](#advanced-topics)
-    - [Customizing DjangoForge](docs/customization.md)
-6. [Contributing](docs/CONTRIBUTING.md)
-7. [Code of Conduct](docs/CODE_OF_CONDUCT.md)
-8. [License](docs/LICENSE.md)
+    - [Base Project](/DjangoForge/docs/base/)
+    - [Tier 1 Applications](/DjangoForge/docs/tier1/)
+    - [Tier 2 Applications](/DjangoForge/docs/tier2/)
+5. [Contributing](CONTRIBUTING)
+6. [Code of Conduct](CODE_OF_CONDUCT)
+7. [License](LICENSE)
 
 
 ## Introduction
@@ -42,9 +40,9 @@ DjangoForge is organized to be modular and scalable. Learn more about how the pr
 
 DjangoForge includes a variety of applications to meet different business needs. Explore the functionality of the:
 
-- **[Base Project](docs/base.md)**: Core modules and features.
-- **[Tier 1 Applications](docs/tier1.md)**: General business apps like CRM, ERP, and more.
-- **[Tier 2 Applications](docs/tier2.md)**: Industry-specific extensions for vertical markets.
+- **[Base Project](DjangoForge/docs/base.md)**: Core modules and features.
+- **[Tier 1 Applications](/DjangoForge/docs/tier1/)**: General business apps like CRM, ERP, and more.
+- **[Tier 2 Applications](/DjangoForge/docs/tier2/)**: Industry-specific extensions for vertical markets.
 
 
 ## Contributing
