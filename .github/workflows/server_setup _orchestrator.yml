@@ -13,7 +13,7 @@ jobs:
     steps:
       # Step 1: Setup the server (Docker, Nginx, etc.)
       - name: Setup Server
-        uses: ./.github/workflows/setup-server.yml
+        uses: ./.github/workflows/_setup-server.yml
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
@@ -27,7 +27,7 @@ jobs:
 
       # Step 2: Pass all secrets as inputs to create config files
       - name: Create Config Files
-        uses: ./.github/workflows/create-config-files.yml
+        uses: ./.github/workflows/_create-cfg-files.yml
         with:
           repo_name: ${{ env.REPO_NAME }}
           host: ${{ secrets.HOST }}
@@ -53,7 +53,7 @@ jobs:
 
       # Step 3: Setup Nginx and Certbot for SSL (this will now do the checkout inside it)
       - name: Setup Nginx and Certbot
-        uses: ./.github/workflows/nginx-certbot.yml
+        uses: ./.github/workflows/_nginx-certbot.yml
         with:
           domain: ${{ secrets.DOMAIN }}
           host: ${{ secrets.HOST }}
@@ -64,7 +64,7 @@ jobs:
 
       # Step 4: Deploy Docker Compose (checkout inside this step)
       - name: Deploy Docker Compose
-        uses: ./.github/workflows/deploy-containers.yml
+        uses: ./.github/workflows/_deploy.yml
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
