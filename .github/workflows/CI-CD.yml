@@ -19,32 +19,13 @@ jobs:
             submodules: recursive
             token: ${{ secrets.GITHUB_TOKEN }}
         
-      - name: Create config directory and .env file
-        run: |
-          mkdir -p config
-          echo "DEBUG=False" >> config/.env
-          echo "SECRET_KEY=foo" >> config/.env
-          echo "DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1] *" >> config/.env
-          echo "SQL_ENGINE=django.db.backends.postgresql" >> config/.env
-          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> config/.env
-          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> config/.env
-          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> config/.env
-          echo "SQL_HOST=db" >> config/.env
-          echo "SQL_PORT=5432" >> config/.env
-          echo "DATABASE=postgres" >> config/.env
-          echo "DOMAIN=${{ secrets.DOMAIN }}" >> config/.env
-
-          echo "PWA_APP_NAME=${{ secrets.PWA_APP_NAME }}" >> config/.env
-          echo "PWA_APP_DESCRIPTION=${{ secrets.PWA_APP_DESCRIPTION }}" >> config/.env
-          echo "PWA_APP_THEME_COLOR=${{ secrets.PWA_APP_THEME_COLOR }}" >> config/.env
-          echo "PWA_APP_BACKGROUND_COLOR=${{ secrets.PWA_APP_BACKGROUND_COLOR }}" >> config/.env
-          echo "PWA_ICON_LOCATION=${{ secrets.PWA_ICON_LOCATION }}" >> config/.env
-          echo "PWA_SPLASH_SCREEN_LOCATION=${{ secrets.PWA_SPLASH_SCREEN_LOCATION }}" >> config/.env
-
-          echo "VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}">> config/.env
-          echo "VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}">> config/.env
-          echo "EMAIL=${{ secrets.EMAIL }}">> config/.env
-
+      - name: Call reusable workflow to create config files
+        uses: ./.github/workflows/create-config-files.yml
+        with:
+          repo_name: ${{ env.REPO_NAME }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
 
         working-directory: .
 
@@ -96,43 +77,14 @@ jobs:
           echo "REPO_NAME=${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}" >> $GITHUB_ENV
           echo $GITHUB_ENV
       
-      - name: Create project directory and conf file
-        uses: appleboy/ssh-action@v0.1.3
+      - name: Call reusable workflow to create config files
+        uses: ./.github/workflows/create-config-files.yml
         with:
+          repo_name: ${{ env.REPO_NAME }}
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.PRIVATE_KEY }}
-          script: |
-            mkdir -p "/opt/${{ env.REPO_NAME }}"
-            mkdir -p "/opt/${{ env.REPO_NAME }}/config"
-            rm /opt/${{ env.REPO_NAME }}/config/.env
-            echo "DEBUG=False" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-            echo "SECRET_KEY=foo" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-            echo "DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1] *" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-            echo "SQL_ENGINE=django.db.backends.postgresql" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-            echo "SQL_HOST=db" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-            echo "SQL_PORT=5432" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-            echo "DATABASE=postgres" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-            echo "EMAIL=${{ secrets.EMAIL }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-            echo "DOMAIN=${{ secrets.DOMAIN }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+          private_key: ${{ secrets.PRIVATE_KEY }}
 
-            echo "PWA_APP_NAME=${{ secrets.PWA_APP_NAME }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-            echo "PWA_APP_DESCRIPTION=${{ secrets.PWA_APP_DESCRIPTION }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-            echo "PWA_APP_THEME_COLOR=${{ secrets.PWA_APP_THEME_COLOR }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-            echo "PWA_APP_BACKGROUND_COLOR=${{ secrets.PWA_APP_BACKGROUND_COLOR }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
-            echo "PWA_ICON_LOCATION=${{ secrets.PWA_ICON_LOCATION }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-            echo "PWA_SPLASH_SCREEN_LOCATION=${{ secrets.PWA_SPLASH_SCREEN_LOCATION }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
-
-
-            echo "VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
-            echo "VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
-            echo "EMAIL=${{ secrets.EMAIL }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
-
-
-            cat "/opt/${{ env.REPO_NAME }}/config/.env"
 
       - name: SCP Docker Compose file 
         uses: appleboy/scp-action@master

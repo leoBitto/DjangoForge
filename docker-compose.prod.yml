@@ -7,7 +7,7 @@ services:
       - static_volume:/home/app/web/static
       - media_volume:/home/app/web/media
     env_file:
-      - ./config/.cfg
+      - ./config/django.cfg
     depends_on:
       - db
       - db_gold
@@ -25,7 +25,7 @@ services:
       - static_volume:/home/app/web/static
       - media_volume:/home/app/web/media
     env_file:
-      - ./config/.cfg
+      - ./config/django.cfg
     depends_on:
       - db
       - db_gold
@@ -41,7 +41,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - ./config/.cfg
+      - ./config/db.cfg
     networks:
       app_network:
         ipv4_address: 192.168.100.3

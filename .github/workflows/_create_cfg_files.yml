@@ -1,0 +1,123 @@
+name: Create Configuration Files
+
+on:
+  workflow_call:
+    inputs:
+      repo_name:
+        description: "Repository Name"
+        required: true
+      host:
+        description: "Host IP Address"
+        required: true
+      username:
+        description: "Username for SSH"
+        required: true
+      private_key:
+        description: "Private Key for SSH"
+        required: true
+      debug:
+        description: "Debug mode"
+        required: true
+      secret_key:
+        description: "Django Secret Key"
+        required: true
+      django_allowed_hosts:
+        description: "Allowed hosts for Django"
+        required: true
+      sql_engine:
+        description: "SQL Engine for Django"
+        required: true
+      database:
+        description: "Database name"
+        required: true
+      postgres_db:
+        description: "Postgres DB name"
+        required: true
+      postgres_user:
+        description: "Postgres DB user"
+        required: true
+      postgres_password:
+        description: "Postgres DB password"
+        required: true
+      sql_host:
+        description: "SQL Host"
+        required: true
+      sql_port:
+        description: "SQL Port"
+        required: true
+      gold_postgres_db:
+        description: "Gold Postgres DB name"
+        required: true
+      gold_postgres_user:
+        description: "Gold Postgres DB user"
+        required: true
+      gold_postgres_password:
+        description: "Gold Postgres DB password"
+        required: true
+      gold_sql_host:
+        description: "Gold SQL Host"
+        required: true
+      gold_sql_port:
+        description: "Gold SQL Port"
+        required: true
+      email:
+        description: "Email"
+        required: true
+      domain:
+        description: "Domain for Django and Nginx"
+        required: true
+
+jobs:
+  create-config:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create configuration files on the server
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ inputs.host }}
+          username: ${{ inputs.username }}
+          key: ${{ inputs.private_key }}
+          script: |
+            mkdir -p "/opt/${{ inputs.repo_name }}/config"
+            rm -f /opt/${{ inputs.repo_name }}/config/.cfg
+            rm -f /opt/${{ inputs.repo_name }}/config/db.cfg
+            rm -f /opt/${{ inputs.repo_name }}/config/gold.cfg
+
+            # Creazione del file di configurazione principale (.cfg)
+            echo "DEBUG=${{ inputs.debug }}" >> "/opt/${{ inputs.repo_name }}/config/.cfg"
+            echo "SECRET_KEY=${{ inputs.secret_key }}" >> "/opt/${{ inputs.repo_name }}/config/.cfg"
+            echo "DJANGO_ALLOWED_HOSTS=${{ inputs.django_allowed_hosts }}" >> "/opt/${{ inputs.repo_name }}/config/.cfg"
+            echo "SQL_ENGINE=${{ inputs.sql_engine }}" >> "/opt/${{ inputs.repo_name }}/config/.cfg"
+            echo "DATABASE=${{ inputs.database }}" >> "/opt/${{ inputs.repo_name }}/config/.cfg"
+            echo "POSTGRES_DB=${{ inputs.postgres_db }}" >> "/opt/${{ inputs.repo_name }}/config/.cfg"
+            echo "POSTGRES_USER=${{ inputs.postgres_user }}" >> "/opt/${{ inputs.repo_name }}/config/.cfg"
+            echo "POSTGRES_PASSWORD=${{ inputs.postgres_password }}" >> "/opt/${{ inputs.repo_name }}/config/.cfg"
+            echo "SQL_HOST=${{ inputs.sql_host }}" >> "/opt/${{ inputs.repo_name }}/config/.cfg"
+            echo "SQL_PORT=${{ inputs.sql_port }}" >> "/opt/${{ inputs.repo_name }}/config/.cfg"
+            echo "GOLD_POSTGRES_DB=${{ inputs.gold_postgres_db }}" >> "/opt/${{ inputs.repo_name }}/config/.cfg"
+            echo "GOLD_POSTGRES_USER=${{ inputs.gold_postgres_user }}" >> "/opt/${{ inputs.repo_name }}/config/.cfg"
+            echo "GOLD_POSTGRES_PASSWORD=${{ inputs.gold_postgres_password }}" >> "/opt/${{ inputs.repo_name }}/config/.cfg"
+            echo "GOLD_SQL_HOST=${{ inputs.gold_sql_host }}" >> "/opt/${{ inputs.repo_name }}/config/.cfg"
+            echo "GOLD_SQL_PORT=${{ inputs.gold_sql_port }}" >> "/opt/${{ inputs.repo_name }}/config/.cfg"
+            echo "EMAIL=${{ inputs.email }}" >> "/opt/${{ inputs.repo_name }}/config/.cfg"
+            echo "DOMAIN=${{ inputs.domain }}" >> "/opt/${{ inputs.repo_name }}/config/.cfg"
+
+            # Creazione del file di configurazione per Postgres (db.cfg)
+            echo "POSTGRES_DB=${{ inputs.postgres_db }}" >> "/opt/${{ inputs.repo_name }}/config/db.cfg"
+            echo "POSTGRES_USER=${{ inputs.postgres_user }}" >> "/opt/${{ inputs.repo_name }}/config/db.cfg"
+            echo "POSTGRES_PASSWORD=${{ inputs.postgres_password }}" >> "/opt/${{ inputs.repo_name }}/config/db.cfg"
+            echo "SQL_HOST=${{ inputs.sql_host }}" >> "/opt/${{ inputs.repo_name }}/config/db.cfg"
+            echo "SQL_PORT=${{ inputs.sql_port }}" >> "/opt/${{ inputs.repo_name }}/config/db.cfg"
+
+            # Creazione del file di configurazione per Gold Postgres (gold.cfg)
+            echo "GOLD_POSTGRES_DB=${{ inputs.gold_postgres_db }}" >> "/opt/${{ inputs.repo_name }}/config/gold.cfg"
+            echo "GOLD_POSTGRES_USER=${{ inputs.gold_postgres_user }}" >> "/opt/${{ inputs.repo_name }}/config/gold.cfg"
+            echo "GOLD_POSTGRES_PASSWORD=${{ inputs.gold_postgres_password }}" >> "/opt/${{ inputs.repo_name }}/config/gold.cfg"
+            echo "GOLD_SQL_HOST=${{ inputs.gold_sql_host }}" >> "/opt/${{ inputs.repo_name }}/config/gold.cfg"
+            echo "GOLD_SQL_PORT=${{ inputs.gold_sql_port }}" >> "/opt/${{ inputs.repo_name }}/config/gold.cfg"
+
+            # Stampa di controllo
+            cat "/opt/${{ inputs.repo_name }}/config/.cfg"
+            cat "/opt/${{ inputs.repo_name }}/config/db.cfg"
+            cat "/opt/${{ inputs.repo_name }}/config/gold.cfg"

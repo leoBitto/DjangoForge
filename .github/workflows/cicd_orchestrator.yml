@@ -1,0 +1,36 @@
+name: CI/CD Orchestrator
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout repository
+      - name: Checkout Repository
+        uses: ./.github/workflows/checkout-repo.yml
+
+      # Step 2: Create configuration files for Django and PostgreSQL
+      - name: Create Config Files
+        uses: ./.github/workflows/create-config-files.yml
+        with:
+          repo_name: "myrepo"
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+
+      # Step 3: Build and Push Docker image to the GitHub registry
+      - name: Build and Push Docker Image
+        uses: ./.github/workflows/build-and-push-docker.yml
+
+      # Step 4: Deploy containers (stop old, start new)
+      - name: Deploy Containers
+        uses: ./.github/workflows/deploy-containers.yml
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          private_key: ${{ secrets.PRIVATE_KEY }}

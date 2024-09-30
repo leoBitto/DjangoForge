@@ -65,32 +65,50 @@ jobs:
             script: |
                 mkdir -p "/opt/${{ env.REPO_NAME }}"
                 mkdir -p "/opt/${{ env.REPO_NAME }}/config"
-                rm /opt/${{ env.REPO_NAME }}/config/.env
-                echo "DEBUG=False" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-                echo "SECRET_KEY=foo" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-                echo "DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1] *" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-                echo "SQL_ENGINE=django.db.backends.postgresql" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-                echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-                echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-                echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-                echo "SQL_HOST=db" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-                echo "SQL_PORT=5432" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-                echo "DATABASE=postgres" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-                echo "EMAIL=${{ secrets.EMAIL }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-                echo "DOMAIN=${{ secrets.DOMAIN }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
+                rm /opt/${{ env.REPO_NAME }}/config/.cfg
+                rm /opt/${{ env.REPO_NAME }}/config/db.cfg
+                rm /opt/${{ env.REPO_NAME }}/config/gold.cfg
                 
-                echo "PWA_APP_NAME=${{ secrets.PWA_APP_NAME }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-                echo "PWA_APP_DESCRIPTION=${{ secrets.PWA_APP_DESCRIPTION }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-                echo "PWA_APP_THEME_COLOR=${{ secrets.PWA_APP_THEME_COLOR }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-                echo "PWA_APP_BACKGROUND_COLOR=${{ secrets.PWA_APP_BACKGROUND_COLOR }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
-                echo "PWA_ICON_LOCATION=${{ secrets.PWA_ICON_LOCATION }}" >> "/opt/${{ env.REPO_NAME }}/config/.env"
-                echo "PWA_SPLASH_SCREEN_LOCATION=${{ secrets.PWA_SPLASH_SCREEN_LOCATION }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
+                echo "DEBUG=${{ secrets.DEBUG }}" >> "/opt/${{ env.REPO_NAME }}/config/.cfg"
+                echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> "/opt/${{ env.REPO_NAME }}/config/.cfg"
+                echo "DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}" >> "/opt/${{ env.REPO_NAME }}/config/.cfg"
+                echo "SQL_ENGINE=${{ secrets.SQL_ENGINE }}" >> "/opt/${{ env.REPO_NAME }}/config/.cfg"
+                echo "DATABASE=${{ secrets.DATABASE }}" >> "/opt/${{ env.REPO_NAME }}/config/.cfg"
+                
+                echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> "/opt/${{ env.REPO_NAME }}/config/.cfg"
+                echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> "/opt/${{ env.REPO_NAME }}/config/.cfg"
+                echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> "/opt/${{ env.REPO_NAME }}/config/.cfg"
+                echo "SQL_HOST=${{ secrets.SQL_HOST }}" >> "/opt/${{ env.REPO_NAME }}/config/.cfg"
+                echo "SQL_PORT=${{ secrets.SQL_PORT }}" >> "/opt/${{ env.REPO_NAME }}/config/.cfg"
+                
+                echo "GOLD_POSTGRES_DB=${{ secrets.GOLD_POSTGRES_DB }}" >> "/opt/${{ env.REPO_NAME }}/config/.cfg"
+                echo "GOLD_POSTGRES_USER=${{ secrets.GOLD_POSTGRES_USER }}" >> "/opt/${{ env.REPO_NAME }}/config/.cfg"
+                echo "GOLD_POSTGRES_PASSWORD=${{ secrets.GOLD_POSTGRES_PASSWORD }}" >> "/opt/${{ env.REPO_NAME }}/config/.cfg"
+                echo "GOLD_SQL_HOST=${{ secrets.GOLD_SQL_HOST }}" >> "/opt/${{ env.REPO_NAME }}/config/.cfg"
+                echo "GOLD_SQL_PORT=${{ secrets.GOLD_SQL_PORT }}" >> "/opt/${{ env.REPO_NAME }}/config/.cfg"
+                
 
-                echo "VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
-                echo "VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
-                echo "EMAIL=${{ secrets.EMAIL }}">> "/opt/${{ env.REPO_NAME }}/config/.env"
+                echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> "/opt/${{ env.REPO_NAME }}/config/db.cfg"
+                echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> "/opt/${{ env.REPO_NAME }}/config/db.cfg"
+                echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> "/opt/${{ env.REPO_NAME }}/config/db.cfg"
+                echo "SQL_HOST=${{ secrets.SQL_HOST }}" >> "/opt/${{ env.REPO_NAME }}/config/db.cfg"
+                echo "SQL_PORT=${{ secrets.SQL_PORT }}" >> "/opt/${{ env.REPO_NAME }}/config/db.cfg"
+                
 
-                cat "/opt/${{ env.REPO_NAME }}/config/.env"
+                echo "GOLD_POSTGRES_DB=${{ secrets.GOLD_POSTGRES_DB }}" >> "/opt/${{ env.REPO_NAME }}/config/gold.cfg"
+                echo "GOLD_POSTGRES_USER=${{ secrets.GOLD_POSTGRES_USER }}" >> "/opt/${{ env.REPO_NAME }}/config/gold.cfg"
+                echo "GOLD_POSTGRES_PASSWORD=${{ secrets.GOLD_POSTGRES_PASSWORD }}" >> "/opt/${{ env.REPO_NAME }}/config/gold.cfg"
+                echo "GOLD_SQL_HOST=${{ secrets.GOLD_SQL_HOST }}" >> "/opt/${{ env.REPO_NAME }}/config/gold.cfg"
+                echo "GOLD_SQL_PORT=${{ secrets.GOLD_SQL_PORT }}" >> "/opt/${{ env.REPO_NAME }}/config/gold.cfg"
+                
+
+                echo "EMAIL=${{ secrets.EMAIL }}" >> "/opt/${{ env.REPO_NAME }}/config/.cfg"
+                echo "DOMAIN=${{ secrets.DOMAIN }}" >> "/opt/${{ env.REPO_NAME }}/config/.cfg"
+                
+
+                cat "/opt/${{ env.REPO_NAME }}/config/.cfg"
+                cat "/opt/${{ env.REPO_NAME }}/config/db.cfg"
+                cat "/opt/${{ env.REPO_NAME }}/config/gold.cfg"
 
 
       - name: SCP Docker Compose file 

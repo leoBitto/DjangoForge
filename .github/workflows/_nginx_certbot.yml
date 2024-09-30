@@ -1,0 +1,71 @@
+name: Nginx and Certbot Setup
+
+on:
+  workflow_call:
+    inputs:
+      domain:
+        description: "Domain to configure in Nginx and Certbot"
+        required: true
+      host:
+        description: "Host IP Address"
+        required: true
+      username:
+        description: "Username for SSH"
+        required: true
+      private_key:
+        description: "Private Key for SSH"
+        required: true
+      email:
+        description: "Email for Certbot"
+        required: true
+      ghcr_token:
+        description: "Token to access repo"
+        required: true
+
+jobs:
+  setup-nginx-certbot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          token: ${{ inputs.ghcr_token }}
+
+      - name: SCP Nginx conf file
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ inputs.host }}
+          username: ${{ inputs.username }}
+          key: ${{ inputs.private_key }}
+          source: "nginx/nginx.conf"   # Specifica il percorso corretto del file Nginx nel repo
+          target: "/etc/nginx/sites-available/"
+          strip_components: 1
+
+      - name: Update Nginx configuration file
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ inputs.host }}
+          username: ${{ inputs.username }}
+          key: ${{ inputs.private_key }}
+          script: |
+            sed -i "s/localhost/${{ inputs.domain }}/g" /etc/nginx/sites-available/nginx.conf
+            ln -s /etc/nginx/sites-available/nginx.conf /etc/nginx/sites-enabled
+            nginx -t
+            systemctl restart nginx
+
+      - name: Request Certbot certificates
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ inputs.host }}
+          username: ${{ inputs.username }}
+          key: ${{ inputs.private_key }}
+          script: |
+            apt-get remove certbot
+            snap install --classic certbot
+            ln -s /snap/bin/certbot /usr/bin/certbot
+
+            DOMAIN_COMMA=$(echo "${{ inputs.domain }}" | tr ' ' ',')
+            certbot --nginx --non-interactive --agree-tos --email ${{ inputs.email }} --domains $DOMAIN_COMMA
+            certbot renew --dry-run

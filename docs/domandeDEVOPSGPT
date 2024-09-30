@@ -1,0 +1,2 @@
+come faccio a accedere al server dopo che terraform lo ha creato? sia manualmente in caso di necessità sia 
+per far si che io possa face il scp dei file che mi sono necessari all'avvio dei container 

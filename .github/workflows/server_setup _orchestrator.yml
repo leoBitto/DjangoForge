@@ -1,0 +1,74 @@
+name: Server Setup Orchestrator
+
+on:
+  workflow_dispatch:  # Esegui manualmente il setup del server
+
+env:
+  IMAGE_NAME: djangoforge
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Setup the server (Docker, Nginx, etc.)
+      - name: Setup Server
+        uses: ./.github/workflows/setup-server.yml
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+
+
+      - name: Set ENV variables
+        run: |
+          echo "REPO_NAME=${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}" >> $GITHUB_ENV
+          echo $GITHUB_ENV
+
+      # Step 2: Pass all secrets as inputs to create config files
+      - name: Create Config Files
+        uses: ./.github/workflows/create-config-files.yml
+        with:
+          repo_name: ${{ env.REPO_NAME }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+          debug: ${{ secrets.DEBUG }}
+          secret_key: ${{ secrets.SECRET_KEY }}
+          django_allowed_hosts: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
+          sql_engine: ${{ secrets.SQL_ENGINE }}
+          database: ${{ secrets.DATABASE }}
+          postgres_db: ${{ secrets.POSTGRES_DB }}
+          postgres_user: ${{ secrets.POSTGRES_USER }}
+          postgres_password: ${{ secrets.POSTGRES_PASSWORD }}
+          sql_host: ${{ secrets.SQL_HOST }}
+          sql_port: ${{ secrets.SQL_PORT }}
+          gold_postgres_db: ${{ secrets.GOLD_POSTGRES_DB }}
+          gold_postgres_user: ${{ secrets.GOLD_POSTGRES_USER }}
+          gold_postgres_password: ${{ secrets.GOLD_POSTGRES_PASSWORD }}
+          gold_sql_host: ${{ secrets.GOLD_SQL_HOST }}
+          gold_sql_port: ${{ secrets.GOLD_SQL_PORT }}
+          email: ${{ secrets.EMAIL }}
+          domain: ${{ secrets.DOMAIN }}
+
+      # Step 3: Setup Nginx and Certbot for SSL (this will now do the checkout inside it)
+      - name: Setup Nginx and Certbot
+        uses: ./.github/workflows/nginx-certbot.yml
+        with:
+          domain: ${{ secrets.DOMAIN }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+          email: ${{ secrets.EMAIL }}
+          ghcr_token: ${{ secrets.GHCR_TOKEN }}
+
+      # Step 4: Deploy Docker Compose (checkout inside this step)
+      - name: Deploy Docker Compose
+        uses: ./.github/workflows/deploy-containers.yml
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+          repo_name: ${{ env.REPO_NAME }}
+          ghcr_token: ${{ secrets.GHCR_TOKEN }}
+          image_name: ${{ env.IMAGE_NAME }}
