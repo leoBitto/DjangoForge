@@ -31,6 +31,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # Step 1: Checkout del repository
+      - name: Checkout the repo
+        uses: actions/checkout@v4
+        with:
+            submodules: recursive
+            token: ${{ secrets.GITHUB_TOKEN }}
+
       # Step 1: Set Environment Variables
       - name: Set environment variables
         run: |
