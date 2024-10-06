@@ -49,7 +49,7 @@ jobs:
 
       # Step 2: Chiamata al file create_cfg_files.yml
       - name: Call create_cfg_files.yml workflow
-        uses: ./.github/workflows/create_cfg_files.yml
+        uses: ./.github/workflows/create_cfg_files.yml@main
         with:
           repo_name: ${{ env.REPO_NAME }}
           host: ${{ env.HOST }}
