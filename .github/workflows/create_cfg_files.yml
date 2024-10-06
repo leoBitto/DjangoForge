@@ -18,6 +18,7 @@ on:
       debug:
         description: "Debug mode"
         required: true
+        default: "False"  # Aggiunto un valore di default
       secret_key:
         description: "Django Secret Key"
         required: true
@@ -79,12 +80,15 @@ jobs:
           username: ${{ inputs.username }}
           key: ${{ inputs.private_key }}
           script: |
+            # Creazione delle cartelle di configurazione
             mkdir -p "/opt/${{ inputs.repo_name }}/config"
+            
+            # Rimozione di vecchi file di configurazione (se esistono)
             rm -f /opt/${{ inputs.repo_name }}/config/.cfg
             rm -f /opt/${{ inputs.repo_name }}/config/db.cfg
             rm -f /opt/${{ inputs.repo_name }}/config/gold.cfg
 
-            # Creazione del file di configurazione principale (.cfg)
+            # Creazione del file principale di configurazione (.cfg)
             echo "DEBUG=${{ inputs.debug }}" >> "/opt/${{ inputs.repo_name }}/config/.cfg"
             echo "SECRET_KEY=${{ inputs.secret_key }}" >> "/opt/${{ inputs.repo_name }}/config/.cfg"
             echo "DJANGO_ALLOWED_HOSTS=${{ inputs.django_allowed_hosts }}" >> "/opt/${{ inputs.repo_name }}/config/.cfg"
@@ -117,7 +121,8 @@ jobs:
             echo "GOLD_SQL_HOST=${{ inputs.gold_sql_host }}" >> "/opt/${{ inputs.repo_name }}/config/gold.cfg"
             echo "GOLD_SQL_PORT=${{ inputs.gold_sql_port }}" >> "/opt/${{ inputs.repo_name }}/config/gold.cfg"
 
-            # Stampa di controllo
+            # Stampa di controllo dei file creati
+            echo "Config files created:"
             cat "/opt/${{ inputs.repo_name }}/config/.cfg"
             cat "/opt/${{ inputs.repo_name }}/config/db.cfg"
             cat "/opt/${{ inputs.repo_name }}/config/gold.cfg"

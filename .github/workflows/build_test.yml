@@ -1,0 +1,68 @@
+name: Build and Test Config
+
+on:
+  workflow_dispatch:  # Permette di lanciare manualmente il workflow per il test
+
+env:
+  REPO_NAME: DjangoForge
+  HOST: ${{ secrets.HOST }}
+  USERNAME: ${{ secrets.USERNAME }}
+  PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+  DEBUG: "False"  # Puoi modificarlo a "True" se vuoi testare in modalità debug
+  SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  DJANGO_ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
+  SQL_ENGINE: ${{ secrets.SQL_ENGINE }}
+  DATABASE: ${{ secrets.DATABASE }}
+  POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+  POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+  SQL_HOST: ${{ secrets.SQL_HOST }}
+  SQL_PORT: ${{ secrets.SQL_PORT }}
+  GOLD_POSTGRES_DB: ${{ secrets.GOLD_POSTGRES_DB }}
+  GOLD_POSTGRES_USER: ${{ secrets.GOLD_POSTGRES_USER }}
+  GOLD_POSTGRES_PASSWORD: ${{ secrets.GOLD_POSTGRES_PASSWORD }}
+  GOLD_SQL_HOST: ${{ secrets.GOLD_SQL_HOST }}
+  GOLD_SQL_PORT: ${{ secrets.GOLD_SQL_PORT }}
+  EMAIL: ${{ secrets.EMAIL }}
+  DOMAIN: ${{ secrets.DOMAIN }}
+
+jobs:
+  test-create-config:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Set Environment Variables
+      - name: Set environment variables
+        run: |
+          echo "Repository Name: ${REPO_NAME}"
+          echo "Host: ${HOST}"
+          echo "Username: ${USERNAME}"
+          echo "Debug Mode: ${DEBUG}"
+          echo "Domain: ${DOMAIN}"
+
+      # Step 2: Chiamata al file create_cfg_files.yml
+      - name: Call create_cfg_files.yml workflow
+        uses: ./.github/workflows/create_cfg_files.yml
+        with:
+          repo_name: ${{ env.REPO_NAME }}
+          host: ${{ env.HOST }}
+          username: ${{ env.USERNAME }}
+          private_key: ${{ env.PRIVATE_KEY }}
+          debug: ${{ env.DEBUG }}
+          secret_key: ${{ env.SECRET_KEY }}
+          django_allowed_hosts: ${{ env.DJANGO_ALLOWED_HOSTS }}
+          sql_engine: ${{ env.SQL_ENGINE }}
+          database: ${{ env.DATABASE }}
+          postgres_db: ${{ env.POSTGRES_DB }}
+          postgres_user: ${{ env.POSTGRES_USER }}
+          postgres_password: ${{ env.POSTGRES_PASSWORD }}
+          sql_host: ${{ env.SQL_HOST }}
+          sql_port: ${{ env.SQL_PORT }}
+          gold_postgres_db: ${{ env.GOLD_POSTGRES_DB }}
+          gold_postgres_user: ${{ env.GOLD_POSTGRES_USER }}
+          gold_postgres_password: ${{ env.GOLD_POSTGRES_PASSWORD }}
+          gold_sql_host: ${{ env.GOLD_SQL_HOST }}
+          gold_sql_port: ${{ env.GOLD_SQL_PORT }}
+          email: ${{ env.EMAIL }}
+          domain: ${{ env.DOMAIN }}
+
