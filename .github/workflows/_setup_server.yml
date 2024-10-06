@@ -1,17 +1,17 @@
 name: Setup Server
 
 on:
-  workflow_call: 
+  workflow_call:  # Definisci che il workflow può essere richiamato
     inputs:
-        host:
-          description: "Host IP Address"
-          required: true
-        username:
-          description: "Username for SSH"
-          required: true
-        private_key:
-          description: "Privare key for SSH access"
-          required: true
+      host:
+        description: "Host IP Address"
+        required: true
+      username:
+        description: "Username for SSH"
+        required: true
+      private_key:
+        description: "Private key for SSH access"
+        required: true
 
 jobs:
   setup-server:

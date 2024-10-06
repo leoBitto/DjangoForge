@@ -11,6 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      # Step 0: Checkout the repository to access workflows
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        
       # Step 1: Setup the server (Docker, Nginx, etc.)
       - name: Setup Server
         uses: ./.github/workflows/_setup-server.yml
