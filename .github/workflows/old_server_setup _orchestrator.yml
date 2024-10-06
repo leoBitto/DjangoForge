@@ -1,4 +1,4 @@
-name: Server Setup Orchestrator
+name: legacy Server Setup Orchestrator
 
 on:
   workflow_dispatch:  # Esegui manualmente il setup del server

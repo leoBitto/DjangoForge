@@ -1,4 +1,4 @@
-name: Setup Server
+name: legacy Setup Server
 
 on:
   workflow_dispatch:  # Trigger manual workflow run

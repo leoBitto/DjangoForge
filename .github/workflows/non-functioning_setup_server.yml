@@ -1,4 +1,4 @@
-name: Setup Server
+name: legacy Setup Server
 
 on:
   workflow_call:  # Definisci che il workflow può essere richiamato
