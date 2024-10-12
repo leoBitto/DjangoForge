@@ -84,6 +84,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: config-files
+          path: ./config/
 
     
       - name: Verify and memorize path of download
