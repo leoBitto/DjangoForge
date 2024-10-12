@@ -110,13 +110,11 @@ jobs:
         run: |
           echo "OWNER_LC=${{ github.repository_owner }}" >>${GITHUB_ENV}
           echo "REPO_NAME_LC=${{ github.repository }}" >>${GITHUB_ENV}
-          echo ${OWNER_LC,,}
-          echo ${REPO_NAME_LC,,}
 
       
       - name: Tag image for GHCR
         run: |
-          docker tag webapp_django ${{ env.REGISTRY }}/${OWNER_LC,,}/${REPO_NAME_LC,,}:${{ inputs.tag }}
+          docker tag webapp_django ${{ env.REGISTRY }}/${REPO_NAME_LC,,}:${{ inputs.tag }}
 
       
       - name: Log in to GitHub Container Registry (GHCR)
@@ -125,4 +123,4 @@ jobs:
       
       - name: Push image to GHCR
         run: |
-          docker push ${{ env.REGISTRY }}/${OWNER_LC,,}/${REPO_NAME_LC,,}:${{ inputs.tag }}
+          docker push ${{ env.REGISTRY }}/${REPO_NAME_LC,,}:${{ inputs.tag }}
