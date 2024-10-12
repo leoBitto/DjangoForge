@@ -3,9 +3,9 @@ name: 03.Deploy Application to Server
 on:
   workflow_dispatch:
     inputs:
-        image_name:
-            description: "Docker image name"
-            required: true
+      image_name:
+        description: "Docker image name"
+        required: true
 
 env:
   REGISTRY: ghcr.io
@@ -22,43 +22,66 @@ jobs:
           submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create main config file (django.cfg)
-        run: |
-            echo "DEBUG=${{ secrets.DEBUG }}" >> opt/config/django.cfg
-            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> opt/config/django.cfg
-            echo "DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}" >> opt/config/django.cfg
-            echo "SQL_ENGINE=${{ secrets.SQL_ENGINE }}" >> opt/config/django.cfg
-            echo "DATABASE=${{ secrets.DATABASE }}" >> opt/config/django.cfg
-            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> opt/config/django.cfg
-            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> opt/config/django.cfg
-            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> opt/config/django.cfg
-            echo "SQL_HOST=${{ secrets.SQL_HOST }}" >> opt/config/django.cfg
-            echo "SQL_PORT=${{ secrets.SQL_PORT }}" >> opt/config/django.cfg
-            echo "GOLD_POSTGRES_DB=${{ secrets.GOLD_POSTGRES_DB }}" >> opt/config/django.cfg
-            echo "GOLD_POSTGRES_USER=${{ secrets.GOLD_POSTGRES_USER }}" >> opt/config/django.cfg
-            echo "GOLD_POSTGRES_PASSWORD=${{ secrets.GOLD_POSTGRES_PASSWORD }}" >> opt/config/django.cfg
-            echo "GOLD_SQL_HOST=${{ secrets.GOLD_SQL_HOST }}" >> opt/config/django.cfg
-            echo "GOLD_SQL_PORT=${{ secrets.GOLD_SQL_PORT }}" >> opt/config/django.cfg
-            echo "EMAIL=${{ secrets.EMAIL }}" >> opt/config/django.cfg
-            echo "DOMAIN=${{ secrets.DOMAIN }}" >> opt/config/django.cfg
+      # Step 2: Creazione dei file di configurazione
+      - name: Create config directory
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            mkdir -p /opt/config/
 
+      - name: Create main config file (django.cfg)
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            echo "DEBUG=${{ secrets.DEBUG }}" >> /opt/config/django.cfg
+            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> /opt/config/django.cfg
+            echo "DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}" >> /opt/config/django.cfg
+            echo "SQL_ENGINE=${{ secrets.SQL_ENGINE }}" >> /opt/config/django.cfg
+            echo "DATABASE=${{ secrets.DATABASE }}" >> /opt/config/django.cfg
+            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> /opt/config/django.cfg
+            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> /opt/config/django.cfg
+            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> /opt/config/django.cfg
+            echo "SQL_HOST=${{ secrets.SQL_HOST }}" >> /opt/config/django.cfg
+            echo "SQL_PORT=${{ secrets.SQL_PORT }}" >> /opt/config/django.cfg
+            echo "GOLD_POSTGRES_DB=${{ secrets.GOLD_POSTGRES_DB }}" >> /opt/config/django.cfg
+            echo "GOLD_POSTGRES_USER=${{ secrets.GOLD_POSTGRES_USER }}" >> /opt/config/django.cfg
+            echo "GOLD_POSTGRES_PASSWORD=${{ secrets.GOLD_POSTGRES_PASSWORD }}" >> /opt/config/django.cfg
+            echo "GOLD_SQL_HOST=${{ secrets.GOLD_SQL_HOST }}" >> /opt/config/django.cfg
+            echo "GOLD_SQL_PORT=${{ secrets.GOLD_SQL_PORT }}" >> /opt/config/django.cfg
+            echo "EMAIL=${{ secrets.EMAIL }}" >> /opt/config/django.cfg
+            echo "DOMAIN=${{ secrets.DOMAIN }}" >> /opt/config/django.cfg
 
       - name: Creation of config file for Postgres (db.cfg)
-        run: |
-            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> opt/config/db.cfg
-            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> opt/config/db.cfg
-            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> opt/config/db.cfg
-            echo "SQL_HOST=${{ secrets.SQL_HOST }}" >> opt/config/db.cfg
-            echo "SQL_PORT=${{ secrets.SQL_PORT }}" >> opt/config/db.cfg
-    
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> /opt/config/db.cfg
+            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> /opt/config/db.cfg
+            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> /opt/config/db.cfg
+            echo "SQL_HOST=${{ secrets.SQL_HOST }}" >> /opt/config/db.cfg
+            echo "SQL_PORT=${{ secrets.SQL_PORT }}" >> /opt/config/db.cfg
 
       - name: Creation of config file for Gold Postgres (gold.cfg)
-        run: |
-            echo "GOLD_POSTGRES_DB=${{ secrets.GOLD_POSTGRES_DB }}" >> opt/config/gold.cfg
-            echo "GOLD_POSTGRES_USER=${{ secrets.GOLD_POSTGRES_USER }}" >> opt/config/gold.cfg
-            echo "GOLD_POSTGRES_PASSWORD=${{ secrets.GOLD_POSTGRES_PASSWORD }}" >> opt/config/gold.cfg
-            echo "GOLD_SQL_HOST=${{ secrets.GOLD_SQL_HOST }}" >> opt/config/gold.cfg
-            echo "GOLD_SQL_PORT=${{ secrets.GOLD_SQL_PORT }}" >> opt/config/gold.cfg
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            echo "GOLD_POSTGRES_DB=${{ secrets.GOLD_POSTGRES_DB }}" >> /opt/config/gold.cfg
+            echo "GOLD_POSTGRES_USER=${{ secrets.GOLD_POSTGRES_USER }}" >> /opt/config/gold.cfg
+            echo "GOLD_POSTGRES_PASSWORD=${{ secrets.GOLD_POSTGRES_PASSWORD }}" >> /opt/config/gold.cfg
+            echo "GOLD_SQL_HOST=${{ secrets.GOLD_SQL_HOST }}" >> /opt/config/gold.cfg
+            echo "GOLD_SQL_PORT=${{ secrets.GOLD_SQL_PORT }}" >> /opt/config/gold.cfg
 
       # Step 3: SCP Docker Compose file al server
       - name: SCP Docker Compose file
