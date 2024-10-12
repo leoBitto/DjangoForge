@@ -68,23 +68,24 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: config-files
-          path: ./config/
+          path: ./downloaded-config/
 
-      # Verifica dove sono scaricati gli artifact
-      - name: Verifica percorso di scaricamento
-        run: pwd
+      # Verifica il percorso di scaricamento e memorizzalo
+      - name: Verifica e memorizza il percorso di scaricamento
+        run: echo "ARTIFACT_PATH=$(pwd)/downloaded-config/" >> $GITHUB_ENV
 
+      # Lista dei file scaricati
       - name: Lista dei file scaricati
-        run: ls -R ./config/
+        run: ls -R ${{ env.ARTIFACT_PATH }}
 
       # Mostra il contenuto del file principale di configurazione (.cfg)
       - name: Mostra il contenuto del file principale di configurazione (.cfg)
-        run: cat ${pwd}/config/.cfg
+        run: cat ${{ env.ARTIFACT_PATH }}.cfg
 
       # Mostra il contenuto del file di configurazione per Postgres (db.cfg)
       - name: Mostra il contenuto del file di configurazione per Postgres (db.cfg)
-        run: cat ${pwd}/config/db.cfg
+        run: cat ${{ env.ARTIFACT_PATH }}db.cfg
 
       # Mostra il contenuto del file di configurazione per Gold Postgres (gold.cfg)
       - name: Mostra il contenuto del file di configurazione per Gold Postgres (gold.cfg)
-        run: cat ${pwd}/config/gold.cfg
+        run: cat ${{ env.ARTIFACT_PATH }}gold.cfg
