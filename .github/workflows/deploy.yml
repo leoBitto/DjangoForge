@@ -111,7 +111,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            docker compose -f /opt/docker-compose.prod.yml pull
+            docker pull ${{ env.REGISTRY }}/${REPO_NAME_LC,,}:latest
             docker compose -f /opt/docker-compose.prod.yml up -d --force-recreate
 
       # Step 5: Configurazione di Nginx
