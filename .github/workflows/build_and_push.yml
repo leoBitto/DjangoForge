@@ -68,13 +68,23 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: config-files
-          path: ./config/
+          path: ./downloaded-config/
 
+      # Verifica dove sono scaricati gli artifact
+      - name: Verifica percorso di scaricamento
+        run: pwd
+
+      - name: Lista dei file scaricati
+        run: ls -R ./downloaded-config/
+
+      # Mostra il contenuto del file principale di configurazione (.cfg)
       - name: Mostra il contenuto del file principale di configurazione (.cfg)
-        run: cat ./config/.cfg
+        run: cat ./downloaded-config/.cfg
 
+      # Mostra il contenuto del file di configurazione per Postgres (db.cfg)
       - name: Mostra il contenuto del file di configurazione per Postgres (db.cfg)
-        run: cat ./config/db.cfg
+        run: cat ./downloaded-config/db.cfg
 
+      # Mostra il contenuto del file di configurazione per Gold Postgres (gold.cfg)
       - name: Mostra il contenuto del file di configurazione per Gold Postgres (gold.cfg)
-        run: cat ./config/gold.cfg
+        run: cat ./downloaded-config/gold.cfg
