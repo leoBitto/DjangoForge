@@ -3,8 +3,8 @@ name: 02.Build and Push to GHCR
 on:
   workflow_dispatch:
     inputs:
-      tag:
-        description: "Docker image tag"
+      version:
+        description: "Docker image version"
         required: true
         default: "latest"
 
@@ -114,7 +114,7 @@ jobs:
       
       - name: Tag image for GHCR
         run: |
-          docker tag webapp_django ${{ env.REGISTRY }}/${REPO_NAME_LC,,}:${{ inputs.tag }}
+          docker tag webapp_django ${{ env.REGISTRY }}/${REPO_NAME_LC,,}:${{ inputs.version }}
 
       
       - name: Log in to GitHub Container Registry (GHCR)
