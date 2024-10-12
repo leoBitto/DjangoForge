@@ -15,23 +15,23 @@ jobs:
       # Creazione del file principale di configurazione (.cfg)
       - name: Creazione del file principale di configurazione (.cfg)
         run: |
-          echo "DEBUG=${{ secrets.DEBUG }}" >> config/.cfg
-          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> config/.cfg
-          echo "DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}" >> config/.cfg
-          echo "SQL_ENGINE=${{ secrets.SQL_ENGINE }}" >> config/.cfg
-          echo "DATABASE=${{ secrets.DATABASE }}" >> config/.cfg
-          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> config/.cfg
-          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> config/.cfg
-          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> config/.cfg
-          echo "SQL_HOST=${{ secrets.SQL_HOST }}" >> config/.cfg
-          echo "SQL_PORT=${{ secrets.SQL_PORT }}" >> config/.cfg
-          echo "GOLD_POSTGRES_DB=${{ secrets.GOLD_POSTGRES_DB }}" >> config/.cfg
-          echo "GOLD_POSTGRES_USER=${{ secrets.GOLD_POSTGRES_USER }}" >> config/.cfg
-          echo "GOLD_POSTGRES_PASSWORD=${{ secrets.GOLD_POSTGRES_PASSWORD }}" >> config/.cfg
-          echo "GOLD_SQL_HOST=${{ secrets.GOLD_SQL_HOST }}" >> config/.cfg
-          echo "GOLD_SQL_PORT=${{ secrets.GOLD_SQL_PORT }}" >> config/.cfg
-          echo "EMAIL=${{ secrets.EMAIL }}" >> config/.cfg
-          echo "DOMAIN=${{ secrets.DOMAIN }}" >> config/.cfg
+          echo "DEBUG=${{ secrets.DEBUG }}" >> config/django.cfg
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> config/django.cfg
+          echo "DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}" >> config/django.cfg
+          echo "SQL_ENGINE=${{ secrets.SQL_ENGINE }}" >> config/django.cfg
+          echo "DATABASE=${{ secrets.DATABASE }}" >> config/django.cfg
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> config/django.cfg
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> config/django.cfg
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> config/django.cfg
+          echo "SQL_HOST=${{ secrets.SQL_HOST }}" >> config/django.cfg
+          echo "SQL_PORT=${{ secrets.SQL_PORT }}" >> config/django.cfg
+          echo "GOLD_POSTGRES_DB=${{ secrets.GOLD_POSTGRES_DB }}" >> config/django.cfg
+          echo "GOLD_POSTGRES_USER=${{ secrets.GOLD_POSTGRES_USER }}" >> config/django.cfg
+          echo "GOLD_POSTGRES_PASSWORD=${{ secrets.GOLD_POSTGRES_PASSWORD }}" >> config/django.cfg
+          echo "GOLD_SQL_HOST=${{ secrets.GOLD_SQL_HOST }}" >> config/django.cfg
+          echo "GOLD_SQL_PORT=${{ secrets.GOLD_SQL_PORT }}" >> config/django.cfg
+          echo "EMAIL=${{ secrets.EMAIL }}" >> config/django.cfg
+          echo "DOMAIN=${{ secrets.DOMAIN }}" >> config/django.cfg
 
       # Creazione del file di configurazione per Postgres (db.cfg)
       - name: Creazione del file di configurazione per Postgres (db.cfg)
@@ -80,7 +80,7 @@ jobs:
 
       # Mostra il contenuto del file principale di configurazione (.cfg)
       - name: Mostra il contenuto del file principale di configurazione (.cfg)
-        run: cat ${{ env.ARTIFACT_PATH }}.cfg
+        run: cat ${{ env.ARTIFACT_PATH }}django.cfg
 
       # Mostra il contenuto del file di configurazione per Postgres (db.cfg)
       - name: Mostra il contenuto del file di configurazione per Postgres (db.cfg)
