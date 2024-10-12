@@ -1,4 +1,4 @@
-name: Create Django Superuser
+name: 04.Create Django Superuser
 
 on:
   workflow_dispatch:  # Trigger manual workflow run
