@@ -1,4 +1,4 @@
-name: Build and Test Config
+name: old - Build and Test Config
 
 on:
   workflow_dispatch:  # Permette di lanciare manualmente il workflow per il test
@@ -47,29 +47,28 @@ jobs:
           echo "Debug Mode: ${DEBUG}"
           echo "Domain: ${DOMAIN}"
 
-      # Step 2: Chiamata al file create_cfg_files.yml
-      - name: Call create_cfg_files.yml workflow
-        uses: ./.github/workflows/create_cfg_files.yml@main
-        with:
-          repo_name: ${{ env.REPO_NAME }}
-          host: ${{ env.HOST }}
-          username: ${{ env.USERNAME }}
-          private_key: ${{ env.PRIVATE_KEY }}
-          debug: ${{ env.DEBUG }}
-          secret_key: ${{ env.SECRET_KEY }}
-          django_allowed_hosts: ${{ env.DJANGO_ALLOWED_HOSTS }}
-          sql_engine: ${{ env.SQL_ENGINE }}
-          database: ${{ env.DATABASE }}
-          postgres_db: ${{ env.POSTGRES_DB }}
-          postgres_user: ${{ env.POSTGRES_USER }}
-          postgres_password: ${{ env.POSTGRES_PASSWORD }}
-          sql_host: ${{ env.SQL_HOST }}
-          sql_port: ${{ env.SQL_PORT }}
-          gold_postgres_db: ${{ env.GOLD_POSTGRES_DB }}
-          gold_postgres_user: ${{ env.GOLD_POSTGRES_USER }}
-          gold_postgres_password: ${{ env.GOLD_POSTGRES_PASSWORD }}
-          gold_sql_host: ${{ env.GOLD_SQL_HOST }}
-          gold_sql_port: ${{ env.GOLD_SQL_PORT }}
-          email: ${{ env.EMAIL }}
-          domain: ${{ env.DOMAIN }}
+  create_configuration:
+    uses: ./.github/workflows/create_cfg_files.yml
+    with:
+        repo_name: ${{ env.REPO_NAME }}
+        host: ${{ env.HOST }}
+        username: ${{ env.USERNAME }}
+        private_key: ${{ env.PRIVATE_KEY }}
+        debug: ${{ env.DEBUG }}
+        secret_key: ${{ env.SECRET_KEY }}
+        django_allowed_hosts: ${{ env.DJANGO_ALLOWED_HOSTS }}
+        sql_engine: ${{ env.SQL_ENGINE }}
+        database: ${{ env.DATABASE }}
+        postgres_db: ${{ env.POSTGRES_DB }}
+        postgres_user: ${{ env.POSTGRES_USER }}
+        postgres_password: ${{ env.POSTGRES_PASSWORD }}
+        sql_host: ${{ env.SQL_HOST }}
+        sql_port: ${{ env.SQL_PORT }}
+        gold_postgres_db: ${{ env.GOLD_POSTGRES_DB }}
+        gold_postgres_user: ${{ env.GOLD_POSTGRES_USER }}
+        gold_postgres_password: ${{ env.GOLD_POSTGRES_PASSWORD }}
+        gold_sql_host: ${{ env.GOLD_SQL_HOST }}
+        gold_sql_port: ${{ env.GOLD_SQL_PORT }}
+        email: ${{ env.EMAIL }}
+        domain: ${{ env.DOMAIN }}
 

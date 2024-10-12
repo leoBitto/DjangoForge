@@ -1,0 +1,65 @@
+name: old - Build and Push to GHCR
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Docker image tag"
+        required: true
+        default: "latest"
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout del repository
+      - name: Checkout the repo
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 2: Creazione dei file di configurazione
+      - name: Call reusable workflow to create config files
+        uses: ./.github/workflows/create-config-files.yml
+        with:
+          repo_name: ${{ env.REPO_NAME }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
+      
+      # Step 3: Mostra il contenuto del file di configurazione
+      - name: Display content of .env file
+        run: cat ./config/.env
+
+      # Step 4: Build dell'immagine Docker
+      - name: Build Docker image using Docker Compose
+        run: docker-compose -f docker-compose.dev.yml build
+
+      # Step 3.1: Verifica che l'immagine Docker sia stata creata
+      - name: Verify Docker image creation
+        run: docker images
+
+      # Step 3.2: Conversione in minuscolo del nome del repository e del proprietario
+      - name: Set lower case owner and repo names
+        run: |
+          echo "OWNER_LC=${{ github.repository_owner,, }}" >>${GITHUB_ENV}
+          echo "REPO_NAME_LC=${{ github.repository,, }}" >>${GITHUB_ENV}
+
+      # Step 4: Tag dell'immagine per GHCR
+      - name: Tag image for GHCR
+        run: |
+          docker tag webapp_django ${{ env.REGISTRY }}/${OWNER_LC}/${REPO_NAME_LC}:${{ inputs.tag }}
+
+      # Step 5: Login in GHCR
+      - name: Log in to GitHub Container Registry (GHCR)
+        run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      # Step 6: Push dell'immagine su GHCR
+      - name: Push image to GHCR
+        run: |
+          docker push ${{ env.REGISTRY }}/${OWNER_LC}/${REPO_NAME_LC}:${{ inputs.tag }}
