@@ -12,7 +12,7 @@ services:
     expose:
       - 8000
     env_file:
-      - ./config/.cfg
+      - ./config/django.cfg
     depends_on:
       - db
       - db_gold
@@ -33,7 +33,7 @@ services:
     expose:
       - 8000
     env_file:
-      - ./config/.cfg
+      - ./config/django.cfg
     depends_on:
       - db
       - db_gold
