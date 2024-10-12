@@ -91,11 +91,11 @@ jobs:
         run: echo "ARTIFACT_PATH=$(pwd)/config/" >> $GITHUB_ENV
 
       
-      - name: Display content of configuration files
-        run: |
-          cat ${{ env.ARTIFACT_PATH }}django.cfg
-          cat ${{ env.ARTIFACT_PATH }}db.cfg
-          cat ${{ env.ARTIFACT_PATH }}gold.cfg
+      #- name: Display content of configuration files
+      #  run: |
+      #    cat ${{ env.ARTIFACT_PATH }}django.cfg
+      #    cat ${{ env.ARTIFACT_PATH }}db.cfg
+      #    cat ${{ env.ARTIFACT_PATH }}gold.cfg
 
     
       - name: Build Docker image using Docker Compose
@@ -110,11 +110,13 @@ jobs:
         run: |
           echo "OWNER_LC=${{ github.repository_owner }}" >>${GITHUB_ENV}
           echo "REPO_NAME_LC=${{ github.repository }}" >>${GITHUB_ENV}
+          echo ${OWNER_LC,,}
+          echo ${REPO_NAME_LC,,}
 
       
       - name: Tag image for GHCR
         run: |
-          docker tag webapp_django ${{ env.REGISTRY }}/${OWNER_LC}/${REPO_NAME_LC}:${{ inputs.tag }}
+          docker tag webapp_django ${{ env.REGISTRY }}/${OWNER_LC,,}/${REPO_NAME_LC,,}:${{ inputs.tag }}
 
       
       - name: Log in to GitHub Container Registry (GHCR)
