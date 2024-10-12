@@ -1,4 +1,4 @@
-name: Build and Push to GHCR 
+name: 02.Build and Push to GHCR 
 
 on:
   workflow_dispatch:
@@ -125,4 +125,4 @@ jobs:
       
       - name: Push image to GHCR
         run: |
-          docker push ${{ env.REGISTRY }}/${OWNER_LC}/${REPO_NAME_LC}:${{ inputs.tag }}
+          docker push ${{ env.REGISTRY }}/${OWNER_LC,,}/${REPO_NAME_LC,,}:${{ inputs.tag }}
