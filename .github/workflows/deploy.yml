@@ -3,12 +3,13 @@ name: 03.Deploy Application to Server
 on:
   workflow_dispatch:
     inputs:
-      image_name:
-        description: "Docker image name"
+      version:
+        description: "Image version to upload"
         required: true
 
 env:
   REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   deploy:
@@ -112,7 +113,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            docker pull ${{ env.REGISTRY }}/${REPO_NAME_LC,,}:latest-test
+            docker pull ${{ env.REGISTRY }} ${{ env.IMAGE_NAME }}:${{ inputs.version }}
             docker compose -f /opt/docker-compose.prod.yml up -d --force-recreate
 
       # Step 5: Configurazione di Nginx
