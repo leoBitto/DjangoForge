@@ -1,4 +1,4 @@
-name: Test Config and Artifact Mechanism
+name: Build and Push to GHCR 
 
 on:
   workflow_dispatch:
@@ -107,8 +107,8 @@ jobs:
       
       - name: Set lower case owner and repo names
         run: |
-          echo "OWNER_LC=${{ github.repository_owner,, }}" >>${GITHUB_ENV}
-          echo "REPO_NAME_LC=${{ github.repository,, }}" >>${GITHUB_ENV}
+          echo "OWNER_LC=${{ github.repository_owner }}" >>${GITHUB_ENV}
+          echo "REPO_NAME_LC=${{ github.repository }}" >>${GITHUB_ENV}
 
       
       - name: Tag image for GHCR
