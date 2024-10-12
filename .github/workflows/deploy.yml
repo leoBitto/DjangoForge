@@ -101,18 +101,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           source: "./docker-compose.prod.yml"
           target: "/opt/"
-
-      - name: Prune all previous containers
-        uses: appleboy/ssh-action@v0.1.3
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.PRIVATE_KEY }}
-          script: |
-             docker system prune -y
-              
-              
-  
+ 
 
 
       - name: Pull containers from GHCR
