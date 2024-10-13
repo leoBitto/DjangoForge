@@ -108,6 +108,8 @@ jobs:
         run: |
           echo "OWNER_LC=${{ github.repository_owner }}" >>${GITHUB_ENV}
           echo "IMAGE_NAME_LC=${{ env.IMAGE_NAME }}" >>${GITHUB_ENV}
+          echo ${IMAGE_NAME_LC}
+          echo ${IMAGE_NAME_LC,,}
 
       - name: Pull containers from GHCR
         uses: appleboy/ssh-action@v0.1.3
