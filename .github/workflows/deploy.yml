@@ -116,8 +116,9 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
+            IMAGE_NAME="${{ env.REGISTRY }}/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')"
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            docker pull ${IMAGE_NAME_LC}
+            docker pull $IMAGE_NAME
 
       - name: Start container
         uses: appleboy/ssh-action@v0.1.3
