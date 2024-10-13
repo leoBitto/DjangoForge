@@ -104,7 +104,10 @@ jobs:
           source: "./docker-compose.prod.yml"
           target: "/opt/"
  
-
+      - name: Set lower case owner and repo names
+        run: |
+          echo "OWNER_LC=${{ github.repository_owner }}" >>${GITHUB_ENV}
+          echo "IMAGE_NAME_LC=${{ env.IMAGE_NAME }}" >>${GITHUB_ENV}
 
       - name: Pull containers from GHCR
         uses: appleboy/ssh-action@v0.1.3
@@ -114,7 +117,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            docker pull ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ inputs.version }}
+            docker pull ${{ env.REGISTRY }}/${IMAGE_NAME_LC,,}:${{ inputs.version }}
             docker compose -f /opt/docker-compose.prod.yml up -d --force-recreate
 
       # Step 5: Configurazione di Nginx
