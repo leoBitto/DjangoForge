@@ -29,8 +29,7 @@ services:
     depends_on:
       - db
       - db_gold
-    ports:
-      - 8000:8000
+
     networks:
       app_network:
         ipv4_address: 192.168.100.6
