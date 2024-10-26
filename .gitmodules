@@ -1,0 +1,3 @@
+[submodule "transactions"]
+	path = transactions
+	url = https://github.com/leoBitto/Django-transactions.git

@@ -1,0 +1,353 @@
+{% extends "website/base.html" %}
+
+{% block title %}Transactions{% endblock %}
+{% block content %}
+<style>
+
+/* Stile personalizzato per il colore arancione del bottone */
+.btn-custom {
+    color: #000; /* Testo nero */
+    background-color: #FFD180; /* Colore arancione personalizzato */
+    border-color: #FFD180; /* Colore del bordo */
+}
+
+</style>
+
+
+<div class="container p-0">
+
+    <div class="d-flex flex-row m-4 justify-content-between">
+        <h1 class="text-center">Dashboard</h1>
+        <a href="{% url 'transactions:index' %}" class="btn btn-custom ">< Back to Main Page</a>
+    </div>
+    
+    
+    <div class=" card my-3 container d-flex flex-row justify-content-around" id="navbar-controls">
+        <div class="">
+            <!-- Button per aprire il form income-->
+            <button class="btn btn-custom m-2" type="button" data-bs-toggle="modal" data-bs-target="#addIncomeModal" >
+                Add Income
+            </button>
+            <!-- Modal per l'aggiunta di un Income -->
+            <div class="modal fade" id="addIncomeModal" tabindex="-1" aria-labelledby="addIncomeModalLabel" aria-hidden="true">
+                <div class="modal-dialog ">
+                    <div class="modal-content col-12">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addIncomeModalLabel">Add Income</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form for Income Registration -->
+                        <form method="post" action="{% url 'transactions:income_registration' %}" class=" col-12 mb-3">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="{{ income_form.date.id_for_label }}">Date:</label>
+                            <input type="date" class="form-control" id="{{ income_form.date.id_for_label }}" name="{{ income_form.date.name }}" value="{{ today }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ income_form.time.id_for_label }}">Time:</label>
+                            <input type="time" class="form-control" id="{{ income_form.time.id_for_label }}" name="{{ income_form.time.name }}" value="{{ now }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ income_form.amount.id_for_label }}">Amount:</label>
+                            <input type="number" step="0.01" class="form-control" id="{{ income_form.amount.id_for_label }}" name="{{ income_form.amount.name }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ income_form.description.id_for_label }}">Description:</label>
+                            <input type="text" class="form-control" id="{{ income_form.description.id_for_label }}" name="{{ income_form.description.name }}">
+                        </div>
+                        <div class="form-group m-2">
+                            <label for="{{ income_form.type.id_for_label }}">Type:</label>
+                            {{ income_form.type }}
+                        </div>
+                        <div class="form-group m-2">
+                            <label for="{{ income_form.bank_account.id_for_label }}">Bank Account:</label>
+                            {{ income_form.bank_account }}
+                        </div>
+                        <div class="form-group m-2">
+                            <label for="{{ income_form.cash.id_for_label }}">Cash Entity:</label>
+                            {{ income_form.cash }}
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-custom">Register Income</button>
+                        </div>
+                        </form>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="">
+            <!-- Button per aprire il form Expense-->
+            <button class="btn btn-custom m-2" type="button" data-bs-toggle="modal" data-bs-target="#addExpenseModal">
+                Add Expense
+            </button>
+            <!-- Modal per l'aggiunta di una spesa -->
+            <div class="modal fade" id="addExpenseModal" tabindex="-1" aria-labelledby="addExpenseModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addExpenseModalLabel">Add Expense</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form per la registrazione della spesa -->
+                        <form method="post" action="{% url 'transactions:expense_registration' %}" class="mb-3">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="{{ expenditure_form.date.id_for_label }}">Date:</label>
+                            <input type="date" class="form-control" id="{{ expenditure_form.date.id_for_label }}" name="{{ expenditure_form.date.name }}" value="{{ today }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ expenditure_form.time.id_for_label }}">Time:</label>
+                            <input type="time" class="form-control" id="{{ expenditure_form.time.id_for_label }}" name="{{ expenditure_form.time.name }}" value="{{ now }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ expenditure_form.amount.id_for_label }}">Amount:</label>
+                            <input type="number" step="0.01" class="form-control" id="{{ expenditure_form.amount.id_for_label }}" name="{{ expenditure_form.amount.name }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ expenditure_form.description.id_for_label }}">Description:</label>
+                            <input type="text" class="form-control" id="{{ expenditure_form.description.id_for_label }}" name="{{ expenditure_form.description.name }}">
+                        </div>
+                        <div class="form-group m-2">
+                            <label for="{{ expenditure_form.type.id_for_label }}">Type:</label>
+                            {{ expenditure_form.type }}
+                        </div>
+                        <div class="form-group m-2">
+                            <label for="{{ expenditure_form.bank_account.id_for_label }}">Bank Account:</label>
+                            {{ expenditure_form.bank_account }}
+                        </div>
+                        <div class="form-group m-2">
+                            <label for="{{ expenditure_form.cash.id_for_label }}">Cash Entity:</label>
+                            {{ expenditure_form.cash }}
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-custom">Register Expense</button>
+                        </div>
+                        </form>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="">
+            <!-- Button per aprire il form recurrent transaction-->
+            <button class="btn btn-custom m-2" type="button" data-bs-toggle="modal" data-bs-target="#addRecurrentModal">
+                Add Recurrent Transaction
+            </button>
+            <!-- Modal per l'aggiunta di una transazione ricorrente -->
+            <div class="modal fade" id="addRecurrentModal" tabindex="-1" aria-labelledby="addRecurrentModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addRecurrentModalLabel">Add Recurrent Transaction</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form per la registrazione della transazione ricorrente -->
+                        <form action="{% url 'transactions:recurring_transaction' %}" method="POST">
+                        {% csrf_token %}
+                        <!-- Aggiungi i campi del form per creare transazioni ricorrenti -->
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Amount</label>
+                            <input type="number" step="0.01" class="form-control" id="amount" name="amount" required>
+                            <small id="amountHelp" class="form-text text-muted">Enter the amount (e.g., 100.00)</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <input type="text" class="form-control" id="description" name="description">
+                            <small id="descriptionHelp" class="form-text text-muted">Add a brief description</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="frequency" class="form-label">Frequency</label>
+                            <select class="form-select" id="frequency" name="frequency" required>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="annually">Annually</option>
+                            </select>
+                            <small id="frequencyHelp" class="form-text text-muted">Add a frequency</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="payment_method" class="form-label">Payment Method</label>
+                            <select class="form-select" id="payment_method" name="payment_method">
+                            <option value="" disabled selected>Select Payment Method</option>
+                            {% for bank_account in bank_accounts %}
+                                <option value="{{ bank_account.pk }}">Bank Account - {{ bank_account.bank_name }} - {{ bank_account.balance }}</option>
+                            {% endfor %}
+                            <option value="cash">Cash: {{ cash_entity.amount }} Euros</option>
+                            </select>
+                            <small id="payment_methodHelp" class="form-text text-muted">Where the money will come from</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="start_date" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="start_date" name="start_date" required>
+                            <small id="start_dateHelp" class="form-text text-muted">Start date of payment</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end_date" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="end_date" name="end_date" >
+                            <small id="end_dateHelp" class="form-text text-muted">End date of payment</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="type" class="form-label">Type</label>
+                            <select class="form-select" id="type" name="type">
+                            <option value="income">Income</option>
+                            <option value="expense">Expense</option>
+                            </select>
+                        </div>
+                        <div class="mb-3" id="income_type_div">
+                            <label for="income_type" class="form-label">Income Type</label>
+                            <select class="form-select" id="income_type" name="income_type">
+                            {% for value, label in income_choices %}
+                                <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3" id="expenditure_type_div" style="display: none;">
+                            <label for="expenditure_type" class="form-label">Expenditure Type</label>
+                            <select class="form-select" id="expenditure_type" name="expenditure_type">
+                            {% for value, label in expenditure_choices %}
+                                <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-custom">Create Recurring Transaction</button>
+                        </form>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- grafici -->
+    <div class="container d-flex flex-column col-12">
+        <!-- income -->
+        <div class="col-12 d-none d-md-flex flex-row">
+            <div class="col-6">
+                {{ fig_pie_income | safe }}
+            </div>
+            <div class="col-6">
+                {{ fig_pie_expenditure | safe }}
+            </div>
+        </div>
+        
+        <div class="col-12 d-flex flex-column flex-md-row">
+             <div class="col-md-6">
+                {{ fig_line_income | safe }}
+            </div>
+            <div class="col-md-6">
+                {{ fig_line_expenditure | safe }}
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-lg-12 mt-2">
+        <div class="d-lg-flex justify-content-between">
+            
+            <div class="w-100 d-flex flex-column align-content-center p-2">
+                <button class="btn btn-custom mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#income-div">Toggle Income</button>
+                <div class="collapse" id="income-div">
+                    <h2 class="text-center">Income</h2>
+                    <table id="income-table" class="table table-bordered table-responsive m-1">
+                        <thead>
+                            <tr>
+                                <th class="col-2">Data</th>
+                                <th>Amount</th>
+                                <th class="d-none d-md-table-cell">Description</th>
+                                <th>Category</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for income in incomes %}
+                            <tr>
+                                <td class="col-2">{{ income.date }}</td>
+                                <td>{{ income.amount }}</td>
+                                <td class="d-none d-md-table-cell">{{ income.description }}</td>
+                                <td>{{ income.type }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="w-100 d-flex flex-column align-content-center p-2">
+                <button class="btn btn-custom mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#expenses-div">Toggle Expenses</button>
+                <div class="collapse" id="expenses-div">
+                    <h2 class="text-center">Expenses</h2>
+                    <table id="expenses-table" class="table table-bordered table-responsive m-1">
+                        <thead>
+                            <tr>
+                                <th class="col-2">Data</th>
+                                <th>Amount</th>
+                                <th class="d-none d-md-table-cell">Description</th>
+                                <th>Category</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for expenditure in expenditures %}
+                            <tr>
+                                <td class="col-2">{{ expenditure.date }}</td>
+                                <td>{{ expenditure.amount }}</td>
+                                <td class="d-none d-md-table-cell">{{ expenditure.description }}</td>
+                                <td>{{ expenditure.type }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+$(document).ready(function() {
+    // Inizializza DataTable per la tabella degli income
+    var incomeTable = $('#income-table').DataTable();
+
+    // Inizializza DataTable per la tabella delle expenses
+    var expensesTable = $('#expenses-table').DataTable();
+
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var typeSelect = document.getElementById('type');
+    var incomeTypeDiv = document.getElementById('income_type_div');
+    var expenditureTypeDiv = document.getElementById('expenditure_type_div');
+
+    function hide(element) {
+        element.style.display = 'none';
+    }
+
+    function show(element) {
+        element.style.display = 'block';
+    }
+
+    typeSelect.addEventListener('change', function() {
+        if (this.value === 'income') {
+            show(incomeTypeDiv);
+            hide(expenditureTypeDiv);
+        } else if (this.value === 'expense') {
+            hide(incomeTypeDiv);
+            show(expenditureTypeDiv);
+        } else {
+            hide(incomeTypeDiv);
+            hide(expenditureTypeDiv);
+        }
+    });
+});
+</script>
+
+
+{% endblock %}

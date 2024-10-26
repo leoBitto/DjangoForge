@@ -1,0 +1,94 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block content %} 
+<style>
+
+    /* Stile personalizzato per il colore arancione del bottone */
+    .btn-custom {
+        color: #000; /* Testo nero */
+        background-color: #FFD180; /* Colore arancione personalizzato */
+        border-color: #FFD180; /* Colore del bordo */
+    }
+    
+  </style>
+<div class="container">
+    <div class="d-flex flex-column flex-sm-row justify-content-around">
+        <h1 class="mt-4 text-center">Portfolio Dashboard</h1>
+        <a class="btn btn-danger mt-5 mb-1" href="{% url 'transactions:eliminate_portfolio' portfolio.pk %}">Eliminate</a>
+    </div>
+    <!-- Visualizza le caratteristiche del portfolio -->
+    <h2 class="mt-4">Portfolio Details</h2>
+    <div class="row">
+        <div class="col">
+            <p>Total Value: ${{ portfolio.total_value }}</p>
+            <p>Stock Value: ${{ portfolio.stock_value }}</p>
+            <p>Cash Balance: ${{ portfolio.cash_balance }}</p>
+            <p>ROI: {{ portfolio.calculate_roi }}%</p>
+        </div>
+    </div>
+    
+    <!-- Mostra la lista delle azioni presenti nel portfolio -->
+    <h2 class="mt-4">Stocks in Portfolio</h2>
+    <div class="row">
+        <div class="col">
+            <ul class="list-group">
+                {% for stock in portfolio.stocks.all %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-0">{{ stock.company.name }}</h5>
+                                <p class="mb-0">Quantity: {{ stock.quantity }}</p>
+                                <p class="mb-0">Price: {{ stock.price }}</p>
+                            </div>
+                        </div>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">
+                        <p class="mt-2 mb-0">No stocks available in the portfolio.</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    
+    <!-- Aggiungi una nuova azione al portfolio -->
+    <h2 class="mt-4">Manage portfolio</h2>
+    <div class="row">
+        <div class="col">
+            <form method="POST" action="{% url 'transactions:manage_stock' pk=portfolio.pk %}">
+                {% csrf_token %}
+                {{ form_stocks.as_p }}
+                <button type="submit" class="btn btn-custom">Esegui</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 class="mt-4 text-center">Manage Cash</h1>
+        <div class="row">
+            <div class="col">
+                <form method="POST" action="{% url 'transactions:manage_cash' pk=portfolio.pk %}">
+                    {% csrf_token %}
+                    {{ form_cash.as_p }}
+                    <button type="submit" class="btn btn-custom">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="notification-container" class="position-fixed top-0 end-0 p-3" style="z-index: 5">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+</div>
+
+   
+{% endblock %}

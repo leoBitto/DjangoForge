@@ -1,0 +1,28 @@
+<!-- create_portfolio.html -->
+
+{% extends 'website/base.html' %}
+
+{% block content %}
+  <h2 class="text-center">Create new Portfolio</h2>
+
+  <form method="post" class="container mx-auto col-6 ">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="name">Name:</label>
+      <input type="text" class="form-control" id="name" name="name" required>
+    </div>
+    <div class="form-group">
+      <label for="start_date">Start Date:</label>
+      <input type="date" class="form-control" id="start_date" name="start_date" required>
+    </div>
+    <div class="form-group">
+      <label for="name">Cash balance:</label>
+      <input type="number" class="form-control" id="cash_balance" name="cash_balance" value="0" required>
+    </div>
+    <button type="submit" class="btn btn-primary m-2">Create Portfolio</button>
+  </form>
+
+  <script>
+    document.getElementById('start_date').valueAsDate = new Date();
+  </script>
+{% endblock %}

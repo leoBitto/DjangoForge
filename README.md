@@ -1,24 +1,26 @@
-# DjangoForge: A Django Ecosystem for SMEs
+# Arnia: Personal Finance Management
 
 ## Description
 
-**DjangoForge** is a modular ecosystem based on Django, designed to provide customizable software solutions for small and medium-sized enterprises (SMEs). The project is organized into three main tiers:
+**Arnia** is a modular ecosystem built on Django, designed to help you manage personal finances with the thoroughness of a small business setup. Organized for complete control and an overview of your finances, **Arnia** enables you to track income, expenses, accounts, and recurring payments efficiently.
 
-- **Base Project**: Contains the essential functionalities required by all applications.
-- **Tier 1**: Generic business applications like CRM and ERP, usable by a wide range of enterprises.
-- **Tier 2**: Industry-specific applications, extending Tier 1 apps with tailored functionalities.
+### Key Features
+
+- **Financial Dashboard**: Get a clear overview of total balances, recent income, and expenditures at a glance.
+- **Account and Transaction Management**: Organize your accounts (e.g., checking accounts, credit cards) and categorize both income and expenses.
+- **Recurring Expenses and Notifications**: Set up recurring payments and receive reminders to stay up-to-date.
+- **Financial Analytics**: Summaries and reports for a comprehensive view of your finances.
 
 ## Technologies Used
 
 - **Framework**: Django
-- **Database**: Postgres
+- **Database**: PostgreSQL
 - **Containerization**: Docker, Docker Compose
 - **CI/CD**: GitHub Actions
 
 ## Installation
 
 ### Prerequisites
-
 - Docker and Docker Compose installed
 - Python 3.x
 - Git
@@ -27,8 +29,8 @@
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/leoBitto/djangoforge.git
-    cd djangoforge
+    git clone https://github.com/leoBitto/arnia.git
+    cd arnia
     ```
 
 2. Build the Docker containers:
@@ -36,11 +38,10 @@
     source manager.sh build
     ```
 
-
-
-## Contributing
-
-Contributions are welcome! For more details, please see the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+3. Start the application:
+    ```bash
+    docker-compose up
+    ```
 
 ## License
 
@@ -48,4 +49,5 @@ This project is licensed under the GPLv3 License. For more details, see the [LIC
 
 ## Contact
 
-For questions or support, open an issue on GitHub.
+For questions or support, please open an issue on GitHub.
+

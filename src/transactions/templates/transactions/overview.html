@@ -1,0 +1,173 @@
+{% extends "website/base.html" %}
+
+{% block title %}Overview{% endblock %}
+
+{% block content %}
+<style>
+/* Stilizza le spese urgenti in rosso */
+.list-group-item-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+/* Stile personalizzato per il colore arancione del bottone */
+.btn-custom {
+    color: #000; /* Testo nero */
+    background-color: #FFD180; /* Colore arancione personalizzato */
+    border-color: #FFD180; /* Colore del bordo */
+}
+
+
+</style>
+
+
+<div class="container py-3 d-flex justify-content-center">
+  <div class="row justify-content-center col-lg-8">
+      <form action="{% url 'transactions:financial_summary' %}" method="POST" class="mt-5 row g-3">
+          {% csrf_token %}
+          <div class="col-md-6">
+              <label for="startDate" class="form-label text">Start Date</label>
+              <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                  <input type="date" class="form-control" name="startDate" id="startDate" aria-describedby="dateHelp">
+              </div>
+              <div id="dateHelp" class="form-text">Enter the starting date of the transactions</div>
+          </div>
+          <div class="col-md-6">
+              <label for="endDate" class="form-label text">End Date</label>
+              <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                  <input type="date" class="form-control" name="endDate" id="endDate" aria-describedby="dateHelp">
+              </div>
+              <div id="dateHelp" class="form-text">Enter the ending date of the transactions</div>
+          </div>
+          <div class="col-12">
+              <button type="submit" class="btn btn-custom col-12">Submit</button>
+          </div>
+      </form>
+  </div>
+</div>
+
+
+
+<!--{% if future_expenses %}
+<div class="container mt-3">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h2 class="text-center mb-4">Future Expenses</h2>
+      <ul class="list-group">
+        {% for future_expense in future_expenses %}
+          <li class=" mt-1 list-group-item {% if future_expense.is_urgent %}list-group-item-danger{% endif %}">
+            {{ future_expense.amount }} - {{ future_expense.description }} - {{ future_expense.date }}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endif %}-->
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <h2 class="text-center mb-4">Bank Accounts & Cash & Portfolios</h2>
+    {% for cash in cash_amounts %}
+      <div class="card m-1" style="width: 12rem;">
+        <div class="card-body">
+          <h5 class="card-title">Cash</h5>
+          <p class="card-text">Amount: {{ cash.amount }}</p>
+          <a href="{% url 'transactions:cash_detail' pk=cash.pk %}" class="btn btn-custom">Check Cash Amount</a>
+        </div>
+      </div>
+      {% endfor %}
+      {% for bank_account in bank_accounts %}
+      <div class="card" style="width: 12rem;">
+        <div class="card-body">
+          <h5 class="card-title">{{ bank_account.name }}</h5>
+          <p class="card-text">Balance: {{ bank_account.balance }}</p>
+          <a href="{% url 'transactions:bank_detail' pk=bank_account.pk %}" class="btn btn-custom">Check Account</a>
+        </div>
+      </div>
+      {% endfor %}
+      {% for portfolio in portfolios %}
+      <div class="card" style="width: 12rem;">
+        <div class="card-body">
+          <h5 class="card-title">{{ portfolio.name }}</h5>
+          <p class="card-text">Balance: {{ portfolio.total_value }}</p>
+          <a href="{% url 'transactions:portfolio_details' pk=portfolio.pk %}" class="btn btn-custom">Check Portfolio</a>
+        </div>
+      </div>
+      {% endfor %}
+
+      <div class="card m-4 col-10">
+        <div class="card-body">
+          <h5 class="card-title">Total Savings</h5>
+          <p class="card-text">Amount: {{ total_savings }}</p>
+        </div>
+      </div>
+
+  </div>
+
+  <!-- Button per aprire il form per creare un account di banca-->
+  <div class="d-flex justify-content-center mx-auto align-items-center flex-column">    
+    <a class="btn btn-custom col-6 text-center" type="button" data-bs-toggle="collapse" data-bs-target="#addBankAccount" aria-expanded="false" aria-controls="addBankAccount"> add Bank Account</a>
+            
+    <div class="col-md-4 mx-auto collapse"  id="addBankAccount">
+        <!-- Form for Income Registration -->
+        <h5> Add Bank Account </h5>
+        <form method="post" action="{% url 'transactions:add_bank' %}" class="m-3">
+            {% csrf_token %}
+            {{ add_bank_form.as_p }}
+            <div class="text-center">
+                <button type="submit" class="btn btn-custom">Create new Bank account</button>
+            </div>
+        </form>
+    </div>
+    <a class="btn btn-custom col-6 text-center" type="button" data-bs-toggle="collapse" data-bs-target="#addCashAmount" aria-expanded="false" aria-controls="addCashAmount"> add Cash Amount</a>
+    <div class="col-md-4 mx-auto collapse"  id="addCashAmount">
+        <!-- Form for Income Registration -->
+        <h5> Add Cash Amount </h5>
+        <form method="post" action="{% url 'transactions:add_cash_amount' %}" class="m-3">
+            {% csrf_token %}
+            {{ add_cash_form.as_p }}
+            <div class="text-center">
+                <button type="submit" class="btn btn-custom">Create new Cash Amount</button>
+            </div>
+        </form>
+    </div>
+    <a class="btn btn-custom col-6 text-center" type="button" data-bs-toggle="collapse" data-bs-target="#addPortfolio" aria-expanded="false" aria-controls="addPortfolio"> add Portfolio</a>
+    <div class="col-md-4 mx-auto collapse"  id="addPortfolio">
+        <!-- Form for Income Registration -->
+        <h5> Add portfolio </h5>
+        <form method="post" action="{% url 'transactions:create_portfolio' %}" class="m-3">
+            {% csrf_token %}
+            {{ add_bank_form.as_p }}
+            <div class="text-center">
+                <button type="submit" class="btn btn-custom">Create new Portfolio</button>
+            </div>
+        </form>
+    </div>
+
+
+  </div>
+</div>
+
+
+<script>
+  // Ottieni l'elemento "Start Date"
+  const startDateInput = document.getElementById('startDate');
+  
+  // Ottieni l'elemento "End Date"
+  const endDateInput = document.getElementById('endDate');
+
+  // Crea una data per l'inizio dell'anno corrente
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const firstDayOfYear = new Date(currentYear, 0, 1);
+
+  // Imposta il valore dell'input "Start Date" con la data di inizio anno
+  startDateInput.valueAsDate = firstDayOfYear;
+
+  // Imposta il valore dell'input "End Date" con la data odierna
+  endDateInput.valueAsDate = currentDate;
+</script>
+
+{% endblock %}

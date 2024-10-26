@@ -1,0 +1,66 @@
+{% extends "website/base.html" %}
+
+{% block title %}Cash Account Detail{% endblock %}
+
+
+{% block content %}
+<style>
+
+  /* Stile personalizzato per il colore arancione del bottone */
+  .btn-custom {
+      color: #000; /* Testo nero */
+      background-color: #FFD180; /* Colore arancione personalizzato */
+      border-color: #FFD180; /* Colore del bordo */
+  }
+  
+</style>
+  
+<div id="notification-container" class="position-fixed top-0 end-0 p-3" style="z-index: 5">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+</div>
+
+<div class="container mt-5 px-2 d-flex justify-content-center flex-column">
+  <div class="d-flex flex-row-reverse m-1">
+    <a href="{% url 'transactions:index' %}" class="btn btn-custom">Back to Main Page</a>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Cash</h5>
+      <p class="card-text">Amount: {{ cash_account.amount }}</p>      
+    </div>
+  </div>
+  
+
+
+  <div class="col-12">  
+    {{ html_fig | safe }}
+  </div>
+  
+  
+  <div class="col-md-6 p-2 mt-4">
+    <h2>Cash deposit </h2>
+    <form method="post" class="justify-content-center" >
+      {% csrf_token %}
+      <div class="mb-3">
+        {{ deposit_form.amount.label_tag }} 
+        {{ deposit_form.amount }}
+      </div>
+      <div class="mb-3">
+        {{ deposit_form.bank_account.label_tag }} 
+        {{ deposit_form.bank_account }}
+      </div>
+      <button type="submit" class="btn btn-custom">Deposit</button>
+    </form>
+  </div>
+
+</div>
+
+{% endblock %}
