@@ -1,0 +1,126 @@
+name: 02.Build and Push to GHCR 
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Docker image version"
+        required: true
+        default: "latest"
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  
+  create-config:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create config directory
+        run: mkdir -p config
+
+      
+      - name: Create main config file (django.cfg)
+        run: |
+          echo "DEBUG=${{ secrets.DEBUG }}" >> config/django.cfg
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> config/django.cfg
+          echo "DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}" >> config/django.cfg
+          echo "SQL_ENGINE=${{ secrets.SQL_ENGINE }}" >> config/django.cfg
+          echo "DATABASE=${{ secrets.DATABASE }}" >> config/django.cfg
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> config/django.cfg
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> config/django.cfg
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> config/django.cfg
+          echo "SQL_HOST=${{ secrets.SQL_HOST }}" >> config/django.cfg
+          echo "SQL_PORT=${{ secrets.SQL_PORT }}" >> config/django.cfg
+          echo "GOLD_POSTGRES_DB=${{ secrets.GOLD_POSTGRES_DB }}" >> config/django.cfg
+          echo "GOLD_POSTGRES_USER=${{ secrets.GOLD_POSTGRES_USER }}" >> config/django.cfg
+          echo "GOLD_POSTGRES_PASSWORD=${{ secrets.GOLD_POSTGRES_PASSWORD }}" >> config/django.cfg
+          echo "GOLD_SQL_HOST=${{ secrets.GOLD_SQL_HOST }}" >> config/django.cfg
+          echo "GOLD_SQL_PORT=${{ secrets.GOLD_SQL_PORT }}" >> config/django.cfg
+          echo "EMAIL=${{ secrets.EMAIL }}" >> config/django.cfg
+          echo "DOMAIN=${{ secrets.DOMAIN }}" >> config/django.cfg
+
+  
+      - name: Creation of config file for Postgres (db.cfg)
+        run: |
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> config/db.cfg
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> config/db.cfg
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> config/db.cfg
+          echo "SQL_HOST=${{ secrets.SQL_HOST }}" >> config/db.cfg
+          echo "SQL_PORT=${{ secrets.SQL_PORT }}" >> config/db.cfg
+
+      
+      - name: Creation of config file for Gold Postgres (gold.cfg)
+        run: |
+          echo "GOLD_POSTGRES_DB=${{ secrets.GOLD_POSTGRES_DB }}" >> config/gold.cfg
+          echo "GOLD_POSTGRES_USER=${{ secrets.GOLD_POSTGRES_USER }}" >> config/gold.cfg
+          echo "GOLD_POSTGRES_PASSWORD=${{ secrets.GOLD_POSTGRES_PASSWORD }}" >> config/gold.cfg
+          echo "GOLD_SQL_HOST=${{ secrets.GOLD_SQL_HOST }}" >> config/gold.cfg
+          echo "GOLD_SQL_PORT=${{ secrets.GOLD_SQL_PORT }}" >> config/gold.cfg
+
+    
+      - name: Save config files as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: config-files
+          path: ./config/
+
+
+  build_and_push:
+    runs-on: ubuntu-latest
+    needs: create-config  
+
+    steps:
+      
+      - name: Checkout the repo
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      
+      - name: Download configuration files
+        uses: actions/download-artifact@v4
+        with:
+          name: config-files
+          path: ./config/
+
+    
+      - name: Verify and memorize path of download
+        run: echo "ARTIFACT_PATH=$(pwd)/config/" >> $GITHUB_ENV
+
+      
+      #- name: Display content of configuration files
+      #  run: |
+      #    cat ${{ env.ARTIFACT_PATH }}django.cfg
+      #    cat ${{ env.ARTIFACT_PATH }}db.cfg
+      #    cat ${{ env.ARTIFACT_PATH }}gold.cfg
+
+    
+      - name: Build Docker image using Docker Compose
+        run: docker compose -f docker-compose.dev.yml build
+
+      
+      - name: Verify Docker image creation
+        run: docker images
+
+      
+      - name: Set lower case owner and repo names
+        run: |
+          echo "OWNER_LC=${{ github.repository_owner }}" >>${GITHUB_ENV}
+          echo "REPO_NAME_LC=${{ github.repository }}" >>${GITHUB_ENV}
+
+      
+      - name: Tag image for GHCR
+        run: |
+          docker tag webapp_django ${{ env.REGISTRY }}/${REPO_NAME_LC,,}:${{ inputs.version }}
+
+      
+      - name: Log in to GitHub Container Registry (GHCR)
+        run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      
+      - name: Push image to GHCR
+        run: |
+          docker push ${{ env.REGISTRY }}/${REPO_NAME_LC,,}:${{ inputs.version }}

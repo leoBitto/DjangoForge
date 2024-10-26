@@ -1,0 +1,123 @@
+{% load static %}
+{% load pwa %}
+{% load webpush_notifications %}
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Backoffice</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="{% static 'favicon/48DjangoForge.ico' %}" type="image/png">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css"/>
+        <!-- (Opzionale) Tema di DataTables Bootstrap, se usi Bootstrap nel progetto -->
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css"/>
+        <script src="https://unpkg.com/htmx.org@1.6.0/dist/htmx.min.js"></script>
+        
+        <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+        <style>
+            .flex-wrapper {
+                min-height: 100vh; /* Imposta l'altezza minima a 100% della viewport */
+            }
+        </style>
+        {% progressive_web_app_meta %}
+        {% webpush_header %}
+    </head>
+    <body class="d-flex flex-column justify-content-between flex-wrapper">
+        <div>
+            <!-- modal for messages -->
+            {% if messages %}
+                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %} alert-dismissible fade show position-fixed bottom-0 end-0 m-4" style="z-index:289;" role="alert">
+                    {% for message in messages %}
+                        {{ message }}
+                        {% if not forloop.last %}<br>{% endif %}
+                    {% endfor %}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top d-flex justify-content-around">
+                <a class="navbar-brand ms-3" href="{% url 'backoffice:backoffice' %}">Backoffice</a>
+                <a class="nav-link ms-3 text-white" href="{% url 'website:home' %}"><i class="fa-solid fa-reply"></i> Back to website</a> 
+            </nav>
+
+            <div class="container-fluid" style="margin-top: 56px;">  
+                <div class="row">
+                    <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                        <div class="position-sticky">
+                            <div class="px-3 py-3 border-bottom">
+                                <h4 class="h6">Menu</h4>
+                                <hr>
+                            </div>
+                            <ul class="nav flex-column">
+                                <!-- REPORT SELECTION -->
+                                <li class="nav-item">
+                                    <a class="nav-link d-flex align-items-center collapsed bg-dark text-white" data-bs-toggle="collapse" href="#ReportAccordion" role="button" aria-expanded="true" aria-controls="ReportAccordion">
+                                        <i class="fas fa-file me-2"></i> <span class="ms-1">Reports</span>
+                                    </a>
+                                    <div class="collapse" id="ReportAccordion">
+                                        <ul class="nav flex-column ms-3">
+                                            <li class="nav-item">
+                                                <a class="nav-link d-flex align-items-center text-black" href="{% url 'backoffice:select_report_type' %}">
+                                                    <i class="fas fa-chart-bar me-2"></i> Seleziona Tipo
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <!-- END REPORT SELECTION -->
+
+
+                                {% include 'logging_app/accordion.html' %}
+
+                            </ul>
+                        </div>
+                    </nav>
+                    
+
+                    <!-- Contenuto principale -->
+                    <main id="main-content" class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            
+                        <div class="my-3">
+                            {% block dashboard_app %}
+                            <div class="card mb-4 shadow-sm">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Benvenuto, {{ user.username }}. </h5>
+                                    <p> Clicca nel menù a sinistra per gestire i vari aspetti del tuo business.</p>
+                                </div>
+                            </div>
+                            {% endblock dashboard_app %}
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </div>
+
+        <footer class="bg-dark text-white mt-auto">
+            <div class="container py-4">
+                <div class="row">
+                    <a class="d-flex align-items-center text-decoration-none " href="{% url 'admin:index' %}">Admin</a>
+
+                </div>
+            </div>
+        </footer>
+    </body>
+    <!-- Script per jQuery (necessario per DataTables) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Script per DataTables -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <!-- (Opzionale) Script per DataTables con Bootstrap -->
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+</html>
+
+
+
+

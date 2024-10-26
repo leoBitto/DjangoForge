@@ -1,0 +1,126 @@
+{% extends "backoffice/backoffice_base.html" %}
+{% load static %}
+
+{% block dashboard_app %}
+<div class="container-fluid">
+    <h3>Log Files</h3>
+    <div class="accordion" id="logsAccordion">
+        <!-- Scheduler Log -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="schedulerLogHeader">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#schedulerLog" aria-expanded="true" aria-controls="schedulerLog">
+                    Scheduler Log Content
+                </button>
+            </h2>
+            <div id="schedulerLog" class="accordion-collapse collapse show" aria-labelledby="schedulerLogHeader" data-bs-parent="#logsAccordion">
+                <div class="accordion-body">
+                    <input type="text" class="form-control mb-3" id="schedulerlogSearch" placeholder="Cerca nel log dello scheduler...">
+                    <div id="schedulerlogContainer" class="bg-light border rounded p-3" style="max-height: 500px; overflow-y: auto; font-family: monospace; font-size: 14px;">
+                        {% if schedules_log_content %}
+                            {% for line in schedules_log_content %}
+                                <div class="schedulelog-line">{{ line }}</div>
+                            {% endfor %}
+                        {% else %}
+                            <div>Nessun contenuto disponibile.</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tasks Log -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="tasksLogHeader">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#tasksLog" aria-expanded="false" aria-controls="tasksLog">
+                    Tasks Log Content
+                </button>
+            </h2>
+            <div id="tasksLog" class="accordion-collapse collapse" aria-labelledby="tasksLogHeader" data-bs-parent="#logsAccordion">
+                <div class="accordion-body">
+                    <input type="text" class="form-control mb-3" id="taskslogSearch" placeholder="Cerca nel log delle tasks...">
+                    <div id="taskslogContainer" class="bg-light border rounded p-3" style="max-height: 500px; overflow-y: auto; font-family: monospace; font-size: 14px;">
+                        {% if tasks_log_content %}
+                            {% for line in tasks_log_content %}
+                                <div class="tasklog-line">{{ line }}</div>
+                            {% endfor %}
+                        {% else %}
+                            <div>Nessun contenuto disponibile.</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Log -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="reportsLogHeader">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#reportsLog" aria-expanded="false" aria-controls="reportsLog">
+                    Reports Log Content
+                </button>
+            </h2>
+            <div id="reportsLog" class="accordion-collapse collapse" aria-labelledby="reportsLogHeader" data-bs-parent="#logsAccordion">
+                <div class="accordion-body">
+                    <input type="text" class="form-control mb-3" id="reportslogSearch" placeholder="Cerca nel log dei report...">
+                    <div id="reportslogContainer" class="bg-light border rounded p-3" style="max-height: 500px; overflow-y: auto; font-family: monospace; font-size: 14px;">
+                        {% if reports_log_content %}
+                            {% for line in reports_log_content %}
+                                <div class="reportlog-line">{{ line }}</div>
+                            {% endfor %}
+                        {% else %}
+                            <div>Nessun contenuto disponibile.</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search Functionality for Logs -->
+<script>
+    document.getElementById('schedulerlogSearch').addEventListener('input', function() {
+        let filter = this.value.toLowerCase();
+        let logContainer = document.getElementById('schedulerlogContainer');
+        let logLines = logContainer.getElementsByClassName('schedulelog-line');
+
+        Array.from(logLines).forEach(line => {
+            let lineText = line.textContent.toLowerCase();
+            if (lineText.includes(filter) || filter === '') {
+                line.style.display = '';
+            } else {
+                line.style.display = 'none';
+            }
+        });
+    });
+
+    document.getElementById('taskslogSearch').addEventListener('input', function() {
+        let filter = this.value.toLowerCase();
+        let logContainer = document.getElementById('taskslogContainer');
+        let logLines = logContainer.getElementsByClassName('tasklog-line');
+
+        Array.from(logLines).forEach(line => {
+            let lineText = line.textContent.toLowerCase();
+            if (lineText.includes(filter) || filter === '') {
+                line.style.display = '';
+            } else {
+                line.style.display = 'none';
+            }
+        });
+    });
+
+    document.getElementById('reportslogSearch').addEventListener('input', function() {
+        let filter = this.value.toLowerCase();
+        let logContainer = document.getElementById('reportslogContainer');
+        let logLines = logContainer.getElementsByClassName('reportlog-line');
+
+        Array.from(logLines).forEach(line => {
+            let lineText = line.textContent.toLowerCase();
+            if (lineText.includes(filter) || filter === '') {
+                line.style.display = '';
+            } else {
+                line.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}

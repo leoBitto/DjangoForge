@@ -1,0 +1,111 @@
+{% extends "backoffice/backoffice_base.html" %}
+{% load static %}
+
+{% block dashboard_app %}
+<div class="container mt-4">
+    <h1>Seleziona Aggregazione per {{ report_type }} Report</h1>
+
+    <div class="accordion" id="aggregationForms">
+        {% if daily_form %}
+        <!-- Collassabile per l'aggregazione giornaliera -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingDaily">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDaily" aria-expanded="false" aria-controls="collapseDaily">
+                    Aggregazione Giornaliera
+                </button>
+            </h2>
+            <div id="collapseDaily" class="accordion-collapse collapse" aria-labelledby="headingDaily" data-bs-parent="#aggregationForms">
+                <div class="accordion-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ daily_form.as_p }}
+                        <button type="submit" name="daily_submit" class="btn btn-dark">Genera Report Giornaliero</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if weekly_form %}
+        <!-- Collassabile per l'aggregazione settimanale -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingWeekly">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWeekly" aria-expanded="false" aria-controls="collapseWeekly">
+                    Aggregazione Settimanale
+                </button>
+            </h2>
+            <div id="collapseWeekly" class="accordion-collapse collapse" aria-labelledby="headingWeekly" data-bs-parent="#aggregationForms">
+                <div class="accordion-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ weekly_form.as_p }}
+                        <button type="submit" name="weekly_submit" class="btn btn-dark">Genera Report Settimanale</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if monthly_form %}
+        <!-- Collassabile per l'aggregazione mensile -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingMonthly">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMonthly" aria-expanded="false" aria-controls="collapseMonthly">
+                    Aggregazione Mensile
+                </button>
+            </h2>
+            <div id="collapseMonthly" class="accordion-collapse collapse" aria-labelledby="headingMonthly" data-bs-parent="#aggregationForms">
+                <div class="accordion-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ monthly_form.as_p }}
+                        <button type="submit" name="monthly_submit" class="btn btn-dark">Genera Report Mensile</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if quarterly_form %}
+        <!-- Collassabile per l'aggregazione trimestrale -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingQuarterly">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseQuarterly" aria-expanded="false" aria-controls="collapseQuarterly">
+                    Aggregazione Trimestrale
+                </button>
+            </h2>
+            <div id="collapseQuarterly" class="accordion-collapse collapse" aria-labelledby="headingQuarterly" data-bs-parent="#aggregationForms">
+                <div class="accordion-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ quarterly_form.as_p }}
+                        <button type="submit" name="quarterly_submit" class="btn btn-dark">Genera Report Trimestrale</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if yearly_form %}
+        <!-- Collassabile per l'aggregazione annuale -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingYearly">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseYearly" aria-expanded="false" aria-controls="collapseYearly">
+                    Aggregazione Annuale
+                </button>
+            </h2>
+            <div id="collapseYearly" class="accordion-collapse collapse" aria-labelledby="headingYearly" data-bs-parent="#aggregationForms">
+                <div class="accordion-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ yearly_form.as_p }}
+                        <button type="submit" name="yearly_submit" class="btn btn-dark">Genera Report Annuale</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+<li class="nav-item">
+    <a class="nav-link d-flex align-items-center collapsed bg-dark text-white" data-bs-toggle="collapse" href="#loggingAccordion" role="button" aria-expanded="true" aria-controls="loggingAccordion">
+        <i class="fas fa-tachometer-alt me-2"></i> <span class="ms-1">Logging</span>
+    </a>
+    <div class="collapse" id="loggingAccordion">
+        <ul class="nav flex-column ms-3">
+            <li class="nav-item">
+                <a class="nav-link d-flex align-items-center text-black" href="{% url 'logging:logging_graphs' %}">
+                    <i class="fas fa-chart-line me-2"></i> Access & Error Graphs
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link d-flex align-items-center text-black" href="{% url 'logging:AElist' %}">
+                    <i class="fas fa-list me-2"></i> Access & Error list
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link d-flex align-items-center text-black" href="{% url 'logging:read_log' %}">
+                    <i class="fas fa-history  me-2"></i> Read Logs
+                </a>
+            </li>
+            <!-- Aggiungi altri link per le pagine di logging se necessario -->
+
+        </ul>
+    </div>
+</li>

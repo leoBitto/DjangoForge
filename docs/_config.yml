@@ -1,0 +1,54 @@
+# Jekyll configuration for DjangoForge documentation site
+
+# Theme settings
+remote_theme: pages-themes/minimal@v0.2.0
+
+# Plugins
+plugins:
+  - jekyll-remote-theme
+
+
+# Site settings
+title: ""
+description: "Official documentation for the DjangoForge project."
+logo: "/assets/img/DjangoForge.png"
+favicon: "/assets/img/djangoforgeico.svg"
+show_downloads: true
+url: "https://leobitto.github.io"
+baseurl: "/DjangoForge" # Base URL for the project
+
+# Exclude specific files or directories from being processed by Jekyll
+exclude:
+  - README.md
+  - LICENSE.md
+  - CONTRIBUTING.md
+  - CODE_OF_CONDUCT.md
+
+# Permalinks configuration
+permalink: pretty
+
+# Markdown and syntax highlighting settings
+markdown: kramdown
+highlighter: rouge
+
+# GitHub Pages settings
+github:
+  is_project_page: true
+  project_tagline: "DjangoForge: Modular Django ecosystem for SMEs"
+
+# Collections
+collections:
+  docs:
+    output: true
+    permalink: /:path/:basename:output_ext
+
+# Default layout for all files
+defaults:
+  - scope:
+      path: "" # an empty string here means all files in the project
+    values:
+      layout: "default"
+
+# Pagination settings
+paginate: 10
+paginate_path: "/page:num/"

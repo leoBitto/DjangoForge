@@ -1,0 +1,70 @@
+<style>
+  
+</style>
+  <footer class="py-5 mt-5 bg-dark ">
+      <div class="container">
+          <div class="row m-5">
+              <div class="col-6">
+                  <h5>Site Map</h5>
+                  <ul class="nav flex-column">
+                      <li class="nav-item mb-0"><a class="p-0 nav-link text-decoration-none " href="{% url 'website:home' %}">HOME</a></li>
+                      <li class="nav-item mb-0"><a class="p-0 nav-link text-decoration-none " href="{% url 'website:home' %}">Link 1</a></li>
+                      <li class="nav-item mb-0"><a class="p-0 nav-link text-decoration-none " href="{% url 'website:home' %}">Link 2</a></li>
+                      <li class="nav-item mb-0"><a class="p-0 nav-link text-decoration-none " href="{% url 'website:home' %}">Link 3</a></li>
+                  </ul>
+              </div>
+              <div class="col-6">
+                  <h5>Admin links</h5>
+                  <ul class="nav flex-column">
+                      {% if user.is_authenticated %}
+                          <li class="ms-1">
+                              <form method="post" action="{% url 'logout' %}" id="logout-form">
+                                {% csrf_token %}
+                                <a class="d-flex align-items-center text-decoration-none" href="#">
+                                    Logout from account: {{ user.username }}
+                                </a>
+                              </form>
+                              <a class="d-flex align-items-center text-decoration-none " href="{% url 'backoffice:backoffice' %}">
+                                  Backoffice
+                              </a>
+                          </li>
+                      {% else %}
+                          <li class="ms-1">
+                              <a class="d-flex align-items-center text-decoration-none " href="{% url 'login' %}">
+                                  Login
+                              </a>
+                          </li>
+                      {% endif %}
+                  </ul>
+              </div>
+          </div>
+      </div>
+  
+      <div class="bg-dark text-white py-3">
+          <div class="container flex-sm-row flex-column d-flex justify-content-between align-items-center">
+              <p class="fs-6 m-0 ">Website created by Leonardo Bitto</p>
+              <ul class="list-unstyled d-flex">
+                  <li class="ms-3">
+                      <a class="d-flex align-items-center text-decoration-none " href="https://www.linkedin.com/in/leonardo-bitto/" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 48 48" style="enable-background:new 0 0 48 48; width: 30px; height: 48px;" xml:space="preserve" fill="#FFF">
+                          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                          <g id="SVGRepo_iconCarrier"> <g> <g> <path style="fill:#0288D1;" d="M42,37c0,2.762-2.238,5-5,5H11c-2.761,0-5-2.238-5-5V11c0-2.762,2.239-5,5-5h26c2.762,0,5,2.238,5,5V37z"></path>
+                            <path style="fill:#FFF;" d="M12 19H17V36H12zM14.485 17h-.028C12.965 17 12 15.888 12 14.499 12 13.08 12.995 12 14.514 12c1.521 0 2.458 1.08 2.486 2.499C17 15.887 16.035 17 14.485 17zM36 36h-5v-9.099c0-2.198-1.225-3.698-3.192-3.698-1.501 0-2.313 1.012-2.707 1.99C24.957 25.543 25 26.511 25 27v9h-5V19h5v2.616C25.721 20.5 26.85 19 29.738 19c3.578 0 6.261 2.25 6.261 7.274L36 36 36 36z"></path></g> </g> </g>
+                        </svg>
+                      </a>
+                  </li>
+              </ul>
+          </div>
+      </div>
+  </footer>
+  
+<script>
+    $(document).ready(function() {
+        $('#logout-form a').click(function(e) {
+            e.preventDefault();
+            $('#logout-form').submit();
+        });
+    });
+</script>
+  
