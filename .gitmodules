@@ -1,3 +1,4 @@
 [submodule "src/transactions"]
 	path = src/transactions
 	url = https://github.com/leoBitto/Django-transactions.git
+
