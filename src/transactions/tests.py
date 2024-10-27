@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import BankAccount, Cash, FundLog, Income, IncomeCategory, Expenditure, ExpenseCategory
+from .models.base import BankAccount, Cash, FundLog, Income, IncomeCategory, Expenditure, ExpenseCategory
 from django.contrib.contenttypes.models import ContentType
 
 class FundBaseModelTest(TestCase):

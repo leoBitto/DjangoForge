@@ -1,5 +1,7 @@
 from django import forms
-from .models import *
+from .models.base import Transaction, TransactionCategory, BankAccount, Cash
+from django.contrib.contenttypes.models import ContentType
+
 
 
 class BankAccountForm(forms.ModelForm):
@@ -77,29 +79,42 @@ class CashForm(forms.ModelForm):
         return cleaned_data
 
 
-class IncomeForm(forms.ModelForm):
+class TransactionForm(forms.ModelForm):
     class Meta:
-        model = Income
-        fields = ['date', 'time', 'amount', 'description', 'type', 'related_fund']
+        model = Transaction
+        fields = ['date', 'time', 'amount', 'description', 'transaction_type', 'category', 'related_fund']
         labels = {
             'date': 'Date',
             'time': 'Time',
             'amount': 'Amount',
             'description': 'Description',
-            'type': 'Type',
+            'transaction_type': 'Transaction Type',
+            'category': 'Category',
             'related_fund': 'Fund',
         }
         widgets = {
-            'date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date', 'placeholder': 'Select the date'}),
-            'time': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time', 'placeholder': 'Select the time (optional)'}),
-            'amount': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter the amount'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Enter a description (optional)'}),
-            'type': forms.Select(attrs={'class': 'form-control'}),
+            'date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'time': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'amount': forms.NumberInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'transaction_type': forms.Select(attrs={'class': 'form-control'}),
+            'category': forms.Select(attrs={'class': 'form-control'}),
             'related_fund': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Filtra le categorie in base al tipo di transazione
+        self.fields['category'].queryset = TransactionCategory.objects.none()
+        
+        if 'transaction_type' in self.data:
+            transaction_type = self.data.get('transaction_type')
+            self.fields['category'].queryset = TransactionCategory.objects.filter(transaction_type=transaction_type)
+
+        elif self.instance.pk:
+            self.fields['category'].queryset = TransactionCategory.objects.filter(transaction_type=self.instance.transaction_type)
+
+        # Filtra i fondi utilizzabili
         self.fields['related_fund'].queryset = ContentType.objects.filter(model__in=['bankaccount', 'cash'])
 
     def clean_amount(self):
@@ -110,78 +125,13 @@ class IncomeForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        related_fund = cleaned_data.get('related_fund')
+        transaction_type = cleaned_data.get('transaction_type')
+        category = cleaned_data.get('category')
 
-        if related_fund:
-            try:
-                content_type = ContentType.objects.get_for_id(related_fund.id)
-                model_class = content_type.model_class()
-                
-                if self.instance.pk:  # Usa self.instance.pk se l'oggetto esiste
-                    obj = model_class.objects.get(id=self.instance.pk)
-                else:
-                    raise forms.ValidationError(f"There is no object with that id.")
-
-                self.instance.related_fund = content_type
-                self.instance.object_id = obj.id
-            except (ContentType.DoesNotExist, model_class.DoesNotExist):
-                raise forms.ValidationError("Invalid related fund type or object ID.")
+        if category and transaction_type and category.transaction_type != transaction_type:
+            self.add_error('category', "Category must match the transaction type (income or expense).")
 
         return cleaned_data
-
-
-class ExpenditureForm(forms.ModelForm):
-    class Meta:
-        model = Expenditure
-        fields = ['date', 'time', 'amount', 'description', 'type', 'related_fund']
-        labels = {
-            'date': 'Date',
-            'time': 'Time',
-            'amount': 'Amount',
-            'description': 'Description',
-            'type': 'Type',
-            'related_fund': 'Fund',
-        }
-        widgets = {
-            'date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date', 'placeholder': 'Select the date'}),
-            'time': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time', 'placeholder': 'Select the time (optional)'}),
-            'amount': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter the amount'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Enter a description (optional)'}),
-            'type': forms.Select(attrs={'class': 'form-control'}),
-            'related_fund': forms.Select(attrs={'class': 'form-control'}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['related_fund'].queryset = ContentType.objects.filter(model__in=['bankaccount', 'cash'])
-
-    def clean_amount(self):
-        amount = self.cleaned_data.get('amount')
-        if amount <= 0:
-            raise forms.ValidationError("Amount must be positive.")
-        return amount
-
-    def clean(self):
-        cleaned_data = super().clean()
-        related_fund = cleaned_data.get('related_fund')
-
-        if related_fund:
-            try:
-                content_type = ContentType.objects.get_for_id(related_fund.id)
-                model_class = content_type.model_class()
-                
-                if self.instance.pk:  # Usa self.instance.pk se l'oggetto esiste
-                    obj = model_class.objects.get(id=self.instance.pk)
-                else:
-                    raise forms.ValidationError(f"There is no object with that id.")
-
-                self.instance.related_fund = content_type
-                self.instance.object_id = obj.id
-            except (ContentType.DoesNotExist, model_class.DoesNotExist):
-                raise forms.ValidationError("Invalid related fund type or object ID.")
-
-        return cleaned_data
-
 
 
 class TransferFundsForm(forms.Form):
@@ -230,48 +180,18 @@ class TransferFundsForm(forms.Form):
         return cleaned_data
 
 
-
-class RecurringIncomeForm(forms.Form):
-    amount = forms.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        label='Amount',
-        min_value=0.01,
-        widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter amount'})
-    )
+class RecurringTransactionForm(forms.Form):
+    amount = forms.DecimalField(max_digits=10, decimal_places=2, min_value=0.01)
     frequency = forms.ChoiceField(
-        choices=[
-            ('daily', 'Daily'),
-            ('weekly', 'Weekly'),
-            ('monthly', 'Monthly'),
-            ('annual', 'Annual'),
-        ],
-        label='Frequency',
+        choices=[('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly'), ('annual', 'Annual')],
         widget=forms.Select(attrs={'class': 'form-control'})
     )
-    start_date = forms.DateField(
-        widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-        label='Start Date'
-    )
-    end_date = forms.DateField(
-        widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-        required=False,
-        label='End Date'
-    )
-    description = forms.CharField(
-        max_length=100,
-        required=False,
-        label='Description',
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter description (optional)'})
-    )
-    income_type = forms.ModelChoiceField(
-        queryset=IncomeCategory.objects.all(),
-        label='Income Type',
-        widget=forms.Select(attrs={'class': 'form-control'})
-    )
+    start_date = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}))
+    end_date = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}), required=False)
+    description = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    category = forms.ModelChoiceField(queryset=TransactionCategory.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
     related_fund = forms.ModelChoiceField(
         queryset=ContentType.objects.filter(model__in=['bankaccount', 'cash']),
-        label='Related Fund',
         widget=forms.Select(attrs={'class': 'form-control'})
     )
 
@@ -279,67 +199,37 @@ class RecurringIncomeForm(forms.Form):
         cleaned_data = super().clean()
         start_date = cleaned_data.get('start_date')
         end_date = cleaned_data.get('end_date')
-
-        if end_date and start_date and end_date <= start_date:
+        
+        if end_date and end_date <= start_date:
             self.add_error('end_date', "End date must be after start date.")
-
+        
         return cleaned_data
 
 
-class RecurringExpenseForm(forms.Form):
-    amount = forms.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        label='Amount',
-        min_value=0.01,
-        widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter amount'})
-    )
-    frequency = forms.ChoiceField(
-        choices=[
-            ('daily', 'Daily'),
-            ('weekly', 'Weekly'),
-            ('monthly', 'Monthly'),
-            ('annual', 'Annual'),
-        ],
-        label='Frequency',
-        widget=forms.Select(attrs={'class': 'form-control'})
-    )
-    start_date = forms.DateField(
-        widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-        label='Start Date'
-    )
-    end_date = forms.DateField(
-        widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-        required=False,
-        label='End Date'
-    )
-    description = forms.CharField(
-        max_length=100,
-        required=False,
-        label='Description',
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter description (optional)'})
-    )
-    expenditure_type = forms.ModelChoiceField(
-        queryset=ExpenseCategory.objects.all(),
-        label='Expense Type',
-        widget=forms.Select(attrs={'class': 'form-control'})
-    )
-    related_fund = forms.ModelChoiceField(
-        queryset=ContentType.objects.filter(model__in=['bankaccount', 'cash']),
-        label='Related Fund',
-        widget=forms.Select(attrs={'class': 'form-control'})
-    )
+class TransactionCategoryForm(forms.ModelForm):
+    class Meta:
+        model = TransactionCategory
+        fields = ['name', 'description', 'transaction_type', 'parent']
+        labels = {
+            'name': 'Category Name',
+            'description': 'Description',
+            'transaction_type': 'Type',
+            'parent': 'Parent Category',
+        }
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'transaction_type': forms.Select(attrs={'class': 'form-control'}),
+            'parent': forms.Select(attrs={'class': 'form-control'}),
+        }
 
-    def clean(self):
-        cleaned_data = super().clean()
-        start_date = cleaned_data.get('start_date')
-        end_date = cleaned_data.get('end_date')
-
-        if end_date and start_date and end_date <= start_date:
-            self.add_error('end_date', "End date must be after start date.")
-
-        return cleaned_data
-
-
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Filtra il campo parent per mostrare solo categorie dello stesso tipo
+        if 'transaction_type' in self.data:
+            transaction_type = self.data.get('transaction_type')
+            self.fields['parent'].queryset = TransactionCategory.objects.filter(transaction_type=transaction_type)
+        elif self.instance.pk:
+            self.fields['parent'].queryset = TransactionCategory.objects.filter(transaction_type=self.instance.transaction_type)
 
 

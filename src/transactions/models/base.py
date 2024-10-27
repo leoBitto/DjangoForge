@@ -9,7 +9,8 @@ from django.contrib.contenttypes.models import ContentType
 class FundBase(models.Model):
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     start_date = models.DateField()
-    end_date = models.DateField(blank=True, null=True)  # Data di chiusura per il fondo
+    end_date = models.DateField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         abstract = True
@@ -56,30 +57,39 @@ class FundLog(models.Model):
 @receiver(post_save, sender=BankAccount)
 @receiver(post_save, sender=Cash)
 def log_fund_change(sender, instance, created, **kwargs):
-    if not created:
-        # Trova il tipo di contenuto del modello
-        content_type = ContentType.objects.get_for_model(instance)
-        
-        # Crea un nuovo log
-        FundLog.objects.create(
-            content_type=content_type,
-            object_id=instance.id,
-            balance=instance.balance
-        )
+    if not created and instance.pk:  # Si assicura di non creare log duplicati al salvataggio iniziale
+        last_log = FundLog.objects.filter(
+            content_type=ContentType.objects.get_for_model(instance),
+            object_id=instance.id
+        ).order_by('-timestamp').first()
 
+        if last_log is None or last_log.balance != instance.balance:
+            # Crea un log solo se il bilancio è cambiato
+            FundLog.objects.create(
+                content_type=ContentType.objects.get_for_model(instance),
+                object_id=instance.id,
+                balance=instance.balance
+            )
 
 
 class Transaction(models.Model):
+    TRANSACTION_TYPE_CHOICES = (
+        ('income', 'Income'),
+        ('expense', 'Expense'),
+    )
+
     date = models.DateField()
     time = models.TimeField(blank=True, null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.CharField(max_length=100, blank=True, null=True)
+    transaction_type = models.CharField(max_length=7, choices=TRANSACTION_TYPE_CHOICES)
+    category = models.ForeignKey(TransactionCategory, on_delete=models.CASCADE)
     related_fund = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('related_fund', 'object_id')
 
     def __str__(self):
-        return f"Transaction: {self.amount} on {self.date}"
+        return f"{self.get_transaction_type_display()}: {self.amount} on {self.date}"
     
     class Meta:
         indexes = [
@@ -87,33 +97,48 @@ class Transaction(models.Model):
         ]
 
 
-
-class IncomeCategory(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        return self.name
-
-
 class Income(Transaction):
-    type = models.ForeignKey(IncomeCategory, on_delete=models.CASCADE)
+    income_type = models.ForeignKey(IncomeCategory, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Income: {self.amount} on {self.date}"
-
-
-class ExpenseCategory(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        return self.name
     
 
 class Expenditure(Transaction):
-    type = models.ForeignKey(ExpenseCategory, on_delete=models.CASCADE)
+    expense_type = models.ForeignKey(ExpenseCategory, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Expenditure: {self.amount} on {self.date}"
 
+
+class TransactionCategory(models.Model):
+    TRANSACTION_TYPE_CHOICES = (
+        ('income', 'Income'),
+        ('expense', 'Expense'),
+    )
+
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+    transaction_type = models.CharField(max_length=7, choices=TRANSACTION_TYPE_CHOICES)
+    parent = models.ForeignKey(
+        'self', 
+        on_delete=models.CASCADE, 
+        blank=True, 
+        null=True,
+        related_name='subcategories'
+    )
+
+    def __str__(self):
+        return f"{self.name} ({self.transaction_type})"
+
+    def get_hierarchy(self):
+        """Ritorna la gerarchia completa, utile per le visualizzazioni"""
+        hierarchy = [self]
+        parent = self.parent
+        while parent is not None:
+            hierarchy.append(parent)
+            parent = parent.parent
+        return hierarchy[::-1]  # Inverte per avere il percorso dal top
+
+    class Meta:
+        verbose_name_plural = "Transaction Categories"
