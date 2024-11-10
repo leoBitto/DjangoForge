@@ -29,9 +29,16 @@ build_and_start_containers() {
     # Crea un superuser con le credenziali dalle variabili d'ambiente
     sudo docker compose -f docker-compose.dev.yml exec web python manage.py createsuperuser 
 
+    # Esegui i test di Django
+    echo "Esecuzione dei test di Django..."
+    sudo docker compose -f docker-compose.dev.yml exec web python manage.py test || echo "I test non sono stati superati, controlla gli errori"
+
+
     echo "Superuser creato"
     echo "Server in esecuzione"
     sudo docker compose -f docker-compose.dev.yml exec web sh -c "python manage.py qcluster"
+
+
 }
 
 # Questa funzione avvia solo i container Docker
@@ -52,6 +59,11 @@ start_containers() {
     echo "File statici raccolti"
 
     echo "Server in esecuzione"
+
+    # Esegui i test di Django
+    echo "Esecuzione dei test di Django..."
+    sudo docker compose -f docker-compose.dev.yml exec web python manage.py test || echo "I test non sono stati superati, controlla gli errori"
+
 }
 
 # Questa funzione ferma i container Docker
