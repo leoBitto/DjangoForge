@@ -1,6 +1,6 @@
 services:
   web:
-    image: ghcr.io/leobitto/djangoforge:latest # Utilizza l'immagine pre-build presente nel registry
+    image: ghcr.io/leobitto/arnia:latest # Utilizza l'immagine presente nel registry
     container_name: web
     command: gunicorn base.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 90
     volumes:
@@ -18,7 +18,7 @@ services:
         ipv4_address: 192.168.100.2
 
   djangoq:
-    image: ghcr.io/leobitto/djangoforge:latest # Utilizza l'immagine pre-build presente nel registry
+    image: ghcr.io/leobitto/arnia:latest # Utilizza l'immagine presente nel registry
     container_name: djangoq
     command: python manage.py qcluster
     volumes:

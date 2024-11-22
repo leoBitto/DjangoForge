@@ -193,11 +193,6 @@ PWA_APP_SPLASH_SCREEN = [
 ]
 
 
-WEBPUSH_SETTINGS = {
-    "VAPID_PUBLIC_KEY": os.environ.get("VAPID_PUBLIC_KEY"),
-    "VAPID_PRIVATE_KEY":os.environ.get("VAPID_PRIVATE_KEY"),
-    "VAPID_ADMIN_EMAIL": os.environ.get("EMAIL")
-}
 
 # settings.py
 Q_CLUSTER = {

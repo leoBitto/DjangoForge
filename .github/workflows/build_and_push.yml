@@ -27,7 +27,6 @@ jobs:
           echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> config/django.cfg
           echo "DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}" >> config/django.cfg
           echo "SQL_ENGINE=${{ secrets.SQL_ENGINE }}" >> config/django.cfg
-          echo "DATABASE=${{ secrets.DATABASE }}" >> config/django.cfg
           echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> config/django.cfg
           echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> config/django.cfg
           echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> config/django.cfg
