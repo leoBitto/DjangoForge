@@ -140,6 +140,26 @@ jobs:
             docker compose -f /opt/docker-compose.prod.yml down
             docker compose -f /opt/docker-compose.prod.yml up -d --force-recreate
 
+      - name: Run Django migrations
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            docker compose -f /opt/docker-compose.prod.yml exec web python manage.py makemigrations --noinput
+            docker compose -f /opt/docker-compose.prod.yml exec web python manage.py migrate --noinput
+            docker compose -f /opt/docker-compose.prod.yml exec web python manage.py migrate --noinput --database=gold
+
+      - name: Run Django collectstatic
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            docker compose -f /opt/docker-compose.prod.yml exec web python manage.py collectstatic --noinput --clear
+
       # Step 5: Configurazione di Nginx
       - name: SCP Nginx configuration
         uses: appleboy/scp-action@v0.1.7
@@ -179,8 +199,10 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
-            sudo apt-get remove certbot
-            sudo snap install --classic certbot
-            sudo ln -s /snap/bin/certbot /usr/bin/certbot
+            if ! command -v certbot &> /dev/null; then
+              sudo apt-get remove certbot -y
+              sudo snap install --classic certbot
+              sudo ln -s /snap/bin/certbot /usr/bin/certbot
+            fi
             sudo certbot --nginx --non-interactive --agree-tos --email ${{ secrets.EMAIL }} --domains ${{ secrets.DOMAIN }}
             sudo certbot renew --dry-run
