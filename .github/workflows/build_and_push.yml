@@ -52,11 +52,11 @@ jobs:
       
       - name: Creation of config file for Gold Postgres (gold.cfg)
         run: |
-          echo "GOLD_POSTGRES_DB=${{ secrets.GOLD_POSTGRES_DB }}" >> config/gold.cfg
-          echo "GOLD_POSTGRES_USER=${{ secrets.GOLD_POSTGRES_USER }}" >> config/gold.cfg
-          echo "GOLD_POSTGRES_PASSWORD=${{ secrets.GOLD_POSTGRES_PASSWORD }}" >> config/gold.cfg
-          echo "GOLD_SQL_HOST=${{ secrets.GOLD_SQL_HOST }}" >> config/gold.cfg
-          echo "GOLD_SQL_PORT=${{ secrets.GOLD_SQL_PORT }}" >> config/gold.cfg
+          echo "POSTGRES_DB=${{ secrets.GOLD_POSTGRES_DB }}" >> config/gold.cfg
+          echo "POSTGRES_USER=${{ secrets.GOLD_POSTGRES_USER }}" >> config/gold.cfg
+          echo "POSTGRES_PASSWORD=${{ secrets.GOLD_POSTGRES_PASSWORD }}" >> config/gold.cfg
+          echo "SQL_HOST=${{ secrets.GOLD_SQL_HOST }}" >> config/gold.cfg
+          echo "SQL_PORT=${{ secrets.GOLD_SQL_PORT }}" >> config/gold.cfg
 
     
       - name: Save config files as artifact
