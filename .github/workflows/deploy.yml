@@ -199,10 +199,43 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
-            if ! command -v certbot &> /dev/null; then
-              sudo apt-get remove certbot -y
-              sudo snap install --classic certbot
-              sudo ln -s /snap/bin/certbot /usr/bin/certbot
+            # Converte la stringa di domini in array e costruisce i parametri per certbot
+            DOMAINS="${{ secrets.DOMAIN }}"
+            DOMAIN_PARAMS=""
+            for domain in $DOMAINS; do
+              DOMAIN_PARAMS="$DOMAIN_PARAMS --domains $domain"
+            done
+            
+            # Prendi il primo dominio come dominio principale per il check
+            PRIMARY_DOMAIN=$(echo $DOMAINS | cut -d' ' -f1)
+            
+            # Verifica se il certificato esiste già per il dominio principale
+            if [ ! -d "/etc/letsencrypt/live/$PRIMARY_DOMAIN" ]; then
+              # Installazione Certbot se non presente
+              if ! command -v certbot &> /dev/null; then
+                sudo apt-get update
+                sudo apt-get remove certbot -y
+                sudo snap install --classic certbot
+                sudo ln -sf /snap/bin/certbot /usr/bin/certbot
+              fi
+              
+              # Verifica che Nginx sia in ascolto sulla porta 80
+              sudo systemctl stop nginx
+              sudo systemctl start nginx
+              
+              # Ottieni il certificato per tutti i domini
+              sudo certbot --nginx \
+                --non-interactive \
+                --agree-tos \
+                --email ${{ secrets.EMAIL }} \
+                $DOMAIN_PARAMS \
+                --keep-until-expiring \
+                --redirect
+            else
+              echo "SSL certificate already exists for $PRIMARY_DOMAIN"
+              # Prova a rinnovare se necessario
+              sudo certbot renew --quiet
             fi
-            sudo certbot --nginx --non-interactive --agree-tos --email ${{ secrets.EMAIL }} --domains ${{ secrets.DOMAIN }}
-            sudo certbot renew --dry-run
+            
+            # Verifica la configurazione di Nginx
+            sudo nginx -t && sudo systemctl restart nginx
