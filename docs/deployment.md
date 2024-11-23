@@ -78,26 +78,107 @@ To establish a secure connection between your server and GitHub Actions, you nee
 
 ---
 
-### Configurazione dei Secrets su GitHub
+Per creare il **Personal Access Token (PAT)** per il secret `GHCR_TOKEN` e configurare correttamente tutti gli altri valori, puoi seguire le istruzioni dettagliate che possiamo includere nella documentazione. 
 
-1. **Accedi ai secrets del repository:**
-   - Vai su **Settings** → **Secrets and variables** → **Actions**.
+Ecco come procedere e come documentarlo:
 
-2. **Aggiungi i seguenti secrets:**
-   | Nome del Secret           | Descrizione                                           |
-   |---------------------------|-------------------------------------------------------|
-   | `HOST`                    | IP del server DigitalOcean                            |
-   | `USERNAME`                | Nome utente per l'accesso SSH (es. `root`)            |
-   | `PRIVATE_KEY`             | Contenuto della chiave privata SSH (`id_ed25519`)     |
-   | `SECRET_KEY`              | Secret key Django (se non generata dinamicamente)     |
-   | `DJANGO_ALLOWED_HOSTS`    | Host consentiti (es. `yourdomain.com 127.0.0.1`)      |
-   | `POSTGRES_USER`           | Nome utente del database PostgreSQL                   |
-   | `POSTGRES_PASSWORD`       | Password del database PostgreSQL                      |
-   | `GOLD_POSTGRES_USER`      | Nome utente del database PostgreSQL secondario       |
-   | `GOLD_POSTGRES_PASSWORD`  | Password del database PostgreSQL secondario           |
-   | `DOMAIN`                  | Dominio per CSRF settings (se richiesto)              |
+---
 
+### **Configuring Required GitHub Secrets**
 
+To deploy the project, you need to set up the necessary secrets in your GitHub repository. Below are step-by-step instructions for obtaining each value:
+
+#### **1. Create a Personal Access Token (PAT) for `GHCR_TOKEN`**
+The **GitHub Container Registry** requires a PAT to authenticate and push Docker images. Follow these steps:
+
+1. Go to [GitHub Personal Access Tokens](https://github.com/settings/tokens).
+2. Click **"Generate new token"** and select the following permissions:
+   - **`write:packages`** (required for pushing Docker images to GHCR).
+   - **`read:packages`** (to pull images, if needed).
+   - **`delete:packages`** (optional, for cleaning up images).
+3. Give the token a descriptive name (e.g., `GHCR Token`) and click **"Generate token"**.
+4. Copy the token immediately (it won't be visible again) and add it to your repository:
+   - Go to **"Settings" → "Secrets and variables" → "Actions" → "New repository secret"**.
+   - Create a secret named `GHCR_TOKEN` and paste the token value.
+
+---
+
+#### **2. Obtaining the `DEBUG` Value**
+- Use `True` for development or `False` for production environments. For deployment, set this to `False`.
+
+---
+
+#### **3. Setting the `SECRET_KEY`**
+- Generate a strong, random secret key using a Python command:
+  ```bash
+  python -c 'import secrets; print(secrets.token_urlsafe(50))'
+  ```
+- Add the generated key as the value of the `SECRET_KEY` secret.
+
+---
+
+#### **4. Defining `DJANGO_ALLOWED_HOSTS`**
+- Use a comma-separated list of hosts:
+  - For local testing: `"localhost, 127.0.0.1"`.
+  - For production: Your domain name (e.g., `"yourdomain.com"`).
+
+---
+
+#### **5. Configuring Database Secrets**
+- Replace these placeholders with actual values from your database configuration:
+  - **POSTGRES_DB**: The name of the primary database (e.g., `main_db`).
+  - **POSTGRES_USER**: The database username (e.g., `db_user`).
+  - **POSTGRES_PASSWORD**: The database password.
+  - **SQL_HOST**: Hostname of the database (e.g., `db`).
+  - **SQL_PORT**: Usually `5432` for PostgreSQL.
+
+#### **6. Configuring Secondary Database Secrets (Gold Postgres)**
+- These follow the same structure as the primary database:
+  - **GOLD_POSTGRES_DB**: Name of the secondary database.
+  - **GOLD_POSTGRES_USER**: Username for the secondary database.
+  - **GOLD_POSTGRES_PASSWORD**: Password for the secondary database.
+  - **GOLD_SQL_HOST**: Hostname for the secondary database (e.g., `db_gold`).
+  - **GOLD_SQL_PORT**: Usually `5432`.
+
+---
+
+#### **7. Setting `EMAIL`**
+- Add the email address used by the application, such as `admin@yourdomain.com`.
+
+---
+
+#### **8. Setting `DOMAIN`**
+- Add your domain name (e.g., `yourdomain.com`).
+
+---
+
+### **Recap of Configured Secrets**
+
+Once you have all the necessary values, add them as GitHub secrets under **"Settings" → "Secrets and variables" → "Actions" → "New repository secret"**.
+
+| Secret Name             | Description                                   | How to Obtain                                   |
+|-------------------------|-----------------------------------------------|------------------------------------------------|
+| `DEBUG`                 | Debug mode for Django                        | Use `False` for production                    |
+| `SECRET_KEY`            | Secret key for Django                        | Generate with Python                          |
+| `DJANGO_ALLOWED_HOSTS`  | Allowed hosts for Django                     | Add domain(s)                                 |
+| `SQL_ENGINE`            | SQL engine for Django                        | Use `django.db.backends.postgresql`           |
+| `POSTGRES_DB`           | Main database name                           | Use your database config                      |
+| `POSTGRES_USER`         | Main database user                           | Use your database config                      |
+| `POSTGRES_PASSWORD`     | Main database password                       | Use your database config                      |
+| `SQL_HOST`              | Main database host                           | Usually `db`                                  |
+| `SQL_PORT`              | Main database port                           | Usually `5432`                                |
+| `GOLD_POSTGRES_DB`      | Secondary database name                      | Use your secondary database config            |
+| `GOLD_POSTGRES_USER`    | Secondary database user                      | Use your secondary database config            |
+| `GOLD_POSTGRES_PASSWORD`| Secondary database password                  | Use your secondary database config            |
+| `GOLD_SQL_HOST`         | Secondary database host                      | Usually `db_gold`                             |
+| `GOLD_SQL_PORT`         | Secondary database port                      | Usually `5432`                                |
+| `EMAIL`                 | Application email                            | Add your email address                        |
+| `DOMAIN`                | Application domain                           | Add your domain                               |
+| `GHCR_TOKEN`            | Token for GitHub Container Registry (GHCR)   | Generate from GitHub Settings                 |
+
+---
+
+Questa sezione guida chiunque nel progetto a configurare i secrets in modo chiaro e organizzato. 
 ---
 
 ## CI/CD Workflow Execution:
