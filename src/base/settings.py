@@ -170,10 +170,10 @@ CSRF_TRUSTED_ORIGINS = ["http://localhost:8000", "http://*:8000", "https://" + o
 
 
 
-PWA_APP_NAME = "TEST name"
-PWA_APP_DESCRIPTION = "test description"
-PWA_APP_THEME_COLOR = "#eb7d34"
-PWA_APP_BACKGROUND_COLOR = "#ebc334"
+PWA_APP_NAME = "ARNIA"
+PWA_APP_DESCRIPTION = "app for website and financial tracking"
+PWA_APP_THEME_COLOR = "#5d8afc"
+PWA_APP_BACKGROUND_COLOR = "#1e5cfa"
 PWA_APP_DISPLAY = 'standalone'
 PWA_APP_SCOPE = '/'
 PWA_APP_ORIENTATION = 'any'
