@@ -36,7 +36,7 @@ build_and_start_containers() {
 
     echo "Superuser creato"
     echo "Server in esecuzione"
-    sudo docker compose -f docker-compose.dev.yml exec web sh -c "python manage.py qcluster"
+    sudo docker compose -f docker-compose.dev.yml exec djangoq sh -c "python manage.py qcluster"
 
 
 }
