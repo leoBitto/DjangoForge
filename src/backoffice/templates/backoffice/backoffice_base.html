@@ -45,6 +45,10 @@
                 background-color: #f1f1f1;
             }
 
+            .flex-wrapper {
+                min-height: 100vh; /* Imposta l'altezza minima a 100% della viewport */
+            }
+
             @media (min-width: 992px) {
                 #sidebar {
                     display: block !important;
@@ -54,14 +58,14 @@
         {% progressive_web_app_meta %}
         {% webpush_header %}
     </head>
-    <body class="d-flex flex-column">
+    <body class="d-flex flex-column flex-wrapper">
         <!-- Navbar -->
         <nav class="navbar navbar-dark navbar-expand-lg fixed-top">
             <div class="container-fluid">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar" aria-controls="sidebar" aria-expanded="false">
+                <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar" aria-controls="sidebar" aria-expanded="false">
                     <span class="navbar-toggler-icon"></span>
-                </button>
-                <a class="navbar-brand" href="{% url 'backoffice:backoffice' %}">Backoffice</a>
+                </button>                
+                <a class="navbar-brand px-2" href="{% url 'backoffice:backoffice' %}">Backoffice</a>
                 <a class="nav-link ms-auto" href="{% url 'website:home' %}"><i class="fa-solid fa-reply"></i> Torna al sito</a>
             </div>
         </nav>
