@@ -1,4 +1,4 @@
-name: 03.1.Deploy Application to Server
+name: 03.1.Deploy Application to Server - not functioning
 
 on:
   workflow_dispatch:
