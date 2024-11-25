@@ -1,0 +1,153 @@
+name: 03.1.Deploy Application to Server
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Docker image version"
+        required: true
+        default: "latest"
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  prepare-config:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Remove old config directory
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            if [ -d "/opt/config/" ]; then
+              rm -r /opt/config/
+            fi
+
+      - name: Create config files
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            mkdir -p /opt/config/
+            echo "DEBUG=${{ secrets.DEBUG }}" >> /opt/config/django.cfg
+            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> /opt/config/django.cfg
+            echo "DJANGO_ALLOWED_HOSTS=${{ secrets.DJANGO_ALLOWED_HOSTS }}" >> /opt/config/django.cfg
+            echo "SQL_ENGINE=${{ secrets.SQL_ENGINE }}" >> /opt/config/django.cfg
+            echo "DATABASE=${{ secrets.DATABASE }}" >> /opt/config/django.cfg
+            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> /opt/config/django.cfg
+            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> /opt/config/django.cfg
+            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> /opt/config/django.cfg
+            echo "SQL_HOST=${{ secrets.SQL_HOST }}" >> /opt/config/django.cfg
+            echo "SQL_PORT=${{ secrets.SQL_PORT }}" >> /opt/config/django.cfg
+            echo "GOLD_POSTGRES_DB=${{ secrets.GOLD_POSTGRES_DB }}" >> /opt/config/django.cfg
+            echo "GOLD_POSTGRES_USER=${{ secrets.GOLD_POSTGRES_USER }}" >> /opt/config/django.cfg
+            echo "GOLD_POSTGRES_PASSWORD=${{ secrets.GOLD_POSTGRES_PASSWORD }}" >> /opt/config/django.cfg
+            echo "GOLD_SQL_HOST=${{ secrets.GOLD_SQL_HOST }}" >> /opt/config/django.cfg
+            echo "GOLD_SQL_PORT=${{ secrets.GOLD_SQL_PORT }}" >> /opt/config/django.cfg
+            echo "EMAIL=${{ secrets.EMAIL }}" >> /opt/config/django.cfg
+            echo "DOMAIN=${{ secrets.DOMAIN }}" >> /opt/config/django.cfg
+
+            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> /opt/config/db.cfg
+            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> /opt/config/db.cfg
+            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> /opt/config/db.cfg
+            echo "SQL_HOST=${{ secrets.SQL_HOST }}" >> /opt/config/db.cfg
+            echo "SQL_PORT=${{ secrets.SQL_PORT }}" >> /opt/config/db.cfg
+
+            echo "POSTGRES_DB=${{ secrets.GOLD_POSTGRES_DB }}" >> /opt/config/gold.cfg
+            echo "POSTGRES_USER=${{ secrets.GOLD_POSTGRES_USER }}" >> /opt/config/gold.cfg
+            echo "POSTGRES_PASSWORD=${{ secrets.GOLD_POSTGRES_PASSWORD }}" >> /opt/config/gold.cfg
+            echo "SQL_HOST=${{ secrets.GOLD_SQL_HOST }}" >> /opt/config/gold.cfg
+            echo "SQL_PORT=${{ secrets.GOLD_SQL_PORT }}" >> /opt/config/gold.cfg
+
+  prepare-static:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Ensure directories for volumes exist
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            sudo mkdir -p /opt/web/static /opt/web/media
+            sudo chown -R $USER:$USER /opt/web/static /opt/web/media
+
+  deploy-docker:
+    runs-on: ubuntu-latest
+    needs: 
+      - prepare-config
+      - prepare-static
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Pull containers from GHCR
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            IMAGE_NAME="${{ env.REGISTRY }}/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')"
+            echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker pull $IMAGE_NAME:${{ inputs.version }}
+
+      - name: Start container
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            docker compose -f /opt/docker-compose.prod.yml down
+            docker compose -f /opt/docker-compose.prod.yml up -d --force-recreate
+
+  configure-nginx:
+    runs-on: ubuntu-latest
+    needs: deploy-docker
+    steps:
+      - name: Configure Nginx
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            sudo cp /opt/config/nginx.conf /etc/nginx/sites-available/arnia
+            sudo ln -s /etc/nginx/sites-available/arnia /etc/nginx/sites-enabled/
+            sudo nginx -t && sudo systemctl restart nginx
+
+  setup-certbot:
+    runs-on: ubuntu-latest
+    needs: configure-nginx
+    steps:
+      - name: Install or Renew SSL Certificate
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            sudo certbot --nginx -d arnia.example.com --non-interactive --agree-tos -m your-email@example.com
+            sudo systemctl reload nginx
