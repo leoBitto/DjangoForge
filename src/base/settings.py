@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'pwa',
     'webpush',
     'django_seed',
-    'transactions'
+
 
 ]
 
